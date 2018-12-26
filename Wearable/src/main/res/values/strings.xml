@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Minimalin</string>
+    <!--<string name="message">Watch face tapped</string>-->
+    <string name="watchface_name">Minimalin Watch Face</string>
+</resources>
