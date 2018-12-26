@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.graphics.Palette;
+import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
@@ -42,6 +43,76 @@ import java.util.concurrent.TimeUnit;
  */
 public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "MinimalinWatchFaceService";
+
+    // Unique IDs for each complication. The settings activity that supports allowing users
+    // to select their complication data provider requires numbers to be >= 0.
+    private static final int BACKGROUND_COMPLICATION_ID = 0;
+
+    private static final int LEFT_COMPLICATION_ID = 100;
+    private static final int RIGHT_COMPLICATION_ID = 101;
+
+    // Background, Left and right complication IDs as array for Complication API.
+    private static final int[] COMPLICATION_IDS = {
+            BACKGROUND_COMPLICATION_ID, LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID
+    };
+
+    // Left and right dial supported types.
+    private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
+            {
+                    ComplicationData.TYPE_LARGE_IMAGE
+            },
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            },
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            }
+    };
+
+    // Used by {@link ComplicationConfigRecyclerViewAdapter} to check if complication location
+    // is supported in settings config activity.
+    public static int getComplicationId(
+            ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
+        // Add any other supported locations here.
+        switch (complicationLocation) {
+            case BACKGROUND:
+                return BACKGROUND_COMPLICATION_ID;
+            case LEFT:
+                return LEFT_COMPLICATION_ID;
+            case RIGHT:
+                return RIGHT_COMPLICATION_ID;
+            default:
+                return -1;
+        }
+    }
+
+    // Used by {@link ComplicationConfigRecyclerViewAdapter} to retrieve all complication ids.
+    public static int[] getComplicationIds() {
+        return COMPLICATION_IDS;
+    }
+
+    // Used by {@link ComplicationConfigRecyclerViewAdapter} to see which complication types
+    // are supported in the settings config activity.
+    public static int[] getSupportedComplicationTypes(
+            ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
+        // Add any other supported locations here.
+        switch (complicationLocation) {
+            case BACKGROUND:
+                return COMPLICATION_SUPPORTED_TYPES[0];
+            case LEFT:
+                return COMPLICATION_SUPPORTED_TYPES[1];
+            case RIGHT:
+                return COMPLICATION_SUPPORTED_TYPES[2];
+            default:
+                return new int[] {};
+        }
+    }
 
     /*
      * Updates rate in milliseconds for interactive mode. We update once a second to advance the
