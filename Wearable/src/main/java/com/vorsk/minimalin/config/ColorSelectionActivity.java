@@ -21,7 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 
 import com.vorsk.minimalin.R;
-import com.vorsk.minimalin.model.ComplicationConfigData;
+import com.vorsk.minimalin.model.ConfigData;
 
 /**
  * Allows user to select color for something on the watch face (background, highlight,etc.) and
@@ -49,7 +49,7 @@ public class ColorSelectionActivity extends Activity {
 
         mColorSelectionRecyclerViewAdapter = new ColorSelectionRecyclerViewAdapter(
                 sharedPrefString,
-                ComplicationConfigData.getColorOptionsDataSet());
+                ConfigData.getColorOptionsDataSet());
 
         mConfigAppearanceWearableRecyclerView =
                 (WearableRecyclerView) findViewById(R.id.wearable_recycler_view);

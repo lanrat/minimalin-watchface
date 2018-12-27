@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ColorSelectionActivity;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
-import com.vorsk.minimalin.config.MinimalinConfigActivity;
-import com.vorsk.minimalin.config.ComplicationConfigRecyclerViewAdapter;
+import com.vorsk.minimalin.config.ConfigActivity;
+import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
 
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +17,9 @@ import android.support.v7.widget.RecyclerView;
 /**
  * Data represents different views for configuring the
  * {@link MinimalinWatchFaceService} watch face's appearance and complications
- * via {@link MinimalinConfigActivity}.
+ * via {@link ConfigActivity}.
  */
-public class ComplicationConfigData {
+public class ConfigData {
 
     /**
      * Interface all ConfigItems must implement so the {@link RecyclerView}'s Adapter associated
@@ -73,7 +73,7 @@ public class ComplicationConfigData {
 
     /**
      * Includes all data to populate each of the 5 different custom
-     * {@link ViewHolder} types in {@link ComplicationConfigRecyclerViewAdapter}.
+     * {@link ViewHolder} types in {@link ConfigRecyclerViewAdapter}.
      */
     public static ArrayList<ConfigItemType> getDataToPopulateAdapter(Context context) {
 
@@ -144,7 +144,7 @@ public class ComplicationConfigData {
 
         @Override
         public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG;
+            return ConfigRecyclerViewAdapter.TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG;
         }
     }
 
@@ -165,7 +165,7 @@ public class ComplicationConfigData {
 
         @Override
         public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_MORE_OPTIONS;
+            return ConfigRecyclerViewAdapter.TYPE_MORE_OPTIONS;
         }
     }
 
@@ -208,7 +208,7 @@ public class ComplicationConfigData {
 
         @Override
         public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_COLOR_CONFIG;
+            return ConfigRecyclerViewAdapter.TYPE_COLOR_CONFIG;
         }
     }
 
@@ -251,7 +251,7 @@ public class ComplicationConfigData {
 
         @Override
         public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_UNREAD_NOTIFICATION_CONFIG;
+            return ConfigRecyclerViewAdapter.TYPE_UNREAD_NOTIFICATION_CONFIG;
         }
     }
 
@@ -281,7 +281,7 @@ public class ComplicationConfigData {
 
         @Override
         public int getConfigType() {
-            return ComplicationConfigRecyclerViewAdapter.TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG;
+            return ConfigRecyclerViewAdapter.TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG;
         }
     }
 }

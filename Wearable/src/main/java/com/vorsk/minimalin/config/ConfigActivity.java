@@ -9,7 +9,7 @@ import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderChooserIntent;
 import android.util.Log;
 import com.vorsk.minimalin.R;
-import com.vorsk.minimalin.model.ComplicationConfigData;
+import com.vorsk.minimalin.model.ConfigData;
 
 
 /**
@@ -17,26 +17,26 @@ import com.vorsk.minimalin.model.ComplicationConfigData;
  * allows for setting the left and right complications of watch face along with the second's marker
  * color, background color, unread notifications toggle, and background complication image.
  */
-public class MinimalinConfigActivity extends Activity {
+public class ConfigActivity extends Activity {
 
-    private static final String TAG = MinimalinConfigActivity.class.getSimpleName();
+    private static final String TAG = ConfigActivity.class.getSimpleName();
 
     static final int COMPLICATION_CONFIG_REQUEST_CODE = 1001;
     static final int UPDATE_COLORS_CONFIG_REQUEST_CODE = 1002;
 
     private WearableRecyclerView mWearableRecyclerView;
-    private ComplicationConfigRecyclerViewAdapter mAdapter;
+    private ConfigRecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_analog_complication_config);
+        setContentView(R.layout.config);
 
-        mAdapter = new ComplicationConfigRecyclerViewAdapter(
+        mAdapter = new ConfigRecyclerViewAdapter(
                 getApplicationContext(),
-                ComplicationConfigData.getWatchFaceServiceClass(),
-                ComplicationConfigData.getDataToPopulateAdapter(this));
+                ConfigData.getWatchFaceServiceClass(),
+                ConfigData.getDataToPopulateAdapter(this));
 
         mWearableRecyclerView =
                 (WearableRecyclerView) findViewById(R.id.wearable_recycler_view);

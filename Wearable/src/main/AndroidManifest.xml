@@ -31,10 +31,10 @@
                 android:resource="@xml/watch_face" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview"
-                android:resource="@drawable/preview_analog" />
+                android:resource="@drawable/preview" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview_circular"
-                android:resource="@drawable/preview_analog" />
+                android:resource="@drawable/preview" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
                 android:value="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION"/>
@@ -48,7 +48,7 @@
 
         <activity android:name="android.support.wearable.complications.ComplicationHelperActivity"/>
         <activity
-            android:name=".config.MinimalinConfigActivity"
+            android:name=".config.ConfigActivity"
             android:label="@string/complication_config">
             <intent-filter>
                 <action android:name="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION"/>

@@ -5,18 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.graphics.Palette;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
@@ -27,9 +22,8 @@ import android.util.SparseArray;
 import android.view.SurfaceHolder;
 
 import com.vorsk.minimalin.R;
-import com.vorsk.minimalin.config.ComplicationConfigRecyclerViewAdapter;
+import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
 
-import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -67,10 +61,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             }
     };
 
-    // Used by {@link AnalogComplicationConfigRecyclerViewAdapter} to check if complication location
+    // Used by {@link ConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config activity.
     public static int getComplicationId(
-            ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
+            ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
         switch (complicationLocation) {
             case BACKGROUND:
@@ -84,15 +78,15 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
     }
 
-    // Used by {@link AnalogComplicationConfigRecyclerViewAdapter} to retrieve all complication ids.
+    // Used by {@link ConfigRecyclerViewAdapter} to retrieve all complication ids.
     public static int[] getComplicationIds() {
         return COMPLICATION_IDS;
     }
 
-    // Used by {@link AnalogComplicationConfigRecyclerViewAdapter} to see which complication types
+    // Used by {@link ConfigRecyclerViewAdapter} to see which complication types
     // are supported in the settings config activity.
     public static int[] getSupportedComplicationTypes(
-            ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
+            ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
         switch (complicationLocation) {
             case BACKGROUND:
@@ -210,7 +204,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             Context context = getApplicationContext();
             mSharedPref =
                     context.getSharedPreferences(
-                            getString(R.string.analog_complication_preference_file_key),
+                            getString(R.string.preference_file_key),
                             Context.MODE_PRIVATE);
 
             mCalendar = Calendar.getInstance();
@@ -325,7 +319,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
          * Note: With the rest of the watch face, we update the paint colors based on
          * ambient/active mode callbacks, but because the ComplicationDrawable handles
          * the active/ambient colors, we only set the colors twice. Once at initialization and
-         * again if the user changes the highlight color via AnalogComplicationConfigActivity.
+         * again if the user changes the highlight color via ConfigActivity.
          */
         private void setComplicationsActiveAndAmbientColors(int primaryComplicationColor) {
             int complicationId;

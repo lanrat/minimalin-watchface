@@ -27,12 +27,12 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.vorsk.minimalin.model.ComplicationConfigData.PreviewAndComplicationsConfigItem;
-import com.vorsk.minimalin.model.ComplicationConfigData.ConfigItemType;
-import com.vorsk.minimalin.model.ComplicationConfigData.MoreOptionsConfigItem;
-import com.vorsk.minimalin.model.ComplicationConfigData.BackgroundComplicationConfigItem;
-import com.vorsk.minimalin.model.ComplicationConfigData.ColorConfigItem;
-import com.vorsk.minimalin.model.ComplicationConfigData.UnreadNotificationConfigItem;
+import com.vorsk.minimalin.model.ConfigData.PreviewAndComplicationsConfigItem;
+import com.vorsk.minimalin.model.ConfigData.ConfigItemType;
+import com.vorsk.minimalin.model.ConfigData.MoreOptionsConfigItem;
+import com.vorsk.minimalin.model.ConfigData.BackgroundComplicationConfigItem;
+import com.vorsk.minimalin.model.ConfigData.ColorConfigItem;
+import com.vorsk.minimalin.model.ConfigData.UnreadNotificationConfigItem;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 import com.vorsk.minimalin.R;
 import static  com.vorsk.minimalin.config.ColorSelectionActivity.EXTRA_SHARED_PREF;
@@ -60,7 +60,7 @@ import java.util.concurrent.Executors;
  *
  * <p>Background image complication configuration for changing background image of watch face.
  */
-public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "CompConfigAdapter";
 
@@ -107,7 +107,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
     // notifyItemChanged(int position) to avoid flicker and re-inflating the view.
     private PreviewAndComplicationsViewHolder mPreviewAndComplicationsViewHolder;
 
-    public ComplicationConfigRecyclerViewAdapter(
+    public ConfigRecyclerViewAdapter(
             Context context,
             Class watchFaceServiceClass,
             ArrayList<ConfigItemType> settingsDataSet) {
@@ -130,7 +130,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
 
         mSharedPref =
                 context.getSharedPreferences(
-                        context.getString(R.string.analog_complication_preference_file_key),
+                        context.getString(R.string.preference_file_key),
                         Context.MODE_PRIVATE);
 
         // Initialization of code to retrieve active complication data for the watch face.
@@ -442,7 +442,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                 watchFace,
                                 mSelectedComplicationId,
                                 supportedTypes),
-                        MinimalinConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
+                        ConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
 
             } else {
                 Log.d(TAG, "Complication not supported by watch face.");
@@ -633,7 +633,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                 Activity activity = (Activity) view.getContext();
                 activity.startActivityForResult(
                         launchIntent,
-                        MinimalinConfigActivity.UPDATE_COLORS_CONFIG_REQUEST_CODE);
+                        ConfigActivity.UPDATE_COLORS_CONFIG_REQUEST_CODE);
             }
         }
     }
@@ -772,7 +772,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                 watchFace,
                                 mSelectedComplicationId,
                                 supportedTypes),
-                        MinimalinConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
+                        ConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
 
             } else {
                 Log.d(TAG, "Complication not supported by watch face.");

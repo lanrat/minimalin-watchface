@@ -15,7 +15,7 @@
 -->
 <resources>
     <dimen name="activity_config_padding">6dp</dimen>
-    <dimen name="analog_complication_settings_preview_size">130dp</dimen>
-    <dimen name="analog_complication_color_picker_size">50dp</dimen>
+    <dimen name="settings_preview_size">130dp</dimen>
+    <dimen name="color_picker_size">50dp</dimen>
     <dimen name="watch_face_preview_background_padding">12dp</dimen>
 </resources>

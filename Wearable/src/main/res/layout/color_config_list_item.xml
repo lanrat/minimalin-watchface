@@ -21,6 +21,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     app:circle_border_color="@color/color_item_circle_border_color"
-    app:circle_radius="@dimen/analog_complication_color_picker_size"
+    app:circle_radius="@dimen/color_picker_size"
     app:circle_border_width="1dp"
     android:padding="10dp"/>

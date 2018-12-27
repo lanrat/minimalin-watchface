@@ -105,7 +105,7 @@ public class ColorSelectionRecyclerViewAdapter extends
 
             if (mSharedPrefString != null && !mSharedPrefString.isEmpty()) {
                 SharedPreferences sharedPref = activity.getSharedPreferences(
-                        activity.getString(R.string.analog_complication_preference_file_key),
+                        activity.getString(R.string.preference_file_key),
                         Context.MODE_PRIVATE);
 
                 SharedPreferences.Editor editor = sharedPref.edit();
