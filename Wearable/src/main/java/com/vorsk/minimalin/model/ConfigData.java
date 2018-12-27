@@ -80,6 +80,7 @@ public class ConfigData {
         ArrayList<ConfigItemType> settingsConfigData = new ArrayList<>();
 
         // Data for watch face preview and complications UX in settings Activity.
+        // TODO detect long complication and show correct button
         ConfigItemType complicationConfigItem =
                 new PreviewAndComplicationsConfigItem(R.drawable.add_complication);
         settingsConfigData.add(complicationConfigItem);

@@ -38,15 +38,29 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
     private static final int LEFT_COMPLICATION_ID = 100;
     private static final int RIGHT_COMPLICATION_ID = 101;
+    private static final int TOP_COMPLICATION_ID = 102;
+    private static final int BOTTOM_COMPLICATION_ID = 103;
 
     // Background, Left and right complication IDs as array for Complication API.
     private static final int[] COMPLICATION_IDS = {
-            BACKGROUND_COMPLICATION_ID, LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID
+            BACKGROUND_COMPLICATION_ID, LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID
     };
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
             {ComplicationData.TYPE_LARGE_IMAGE},
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            },
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE
+            },
             {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
@@ -73,6 +87,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 return LEFT_COMPLICATION_ID;
             case RIGHT:
                 return RIGHT_COMPLICATION_ID;
+            case TOP:
+                return TOP_COMPLICATION_ID;
+            case BOTTOM:
+                return BOTTOM_COMPLICATION_ID;
             default:
                 return -1;
         }
@@ -95,6 +113,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 return COMPLICATION_SUPPORTED_TYPES[1];
             case RIGHT:
                 return COMPLICATION_SUPPORTED_TYPES[2];
+            case TOP:
+                return COMPLICATION_SUPPORTED_TYPES[3];
+            case BOTTOM:
+                return COMPLICATION_SUPPORTED_TYPES[4];
             default:
                 return new int[]{};
         }
@@ -278,6 +300,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             ComplicationDrawable rightComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
+            ComplicationDrawable topComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+            ComplicationDrawable bottomComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
 
             ComplicationDrawable backgroundComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
@@ -288,6 +314,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             mComplicationDrawableSparseArray.put(LEFT_COMPLICATION_ID, leftComplicationDrawable);
             mComplicationDrawableSparseArray.put(RIGHT_COMPLICATION_ID, rightComplicationDrawable);
+            mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
+            mComplicationDrawableSparseArray.put(BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
             mComplicationDrawableSparseArray.put(
                     BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
@@ -543,7 +571,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
              */
 
             // For most Wear devices, width and height are the same, so we just chose one (width).
-            int sizeOfComplication = width / 4;
+            int sizeOfComplication = width / 5;
+            int sizeOfLongComplication = width/2; //(width * 2)/3;
+
             int midpointOfScreen = width / 2;
 
             int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
@@ -572,6 +602,30 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable rightComplicationDrawable =
                     mComplicationDrawableSparseArray.get(RIGHT_COMPLICATION_ID);
             rightComplicationDrawable.setBounds(rightBounds);
+
+            Rect topBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            midpointOfScreen - (sizeOfComplication / 2),
+                            midpointOfScreen - ((midpointOfScreen - sizeOfComplication)/2) - sizeOfComplication,
+                            midpointOfScreen + (sizeOfComplication / 2),
+                            midpointOfScreen - (midpointOfScreen - sizeOfComplication)/2);
+
+            ComplicationDrawable topComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
+            topComplicationDrawable.setBounds(topBounds);
+
+            Rect bottomBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            midpointOfScreen - (sizeOfLongComplication / 2),
+                            midpointOfScreen + ((midpointOfScreen - sizeOfComplication)/2),
+                            midpointOfScreen + (sizeOfLongComplication / 2),
+                            midpointOfScreen + ((midpointOfScreen - sizeOfComplication)/2) + sizeOfComplication);
+
+            ComplicationDrawable bottomComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(BOTTOM_COMPLICATION_ID);
+            bottomComplicationDrawable.setBounds(bottomBounds);
 
             Rect screenForBackgroundBound =
                     // Left, Top, Right, Bottom
@@ -642,6 +696,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
              */
             float innerTickRadius = mCenterX - 10;
             float outerTickRadius = mCenterX;
+
             // Hour Tick for Minimalin
             int tickIndexHour = mCalendar.get(Calendar.HOUR);
             float tickRot = (float) (tickIndexHour * Math.PI * 2 / 12);
@@ -655,7 +710,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mCenterX + outerX,
                     mCenterY + outerY,
                     mTickAndCirclePaint);
-            canvas.drawText(String.format("%02d", tickIndexHour), mCenterX + innerX, mCenterY+innerY, mTickAndCirclePaint);
+            canvas.drawText(String.format("%2d", tickIndexHour), mCenterX + innerX, mCenterY+innerY, mTickAndCirclePaint);
 
             // Minute Tick for Minimalin
             int tickIndexMinute = mCalendar.get(Calendar.MINUTE);
@@ -680,7 +735,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     (mCalendar.get(Calendar.SECOND) + mCalendar.get(Calendar.MILLISECOND) / 1000f);
             final float secondsRotation = seconds * 6f;
 
-            final float minutesRotation = mCalendar.get(Calendar.MINUTE) * 6f;
+            final float minuteHandOffset = mCalendar.get(Calendar.SECOND) / 10f;
+            final float minutesRotation = mCalendar.get(Calendar.MINUTE) * 6f + minuteHandOffset;
 
             final float hourHandOffset = mCalendar.get(Calendar.MINUTE) / 2f;
             final float hoursRotation = (mCalendar.get(Calendar.HOUR) * 30) + hourHandOffset;

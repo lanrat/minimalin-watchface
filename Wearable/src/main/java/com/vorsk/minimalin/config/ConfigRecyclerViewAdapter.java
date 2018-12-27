@@ -101,6 +101,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int mBackgroundComplicationId;
     private int mLeftComplicationId;
     private int mRightComplicationId;
+    private int mTopComplicationId;
+    private int mBottomComplicationId;
 
     // Required to retrieve complication data from watch face for preview.
     private ProviderInfoRetriever mProviderInfoRetriever;
@@ -129,6 +131,10 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 MinimalinWatchFaceService.getComplicationId(ComplicationLocation.LEFT);
         mRightComplicationId =
                 MinimalinWatchFaceService.getComplicationId(ComplicationLocation.RIGHT);
+        mTopComplicationId =
+                MinimalinWatchFaceService.getComplicationId(ComplicationLocation.TOP);
+        mBottomComplicationId =
+                MinimalinWatchFaceService.getComplicationId(ComplicationLocation.BOTTOM);
 
         mSharedPref =
                 context.getSharedPreferences(
@@ -337,9 +343,13 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         private ImageView mLeftComplicationBackground;
         private ImageView mRightComplicationBackground;
+        private ImageView mTopComplicationBackground;
+        private ImageView mBottomComplicationBackground;
 
         private ImageButton mLeftComplication;
         private ImageButton mRightComplication;
+        private ImageButton mTopComplication;
+        private ImageButton mBottomComplication;
 
         private Drawable mDefaultComplicationDrawable;
 
@@ -366,6 +376,18 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     (ImageView) view.findViewById(R.id.right_complication_background);
             mRightComplication = (ImageButton) view.findViewById(R.id.right_complication);
             mRightComplication.setOnClickListener(this);
+
+            // Sets up top complication preview.
+            mTopComplicationBackground =
+                    (ImageView) view.findViewById(R.id.top_complication_background);
+            mTopComplication = (ImageButton) view.findViewById(R.id.top_complication);
+            mTopComplication.setOnClickListener(this);
+
+            // Sets up bottom complication preview.
+            mBottomComplicationBackground =
+                    (ImageView) view.findViewById(R.id.bottom_complication_background);
+            mBottomComplication = (ImageButton) view.findViewById(R.id.bottom_complication);
+            mBottomComplication.setOnClickListener(this);
         }
 
         @Override
@@ -381,6 +403,16 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.RIGHT);
+            } else if (view.equals(mTopComplication)) {
+                Log.d(TAG, "Top Complication click()");
+
+                Activity currentActivity = (Activity) view.getContext();
+                launchComplicationHelperActivity(currentActivity, ComplicationLocation.TOP);
+            } else if (view.equals(mBottomComplication)) {
+                Log.d(TAG, "Bottom Complication click()");
+
+                Activity currentActivity = (Activity) view.getContext();
+                launchComplicationHelperActivity(currentActivity, ComplicationLocation.BOTTOM);
             }
         }
 
@@ -463,6 +495,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             mRightComplication.setImageDrawable(mDefaultComplicationDrawable);
             mRightComplicationBackground.setVisibility(View.INVISIBLE);
+
+            mTopComplication.setImageDrawable(mDefaultComplicationDrawable);
+            mTopComplicationBackground.setVisibility(View.INVISIBLE);
+
+            mBottomComplication.setImageDrawable(mDefaultComplicationDrawable);
+            mBottomComplicationBackground.setVisibility(View.INVISIBLE);
         }
 
         public void updateComplicationViews(
@@ -512,6 +550,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             } else if (watchFaceComplicationId == mRightComplicationId) {
                 updateComplicationView(complicationProviderInfo, mRightComplication,
                         mRightComplicationBackground);
+            } else if (watchFaceComplicationId == mTopComplicationId) {
+                updateComplicationView(complicationProviderInfo, mTopComplication,
+                        mTopComplicationBackground);
+            } else if (watchFaceComplicationId == mBottomComplicationId) {
+                updateComplicationView(complicationProviderInfo, mBottomComplication,
+                        mBottomComplicationBackground);
             }
         }
 
