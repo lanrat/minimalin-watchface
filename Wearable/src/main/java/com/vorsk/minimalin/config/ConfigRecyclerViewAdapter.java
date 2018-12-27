@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.vorsk.minimalin.config.color.ColorSelectionActivity;
 import com.vorsk.minimalin.model.ConfigData.PreviewAndComplicationsConfigItem;
 import com.vorsk.minimalin.model.ConfigData.ConfigItemType;
 import com.vorsk.minimalin.model.ConfigData.MoreOptionsConfigItem;
@@ -35,7 +36,8 @@ import com.vorsk.minimalin.model.ConfigData.ColorConfigItem;
 import com.vorsk.minimalin.model.ConfigData.UnreadNotificationConfigItem;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 import com.vorsk.minimalin.R;
-import static  com.vorsk.minimalin.config.ColorSelectionActivity.EXTRA_SHARED_PREF;
+
+import static com.vorsk.minimalin.config.color.ColorSelectionActivity.EXTRA_SHARED_PREF;
 
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ import java.util.concurrent.Executors;
  *
  * <p>Simple arrow to indicate there are more options below the fold.
  *
- * <p>Color configuration options for both highlight (seconds hand) and background color.
+ * <p>Color configuration options for both highlight (seconds marker) and background color.
  *
  * <p>Toggle for unread notifications.
  *
@@ -293,7 +295,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         return mSettingsDataSet.size();
     }
 
-    /** Updates the selected complication id saved earlier with the new information. */
+    /**
+     * Updates the selected complication id saved earlier with the new information.
+     */
     public void updateSelectedComplication(ComplicationProviderInfo complicationProviderInfo) {
 
         Log.d(TAG, "updateSelectedComplication: " + mPreviewAndComplicationsViewHolder);
@@ -398,6 +402,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         .setColorFilter(backgroundColorFilter);
 
             } else {
+                // TODO find a better way to handle this
                 // Inform user that they need to disable background image for color to work.
                 CharSequence text = "Selected image overrides background color.";
                 int duration = Toast.LENGTH_SHORT;
@@ -407,7 +412,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             }
 
             // Updates highlight color (just second arm).
-            String highlightSharedPrefString = mContext.getString(R.string.saved_marker_color);
+            String highlightSharedPrefString = mContext.getString(R.string.saved_marker_color_second);
             int currentHighlightColor = mSharedPref.getInt(highlightSharedPrefString, Color.RED);
 
             PorterDuffColorFilter highlightColorFilter =
@@ -529,7 +534,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public void initializesColorsAndComplications() {
 
             // Initializes highlight color (just second arm and part of complications).
-            String highlightSharedPrefString = mContext.getString(R.string.saved_marker_color);
+            String highlightSharedPrefString = mContext.getString(R.string.saved_marker_color_second);
             int currentHighlightColor = mSharedPref.getInt(highlightSharedPrefString, Color.RED);
 
             PorterDuffColorFilter highlightColorFilter =
@@ -566,7 +571,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-    /** Displays icon to indicate there are more options below the fold. */
+    /**
+     * Displays icon to indicate there are more options below the fold.
+     */
     public class MoreOptionsViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mMoreOptionsImageView;
@@ -721,7 +728,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-    /** Displays button to trigger background image complication selector. */
+    /**
+     * Displays button to trigger background image complication selector.
+     */
     public class BackgroundComplicationViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 

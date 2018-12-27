@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vorsk.minimalin.config;
+package com.vorsk.minimalin.config.color;
 
 import android.app.Activity;
 import android.content.Context;
@@ -95,7 +95,7 @@ public class ColorSelectionRecyclerViewAdapter extends
         }
 
         @Override
-        public void onClick (View view) {
+        public void onClick(View view) {
             int position = getAdapterPosition();
             Integer color = mColorOptionsDataSet.get(position);
 

@@ -96,7 +96,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             case RIGHT:
                 return COMPLICATION_SUPPORTED_TYPES[2];
             default:
-                return new int[] {};
+                return new int[]{};
         }
     }
 
@@ -134,8 +134,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private float mHourHandLength;
 
         // Colors for all hands (hour, minute, seconds, ticks) based on photo loaded.
-        private int mWatchHandAndComplicationsColor;
-        private int mWatchHandHighlightColor;
+        private int mWatchComplicationsColor;
+        private int mWatchSecondHandHighlightColor;
+        private int mWatchMinuteHandHighlightColor;
+        private int mWatchHourHandHighlightColor;
         private int mWatchHandShadowColor;
 
         private int mBackgroundColor;
@@ -228,17 +230,27 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             mBackgroundColor = mSharedPref.getInt(backgroundColorResourceName, Color.BLACK);
 
-            String markerColorResourceName =
-                    getApplicationContext().getString(R.string.saved_marker_color);
+            String markerSecondColorResourceName =
+                    getApplicationContext().getString(R.string.saved_marker_color_second);
+            String markerMinuteColorResourceName =
+                    getApplicationContext().getString(R.string.saved_marker_color_minute);
+            String markerHourColorResourceName =
+                    getApplicationContext().getString(R.string.saved_marker_color_hour);
+            String markerComplicationsColorResourceName =
+                    getApplicationContext().getString(R.string.saved_complications_color);
 
             // Set defaults for colors
-            mWatchHandHighlightColor = mSharedPref.getInt(markerColorResourceName, Color.RED);
+            mWatchComplicationsColor = mSharedPref.getInt(markerComplicationsColorResourceName, Color.WHITE);
+            mWatchSecondHandHighlightColor = mSharedPref.getInt(markerSecondColorResourceName, Color.RED);
+            mWatchMinuteHandHighlightColor = mSharedPref.getInt(markerMinuteColorResourceName, Color.WHITE);
+            mWatchHourHandHighlightColor = mSharedPref.getInt(markerHourColorResourceName, Color.WHITE);
+
 
             if (mBackgroundColor == Color.WHITE) {
-                mWatchHandAndComplicationsColor = Color.BLACK;
+                //mWatchComplicationsColor = Color.BLACK;
                 mWatchHandShadowColor = Color.WHITE;
             } else {
-                mWatchHandAndComplicationsColor = Color.WHITE;
+                //mWatchComplicationsColor = Color.WHITE;
                 mWatchHandShadowColor = Color.BLACK;
             }
 
@@ -279,35 +291,37 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mComplicationDrawableSparseArray.put(
                     BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
-            setComplicationsActiveAndAmbientColors(mWatchHandHighlightColor);
+            setComplicationsActiveAndAmbientColors(mWatchComplicationsColor);
             setActiveComplications(COMPLICATION_IDS);
         }
 
         private void initializeWatchFace() {
 
             mHourPaint = new Paint();
-            mHourPaint.setColor(mWatchHandAndComplicationsColor);
+            //mHourPaint.setColor(mWatchHandAndComplicationsColor);
+            mHourPaint.setColor(mWatchHourHandHighlightColor);
             mHourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
             mHourPaint.setAntiAlias(true);
             mHourPaint.setStrokeCap(Paint.Cap.ROUND);
             mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mMinutePaint = new Paint();
-            mMinutePaint.setColor(mWatchHandAndComplicationsColor);
+            //mMinutePaint.setColor(mWatchHandAndComplicationsColor);
+            mMinutePaint.setColor(mWatchMinuteHandHighlightColor);
             mMinutePaint.setStrokeWidth(MINUTE_STROKE_WIDTH);
             mMinutePaint.setAntiAlias(true);
             mMinutePaint.setStrokeCap(Paint.Cap.ROUND);
             mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mSecondAndHighlightPaint = new Paint();
-            mSecondAndHighlightPaint.setColor(mWatchHandHighlightColor);
+            mSecondAndHighlightPaint.setColor(mWatchMinuteHandHighlightColor);
             mSecondAndHighlightPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             mSecondAndHighlightPaint.setAntiAlias(true);
             mSecondAndHighlightPaint.setStrokeCap(Paint.Cap.ROUND);
             mSecondAndHighlightPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mTickAndCirclePaint = new Paint();
-            mTickAndCirclePaint.setColor(mWatchHandAndComplicationsColor);
+            mTickAndCirclePaint.setColor(mWatchComplicationsColor);
             mTickAndCirclePaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             mTickAndCirclePaint.setAntiAlias(true);
             mTickAndCirclePaint.setStyle(Paint.Style.STROKE);
@@ -467,11 +481,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
                 mBackgroundPaint.setColor(mBackgroundColor);
 
-                mHourPaint.setColor(mWatchHandAndComplicationsColor);
-                mMinutePaint.setColor(mWatchHandAndComplicationsColor);
-                mTickAndCirclePaint.setColor(mWatchHandAndComplicationsColor);
+                mHourPaint.setColor(mWatchHourHandHighlightColor);
+                mMinutePaint.setColor(mWatchMinuteHandHighlightColor);
+                mTickAndCirclePaint.setColor(mWatchComplicationsColor);
 
-                mSecondAndHighlightPaint.setColor(mWatchHandHighlightColor);
+                mSecondAndHighlightPaint.setColor(mWatchSecondHandHighlightColor);
 
                 mHourPaint.setAntiAlias(true);
                 mMinutePaint.setAntiAlias(true);
@@ -710,7 +724,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 // the active/ambient colors, we only need to update the complications' colors when
                 // the user actually makes a change to the highlight color, not when the watch goes
                 // in and out of ambient mode.
-                setComplicationsActiveAndAmbientColors(mWatchHandHighlightColor);
+                setComplicationsActiveAndAmbientColors(mWatchComplicationsColor);
                 updateWatchPaintStyles();
 
                 registerReceiver();

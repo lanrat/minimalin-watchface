@@ -6,7 +6,7 @@ import android.graphics.Color;
 import java.util.ArrayList;
 
 import com.vorsk.minimalin.R;
-import com.vorsk.minimalin.config.ColorSelectionActivity;
+import com.vorsk.minimalin.config.color.ColorSelectionActivity;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 import com.vorsk.minimalin.config.ConfigActivity;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
@@ -89,14 +89,41 @@ public class ConfigData {
                 new MoreOptionsConfigItem(R.drawable.ic_expand_more_white_18dp);
         settingsConfigData.add(moreOptionsConfigItem);
 
-        // Data for highlight/marker (second hand) color UX in settings Activity.
-        ConfigItemType markerColorConfigItem =
+        // Data for highlight/marker (hour hand) color UX in settings Activity.
+        ConfigItemType markerHourColorConfigItem =
                 new ColorConfigItem(
-                        context.getString(R.string.config_marker_color_label),
+                        context.getString(R.string.config_marker_hour_color_label),
                         R.drawable.icn_styles,
-                        context.getString(R.string.saved_marker_color),
+                        context.getString(R.string.saved_marker_color_hour),
                         ColorSelectionActivity.class);
-        settingsConfigData.add(markerColorConfigItem);
+        settingsConfigData.add(markerHourColorConfigItem);
+
+        // Data for highlight/marker (minute hand) color UX in settings Activity.
+        ConfigItemType markerMinuteColorConfigItem =
+                new ColorConfigItem(
+                        context.getString(R.string.config_marker_minute_color_label),
+                        R.drawable.icn_styles,
+                        context.getString(R.string.saved_marker_color_minute),
+                        ColorSelectionActivity.class);
+        settingsConfigData.add(markerMinuteColorConfigItem);
+
+        // Data for highlight/marker (second hand) color UX in settings Activity.
+        ConfigItemType markerSecondColorConfigItem =
+                new ColorConfigItem(
+                        context.getString(R.string.config_marker_second_color_label),
+                        R.drawable.icn_styles,
+                        context.getString(R.string.saved_marker_color_second),
+                        ColorSelectionActivity.class);
+        settingsConfigData.add(markerSecondColorConfigItem);
+
+        // Data for highlight of outline and complications color UX in settings Activity.
+        ConfigItemType complicationsColorConfigItem =
+                new ColorConfigItem(
+                        context.getString(R.string.config_complications_color_label),
+                        R.drawable.icn_styles,
+                        context.getString(R.string.saved_complications_color),
+                        ColorSelectionActivity.class);
+        settingsConfigData.add(complicationsColorConfigItem);
 
         // Data for Background color UX in settings Activity.
         ConfigItemType backgroundColorConfigItem =
@@ -172,7 +199,7 @@ public class ConfigData {
     /**
      * Data for color picker item in RecyclerView.
      */
-    public static class ColorConfigItem  implements ConfigItemType {
+    public static class ColorConfigItem implements ConfigItemType {
 
         private String name;
         private int iconResourceId;
@@ -215,7 +242,7 @@ public class ConfigData {
     /**
      * Data for Unread Notification preference picker item in RecyclerView.
      */
-    public static class UnreadNotificationConfigItem  implements ConfigItemType {
+    public static class UnreadNotificationConfigItem implements ConfigItemType {
 
         private String name;
         private int iconEnabledResourceId;
@@ -258,7 +285,7 @@ public class ConfigData {
     /**
      * Data for background image complication picker item in RecyclerView.
      */
-    public static class BackgroundComplicationConfigItem  implements ConfigItemType {
+    public static class BackgroundComplicationConfigItem implements ConfigItemType {
 
         private String name;
         private int iconResourceId;

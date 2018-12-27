@@ -22,7 +22,7 @@
     android:background="@color/dark_grey"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    tools:context="com.vorsk.minimalin.config.ColorSelectionActivity">
+    tools:context="com.vorsk.minimalin.config.color.ColorSelectionActivity">
     <android.support.wear.widget.WearableRecyclerView
         android:id="@+id/wearable_recycler_view"
         android:layout_height="wrap_content"

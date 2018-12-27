@@ -60,7 +60,7 @@
 
 
 
-        <activity android:name=".config.ColorSelectionActivity"/>
+        <activity android:name=".config.color.ColorSelectionActivity"/>
     </application>
 
 </manifest>

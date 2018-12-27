@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vorsk.minimalin.config;
+package com.vorsk.minimalin.config.color;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ public class ColorSelectionActivity extends Activity {
 
     private static final String TAG = ColorSelectionActivity.class.getSimpleName();
 
-    static final String EXTRA_SHARED_PREF =
+    public static final String EXTRA_SHARED_PREF =
             "com.vorsk.minimalin.config.extra.EXTRA_SHARED_PREF";
 
     private WearableRecyclerView mConfigAppearanceWearableRecyclerView;
