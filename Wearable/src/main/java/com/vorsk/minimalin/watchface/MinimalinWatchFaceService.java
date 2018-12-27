@@ -642,19 +642,35 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
              */
             float innerTickRadius = mCenterX - 10;
             float outerTickRadius = mCenterX;
-            for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-                float tickRot = (float) (tickIndex * Math.PI * 2 / 12);
-                float innerX = (float) Math.sin(tickRot) * innerTickRadius;
-                float innerY = (float) -Math.cos(tickRot) * innerTickRadius;
-                float outerX = (float) Math.sin(tickRot) * outerTickRadius;
-                float outerY = (float) -Math.cos(tickRot) * outerTickRadius;
-                canvas.drawLine(
-                        mCenterX + innerX,
-                        mCenterY + innerY,
-                        mCenterX + outerX,
-                        mCenterY + outerY,
-                        mTickAndCirclePaint);
-            }
+            // Hour Tick for Minimalin
+            int tickIndexHour = mCalendar.get(Calendar.HOUR);
+            float tickRot = (float) (tickIndexHour * Math.PI * 2 / 12);
+            float innerX = (float) Math.sin(tickRot) * innerTickRadius;
+            float innerY = (float) -Math.cos(tickRot) * innerTickRadius;
+            float outerX = (float) Math.sin(tickRot) * outerTickRadius;
+            float outerY = (float) -Math.cos(tickRot) * outerTickRadius;
+            canvas.drawLine(
+                    mCenterX + innerX,
+                    mCenterY + innerY,
+                    mCenterX + outerX,
+                    mCenterY + outerY,
+                    mTickAndCirclePaint);
+            canvas.drawText(String.format("%02d", tickIndexHour), mCenterX + innerX, mCenterY+innerY, mTickAndCirclePaint);
+
+            // Minute Tick for Minimalin
+            int tickIndexMinute = mCalendar.get(Calendar.MINUTE);
+            tickRot = (float) (tickIndexMinute * Math.PI * 2 / 60);
+            innerX = (float) Math.sin(tickRot) * innerTickRadius;
+            innerY = (float) -Math.cos(tickRot) * innerTickRadius;
+            outerX = (float) Math.sin(tickRot) * outerTickRadius;
+            outerY = (float) -Math.cos(tickRot) * outerTickRadius;
+            canvas.drawLine(
+                    mCenterX + innerX,
+                    mCenterY + innerY,
+                    mCenterX + outerX,
+                    mCenterY + outerY,
+                    mTickAndCirclePaint);
+            canvas.drawText(String.format("%02d", tickIndexMinute), mCenterX + innerX, mCenterY+innerY, mTickAndCirclePaint);
 
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,
@@ -704,7 +720,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         mSecondAndHighlightPaint);
             }
             canvas.drawCircle(
-                    mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mTickAndCirclePaint);
+                    mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mHourPaint);
 
             /* Restore the canvas' original orientation. */
             canvas.restore();
