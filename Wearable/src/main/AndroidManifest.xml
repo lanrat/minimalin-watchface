@@ -17,9 +17,13 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <service
             android:name=".watchface.MinimalinWatchFaceService"
+            android:enabled="true"
             android:label="@string/watchface_name"
             android:permission="android.permission.BIND_WALLPAPER">
             <meta-data
@@ -31,6 +35,9 @@
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview_circular"
                 android:resource="@drawable/preview_analog" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
+                android:value="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION"/>
 
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
@@ -39,9 +46,21 @@
             </intent-filter>
         </service>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity"/>
+        <activity
+            android:name=".config.MinimalinConfigActivity"
+            android:label="@string/complication_config">
+            <intent-filter>
+                <action android:name="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION"/>
+
+                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+
+
+        <activity android:name=".config.ColorSelectionActivity"/>
     </application>
 
 </manifest>

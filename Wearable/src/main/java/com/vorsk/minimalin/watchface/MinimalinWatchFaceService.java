@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,30 +18,23 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.graphics.Palette;
 import android.support.wearable.complications.ComplicationData;
+import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.SurfaceHolder;
 
 import com.vorsk.minimalin.R;
+import com.vorsk.minimalin.config.ComplicationConfigRecyclerViewAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Analog watch face with a ticking second hand. In ambient mode, the second hand isn't
- * shown. On devices with low-bit ambient mode, the hands are drawn without anti-aliasing in ambient
- * mode. The watch face is drawn with less contrast in mute mode.
- * <p>
- * Important Note: Because watch face apps do not have a default Activity in
- * their project, you will need to set your Configurations to
- * "Do not launch Activity" for both the Wear and/or Application modules. If you
- * are unsure how to do this, please review the "Run Starter project" section
- * in the Google Watch Face Code Lab:
- * https://codelabs.developers.google.com/codelabs/watchface/index.html#0
- */
+
 public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "MinimalinWatchFaceService";
 
@@ -58,9 +52,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
-            {
-                    ComplicationData.TYPE_LARGE_IMAGE
-            },
+            {ComplicationData.TYPE_LARGE_IMAGE},
             {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
@@ -75,7 +67,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             }
     };
 
-    // Used by {@link ComplicationConfigRecyclerViewAdapter} to check if complication location
+    // Used by {@link AnalogComplicationConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config activity.
     public static int getComplicationId(
             ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
@@ -92,12 +84,12 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
     }
 
-    // Used by {@link ComplicationConfigRecyclerViewAdapter} to retrieve all complication ids.
+    // Used by {@link AnalogComplicationConfigRecyclerViewAdapter} to retrieve all complication ids.
     public static int[] getComplicationIds() {
         return COMPLICATION_IDS;
     }
 
-    // Used by {@link ComplicationConfigRecyclerViewAdapter} to see which complication types
+    // Used by {@link AnalogComplicationConfigRecyclerViewAdapter} to see which complication types
     // are supported in the settings config activity.
     public static int[] getSupportedComplicationTypes(
             ComplicationConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
@@ -115,42 +107,19 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     }
 
     /*
-     * Updates rate in milliseconds for interactive mode. We update once a second to advance the
+     * Update rate in milliseconds for interactive mode. We update once a second to advance the
      * second hand.
      */
     private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
-
-    /**
-     * Handler message id for updating the time periodically in interactive mode.
-     */
-    private static final int MSG_UPDATE_TIME = 0;
 
     @Override
     public Engine onCreateEngine() {
         return new Engine();
     }
 
-    private static class EngineHandler extends Handler {
-        private final WeakReference<MinimalinWatchFaceService.Engine> mWeakReference;
-
-        public EngineHandler(MinimalinWatchFaceService.Engine reference) {
-            mWeakReference = new WeakReference<>(reference);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            MinimalinWatchFaceService.Engine engine = mWeakReference.get();
-            if (engine != null) {
-                switch (msg.what) {
-                    case MSG_UPDATE_TIME:
-                        engine.handleUpdateTimeMessage();
-                        break;
-                }
-            }
-        }
-    }
-
     private class Engine extends CanvasWatchFaceService.Engine {
+        private static final int MSG_UPDATE_TIME = 0;
+
         private static final float HOUR_STROKE_WIDTH = 5f;
         private static final float MINUTE_STROKE_WIDTH = 3f;
         private static final float SECOND_TICK_STROKE_WIDTH = 2f;
@@ -158,104 +127,228 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 4f;
 
         private static final int SHADOW_RADIUS = 6;
-        /* Handler to update the time once a second in interactive mode. */
-        private final Handler mUpdateTimeHandler = new EngineHandler(this);
+
         private Calendar mCalendar;
-        private final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                mCalendar.setTimeZone(TimeZone.getDefault());
-                invalidate();
-            }
-        };
         private boolean mRegisteredTimeZoneReceiver = false;
         private boolean mMuteMode;
+
         private float mCenterX;
         private float mCenterY;
+
         private float mSecondHandLength;
-        private float sMinuteHandLength;
-        private float sHourHandLength;
-        /* Colors for all hands (hour, minute, seconds, ticks) based on photo loaded. */
-        private int mWatchHandColor;
+        private float mMinuteHandLength;
+        private float mHourHandLength;
+
+        // Colors for all hands (hour, minute, seconds, ticks) based on photo loaded.
+        private int mWatchHandAndComplicationsColor;
         private int mWatchHandHighlightColor;
         private int mWatchHandShadowColor;
+
+        private int mBackgroundColor;
+
         private Paint mHourPaint;
         private Paint mMinutePaint;
-        private Paint mSecondPaint;
+        private Paint mSecondAndHighlightPaint;
         private Paint mTickAndCirclePaint;
+
         private Paint mBackgroundPaint;
-        private Bitmap mBackgroundBitmap;
-        private Bitmap mGrayBackgroundBitmap;
+
+        /* Maps active complication ids to the data for that complication. Note: Data will only be
+         * present if the user has chosen a provider via the settings activity for the watch face.
+         */
+        private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
+
+        /* Maps complication ids to corresponding ComplicationDrawable that renders the
+         * the complication data on the watch face.
+         */
+        private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
+
         private boolean mAmbient;
         private boolean mLowBitAmbient;
         private boolean mBurnInProtection;
 
+        // Used to pull user's preferences for background color, highlight color, and visual
+        // indicating there are unread notifications.
+        SharedPreferences mSharedPref;
+
+        // User's preference for if they want visual shown to indicate unread notifications.
+        private boolean mUnreadNotificationsPreference;
+        private int mNumberOfUnreadNotifications = 0;
+
+        private final BroadcastReceiver mTimeZoneReceiver =
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        mCalendar.setTimeZone(TimeZone.getDefault());
+                        invalidate();
+                    }
+                };
+
+        // Handler to update the time once a second in interactive mode.
+        private final Handler mUpdateTimeHandler =
+                new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        invalidate();
+                        if (shouldTimerBeRunning()) {
+                            long timeMs = System.currentTimeMillis();
+                            long delayMs =
+                                    INTERACTIVE_UPDATE_RATE_MS
+                                            - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
+                            mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
+                        }
+                    }
+                };
+
         @Override
         public void onCreate(SurfaceHolder holder) {
+            Log.d(TAG, "onCreate");
+
             super.onCreate(holder);
 
-            setWatchFaceStyle(new WatchFaceStyle.Builder(MinimalinWatchFaceService.this)
-                    .setAcceptsTapEvents(true)
-                    .build());
+            // Used throughout watch face to pull user's preferences.
+            Context context = getApplicationContext();
+            mSharedPref =
+                    context.getSharedPreferences(
+                            getString(R.string.analog_complication_preference_file_key),
+                            Context.MODE_PRIVATE);
 
             mCalendar = Calendar.getInstance();
 
-            initializeBackground();
+            setWatchFaceStyle(
+                    new WatchFaceStyle.Builder(MinimalinWatchFaceService.this)
+                            .setAcceptsTapEvents(true)
+                            .setHideNotificationIndicator(true)
+                            .build());
+
+            loadSavedPreferences();
+            initializeComplicationsAndBackground();
             initializeWatchFace();
         }
 
-        private void initializeBackground() {
-            mBackgroundPaint = new Paint();
-            mBackgroundPaint.setColor(Color.BLACK);
-            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg);
+        // Pulls all user's preferences for watch face appearance.
+        private void loadSavedPreferences() {
 
-            /* Extracts colors from background image to improve watchface style. */
-            Palette.from(mBackgroundBitmap).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    if (palette != null) {
-                        mWatchHandHighlightColor = palette.getVibrantColor(Color.RED);
-                        mWatchHandColor = palette.getLightVibrantColor(Color.WHITE);
-                        mWatchHandShadowColor = palette.getDarkMutedColor(Color.BLACK);
-                        updateWatchHandStyle();
-                    }
-                }
-            });
+            String backgroundColorResourceName =
+                    getApplicationContext().getString(R.string.saved_background_color);
+
+            mBackgroundColor = mSharedPref.getInt(backgroundColorResourceName, Color.BLACK);
+
+            String markerColorResourceName =
+                    getApplicationContext().getString(R.string.saved_marker_color);
+
+            // Set defaults for colors
+            mWatchHandHighlightColor = mSharedPref.getInt(markerColorResourceName, Color.RED);
+
+            if (mBackgroundColor == Color.WHITE) {
+                mWatchHandAndComplicationsColor = Color.BLACK;
+                mWatchHandShadowColor = Color.WHITE;
+            } else {
+                mWatchHandAndComplicationsColor = Color.WHITE;
+                mWatchHandShadowColor = Color.BLACK;
+            }
+
+            String unreadNotificationPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_unread_notifications_pref);
+
+            mUnreadNotificationsPreference =
+                    mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, true);
+        }
+
+        private void initializeComplicationsAndBackground() {
+            Log.d(TAG, "initializeComplications()");
+
+            // Initialize background color (in case background complication is inactive).
+            mBackgroundPaint = new Paint();
+            mBackgroundPaint.setColor(mBackgroundColor);
+
+            mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
+
+            // Creates a ComplicationDrawable for each location where the user can render a
+            // complication on the watch face. In this watch face, we create one for left, right,
+            // and background, but you could add many more.
+            ComplicationDrawable leftComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            ComplicationDrawable rightComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            ComplicationDrawable backgroundComplicationDrawable =
+                    new ComplicationDrawable(getApplicationContext());
+
+            // Adds new complications to a SparseArray to simplify setting styles and ambient
+            // properties for all complications, i.e., iterate over them all.
+            mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
+
+            mComplicationDrawableSparseArray.put(LEFT_COMPLICATION_ID, leftComplicationDrawable);
+            mComplicationDrawableSparseArray.put(RIGHT_COMPLICATION_ID, rightComplicationDrawable);
+            mComplicationDrawableSparseArray.put(
+                    BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
+
+            setComplicationsActiveAndAmbientColors(mWatchHandHighlightColor);
+            setActiveComplications(COMPLICATION_IDS);
         }
 
         private void initializeWatchFace() {
-            /* Set defaults for colors */
-            mWatchHandColor = Color.WHITE;
-            mWatchHandHighlightColor = Color.RED;
-            mWatchHandShadowColor = Color.BLACK;
 
             mHourPaint = new Paint();
-            mHourPaint.setColor(mWatchHandColor);
+            mHourPaint.setColor(mWatchHandAndComplicationsColor);
             mHourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
             mHourPaint.setAntiAlias(true);
             mHourPaint.setStrokeCap(Paint.Cap.ROUND);
             mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mMinutePaint = new Paint();
-            mMinutePaint.setColor(mWatchHandColor);
+            mMinutePaint.setColor(mWatchHandAndComplicationsColor);
             mMinutePaint.setStrokeWidth(MINUTE_STROKE_WIDTH);
             mMinutePaint.setAntiAlias(true);
             mMinutePaint.setStrokeCap(Paint.Cap.ROUND);
             mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
-            mSecondPaint = new Paint();
-            mSecondPaint.setColor(mWatchHandHighlightColor);
-            mSecondPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
-            mSecondPaint.setAntiAlias(true);
-            mSecondPaint.setStrokeCap(Paint.Cap.ROUND);
-            mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+            mSecondAndHighlightPaint = new Paint();
+            mSecondAndHighlightPaint.setColor(mWatchHandHighlightColor);
+            mSecondAndHighlightPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
+            mSecondAndHighlightPaint.setAntiAlias(true);
+            mSecondAndHighlightPaint.setStrokeCap(Paint.Cap.ROUND);
+            mSecondAndHighlightPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mTickAndCirclePaint = new Paint();
-            mTickAndCirclePaint.setColor(mWatchHandColor);
+            mTickAndCirclePaint.setColor(mWatchHandAndComplicationsColor);
             mTickAndCirclePaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             mTickAndCirclePaint.setAntiAlias(true);
             mTickAndCirclePaint.setStyle(Paint.Style.STROKE);
             mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+        }
+
+        /* Sets active/ambient mode colors for all complications.
+         *
+         * Note: With the rest of the watch face, we update the paint colors based on
+         * ambient/active mode callbacks, but because the ComplicationDrawable handles
+         * the active/ambient colors, we only set the colors twice. Once at initialization and
+         * again if the user changes the highlight color via AnalogComplicationConfigActivity.
+         */
+        private void setComplicationsActiveAndAmbientColors(int primaryComplicationColor) {
+            int complicationId;
+            ComplicationDrawable complicationDrawable;
+
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+                complicationId = COMPLICATION_IDS[i];
+                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+
+                if (complicationId == BACKGROUND_COMPLICATION_ID) {
+                    // It helps for the background color to be black in case the image used for the
+                    // watch face's background takes some time to load.
+                    complicationDrawable.setBackgroundColorActive(Color.BLACK);
+                } else {
+                    // Active mode colors.
+                    complicationDrawable.setBorderColorActive(primaryComplicationColor);
+                    complicationDrawable.setRangedValuePrimaryColorActive(primaryComplicationColor);
+
+                    // Ambient mode colors.
+                    complicationDrawable.setBorderColorAmbient(Color.WHITE);
+                    complicationDrawable.setRangedValuePrimaryColorAmbient(Color.WHITE);
+                }
+            }
         }
 
         @Override
@@ -267,8 +360,64 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onPropertiesChanged(Bundle properties) {
             super.onPropertiesChanged(properties);
+            Log.d(TAG, "onPropertiesChanged: low-bit ambient = " + mLowBitAmbient);
+
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
             mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+
+            // Updates complications to properly render in ambient mode based on the
+            // screen's capabilities.
+            ComplicationDrawable complicationDrawable;
+
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_IDS[i]);
+
+                complicationDrawable.setLowBitAmbient(mLowBitAmbient);
+                complicationDrawable.setBurnInProtection(mBurnInProtection);
+            }
+        }
+
+        /*
+         * Called when there is updated data for a complication id.
+         */
+        @Override
+        public void onComplicationDataUpdate(
+                int complicationId, ComplicationData complicationData) {
+            Log.d(TAG, "onComplicationDataUpdate() id: " + complicationId);
+
+            // Adds/updates active complication data in the array.
+            mActiveComplicationDataSparseArray.put(complicationId, complicationData);
+
+            // Updates correct ComplicationDrawable with updated data.
+            ComplicationDrawable complicationDrawable =
+                    mComplicationDrawableSparseArray.get(complicationId);
+            complicationDrawable.setComplicationData(complicationData);
+
+            invalidate();
+        }
+
+        @Override
+        public void onTapCommand(int tapType, int x, int y, long eventTime) {
+            Log.d(TAG, "OnTapCommand()");
+            switch (tapType) {
+                case TAP_TYPE_TAP:
+
+                    // If your background complication is the first item in your array, you need
+                    // to walk backward through the array to make sure the tap isn't for a
+                    // complication above the background complication.
+                    for (int i = COMPLICATION_IDS.length - 1; i >= 0; i--) {
+                        int complicationId = COMPLICATION_IDS[i];
+                        ComplicationDrawable complicationDrawable =
+                                mComplicationDrawableSparseArray.get(complicationId);
+
+                        boolean successfulTap = complicationDrawable.onTap(x, y);
+
+                        if (successfulTap) {
+                            return;
+                        }
+                    }
+                    break;
+            }
         }
 
         @Override
@@ -280,45 +429,64 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
+            Log.d(TAG, "onAmbientModeChanged: " + inAmbientMode);
+
             mAmbient = inAmbientMode;
 
-            updateWatchHandStyle();
+            updateWatchPaintStyles();
 
-            /* Check and trigger whether or not timer should be running (only in active mode). */
+            // Update drawable complications' ambient state.
+            // Note: ComplicationDrawable handles switching between active/ambient colors, we just
+            // have to inform it to enter ambient mode.
+            ComplicationDrawable complicationDrawable;
+
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_IDS[i]);
+                complicationDrawable.setInAmbientMode(mAmbient);
+            }
+
+            // Check and trigger whether or not timer should be running (only in active mode).
             updateTimer();
         }
 
-        private void updateWatchHandStyle() {
+        private void updateWatchPaintStyles() {
             if (mAmbient) {
+
+                mBackgroundPaint.setColor(Color.BLACK);
+
                 mHourPaint.setColor(Color.WHITE);
                 mMinutePaint.setColor(Color.WHITE);
-                mSecondPaint.setColor(Color.WHITE);
+                mSecondAndHighlightPaint.setColor(Color.WHITE);
                 mTickAndCirclePaint.setColor(Color.WHITE);
 
                 mHourPaint.setAntiAlias(false);
                 mMinutePaint.setAntiAlias(false);
-                mSecondPaint.setAntiAlias(false);
+                mSecondAndHighlightPaint.setAntiAlias(false);
                 mTickAndCirclePaint.setAntiAlias(false);
 
                 mHourPaint.clearShadowLayer();
                 mMinutePaint.clearShadowLayer();
-                mSecondPaint.clearShadowLayer();
+                mSecondAndHighlightPaint.clearShadowLayer();
                 mTickAndCirclePaint.clearShadowLayer();
 
             } else {
-                mHourPaint.setColor(mWatchHandColor);
-                mMinutePaint.setColor(mWatchHandColor);
-                mSecondPaint.setColor(mWatchHandHighlightColor);
-                mTickAndCirclePaint.setColor(mWatchHandColor);
+
+                mBackgroundPaint.setColor(mBackgroundColor);
+
+                mHourPaint.setColor(mWatchHandAndComplicationsColor);
+                mMinutePaint.setColor(mWatchHandAndComplicationsColor);
+                mTickAndCirclePaint.setColor(mWatchHandAndComplicationsColor);
+
+                mSecondAndHighlightPaint.setColor(mWatchHandHighlightColor);
 
                 mHourPaint.setAntiAlias(true);
                 mMinutePaint.setAntiAlias(true);
-                mSecondPaint.setAntiAlias(true);
+                mSecondAndHighlightPaint.setAntiAlias(true);
                 mTickAndCirclePaint.setAntiAlias(true);
 
                 mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mSecondAndHighlightPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
             }
         }
@@ -333,7 +501,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mMuteMode = inMuteMode;
                 mHourPaint.setAlpha(inMuteMode ? 100 : 255);
                 mMinutePaint.setAlpha(inMuteMode ? 100 : 255);
-                mSecondPaint.setAlpha(inMuteMode ? 80 : 255);
+                mSecondAndHighlightPaint.setAlpha(inMuteMode ? 80 : 255);
                 invalidate();
             }
         }
@@ -354,67 +522,56 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
              * Calculate lengths of different hands based on watch screen size.
              */
             mSecondHandLength = (float) (mCenterX * 0.875);
-            sMinuteHandLength = (float) (mCenterX * 0.75);
-            sHourHandLength = (float) (mCenterX * 0.5);
-
-
-            /* Scale loaded background image (more efficient) if surface dimensions change. */
-            float scale = ((float) width) / (float) mBackgroundBitmap.getWidth();
-
-            mBackgroundBitmap = Bitmap.createScaledBitmap(mBackgroundBitmap,
-                    (int) (mBackgroundBitmap.getWidth() * scale),
-                    (int) (mBackgroundBitmap.getHeight() * scale), true);
+            mMinuteHandLength = (float) (mCenterX * 0.75);
+            mHourHandLength = (float) (mCenterX * 0.5);
 
             /*
-             * Create a gray version of the image only if it will look nice on the device in
-             * ambient mode. That means we don't want devices that support burn-in
-             * protection (slight movements in pixels, not great for images going all the way to
-             * edges) and low ambient mode (degrades image quality).
+             * Calculates location bounds for right and left circular complications. Please note,
+             * we are not demonstrating a long text complication in this watch face.
              *
-             * Also, if your watch face will know about all images ahead of time (users aren't
-             * selecting their own photos for the watch face), it will be more
-             * efficient to create a black/white version (png, etc.) and load that when you need it.
+             * We suggest using at least 1/4 of the screen width for circular (or squared)
+             * complications and 2/3 of the screen width for wide rectangular complications for
+             * better readability.
              */
-            if (!mBurnInProtection && !mLowBitAmbient) {
-                initGrayBackgroundBitmap();
-            }
-        }
 
-        private void initGrayBackgroundBitmap() {
-            mGrayBackgroundBitmap = Bitmap.createBitmap(
-                    mBackgroundBitmap.getWidth(),
-                    mBackgroundBitmap.getHeight(),
-                    Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(mGrayBackgroundBitmap);
-            Paint grayPaint = new Paint();
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.setSaturation(0);
-            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
-            grayPaint.setColorFilter(filter);
-            canvas.drawBitmap(mBackgroundBitmap, 0, 0, grayPaint);
-        }
+            // For most Wear devices, width and height are the same, so we just chose one (width).
+            int sizeOfComplication = width / 4;
+            int midpointOfScreen = width / 2;
 
-        /**
-         * Captures tap event (and tap type). The {@link WatchFaceService#TAP_TYPE_TAP} case can be
-         * used for implementing specific logic to handle the gesture.
-         */
-        @Override
-        public void onTapCommand(int tapType, int x, int y, long eventTime) {
-            switch (tapType) {
-                case TAP_TYPE_TOUCH:
-                    // The user has started touching the screen.
-                    break;
-                case TAP_TYPE_TOUCH_CANCEL:
-                    // The user has started a different gesture or otherwise cancelled the tap.
-                    break;
-                case TAP_TYPE_TAP:
-                    // The user has completed the tap gesture.
-                    // TODO: Add code to handle the tap gesture.
-                    /*Toast.makeText(getApplicationContext(), R.string.message, Toast.LENGTH_SHORT)
-                            .show();*/
-                    break;
-            }
-            invalidate();
+            int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
+            int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
+
+            Rect leftBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            horizontalOffset,
+                            verticalOffset,
+                            (horizontalOffset + sizeOfComplication),
+                            (verticalOffset + sizeOfComplication));
+
+            ComplicationDrawable leftComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(LEFT_COMPLICATION_ID);
+            leftComplicationDrawable.setBounds(leftBounds);
+
+            Rect rightBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            (midpointOfScreen + horizontalOffset),
+                            verticalOffset,
+                            (midpointOfScreen + horizontalOffset + sizeOfComplication),
+                            (verticalOffset + sizeOfComplication));
+
+            ComplicationDrawable rightComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(RIGHT_COMPLICATION_ID);
+            rightComplicationDrawable.setBounds(rightBounds);
+
+            Rect screenForBackgroundBound =
+                    // Left, Top, Right, Bottom
+                    new Rect(0, 0, width, height);
+
+            ComplicationDrawable backgroundComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(BACKGROUND_COMPLICATION_ID);
+            backgroundComplicationDrawable.setBounds(screenForBackgroundBound);
         }
 
         @Override
@@ -423,22 +580,53 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mCalendar.setTimeInMillis(now);
 
             drawBackground(canvas);
+            drawComplications(canvas, now);
+            drawUnreadNotificationIcon(canvas);
             drawWatchFace(canvas);
+        }
+
+        private void drawUnreadNotificationIcon(Canvas canvas) {
+
+            if (mUnreadNotificationsPreference && (mNumberOfUnreadNotifications > 0)) {
+
+                int width = canvas.getWidth();
+                int height = canvas.getHeight();
+
+                canvas.drawCircle(width / 2, height - 40, 10, mTickAndCirclePaint);
+
+                /*
+                 * Ensure center highlight circle is only drawn in interactive mode. This ensures
+                 * we don't burn the screen with a solid circle in ambient mode.
+                 */
+                if (!mAmbient) {
+                    canvas.drawCircle(width / 2, height - 40, 4, mSecondAndHighlightPaint);
+                }
+            }
         }
 
         private void drawBackground(Canvas canvas) {
 
             if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
                 canvas.drawColor(Color.BLACK);
-            } else if (mAmbient) {
-                canvas.drawBitmap(mGrayBackgroundBitmap, 0, 0, mBackgroundPaint);
+
             } else {
-                canvas.drawBitmap(mBackgroundBitmap, 0, 0, mBackgroundPaint);
+                canvas.drawColor(mBackgroundColor);
+            }
+        }
+
+        private void drawComplications(Canvas canvas, long currentTimeMillis) {
+            int complicationId;
+            ComplicationDrawable complicationDrawable;
+
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+                complicationId = COMPLICATION_IDS[i];
+                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+
+                complicationDrawable.draw(canvas, currentTimeMillis);
             }
         }
 
         private void drawWatchFace(Canvas canvas) {
-
             /*
              * Draw ticks. Usually you will want to bake this directly into the photo, but in
              * cases where you want to allow users to select their own photos, this dynamically
@@ -452,8 +640,12 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 float innerY = (float) -Math.cos(tickRot) * innerTickRadius;
                 float outerX = (float) Math.sin(tickRot) * outerTickRadius;
                 float outerY = (float) -Math.cos(tickRot) * outerTickRadius;
-                canvas.drawLine(mCenterX + innerX, mCenterY + innerY,
-                        mCenterX + outerX, mCenterY + outerY, mTickAndCirclePaint);
+                canvas.drawLine(
+                        mCenterX + innerX,
+                        mCenterY + innerY,
+                        mCenterX + outerX,
+                        mCenterY + outerY,
+                        mTickAndCirclePaint);
             }
 
             /*
@@ -479,7 +671,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mCenterX,
                     mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
                     mCenterX,
-                    mCenterY - sHourHandLength,
+                    mCenterY - mHourHandLength,
                     mHourPaint);
 
             canvas.rotate(minutesRotation - hoursRotation, mCenterX, mCenterY);
@@ -487,7 +679,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mCenterX,
                     mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
                     mCenterX,
-                    mCenterY - sMinuteHandLength,
+                    mCenterY - mMinuteHandLength,
                     mMinutePaint);
 
             /*
@@ -501,14 +693,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
                         mCenterX,
                         mCenterY - mSecondHandLength,
-                        mSecondPaint);
-
+                        mSecondAndHighlightPaint);
             }
             canvas.drawCircle(
-                    mCenterX,
-                    mCenterY,
-                    CENTER_GAP_AND_CIRCLE_RADIUS,
-                    mTickAndCirclePaint);
+                    mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mTickAndCirclePaint);
 
             /* Restore the canvas' original orientation. */
             canvas.restore();
@@ -519,8 +707,20 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             super.onVisibilityChanged(visible);
 
             if (visible) {
+
+                // Preferences might have changed since last time watch face was visible.
+                loadSavedPreferences();
+
+                // With the rest of the watch face, we update the paint colors based on
+                // ambient/active mode callbacks, but because the ComplicationDrawable handles
+                // the active/ambient colors, we only need to update the complications' colors when
+                // the user actually makes a change to the highlight color, not when the watch goes
+                // in and out of ambient mode.
+                setComplicationsActiveAndAmbientColors(mWatchHandHighlightColor);
+                updateWatchPaintStyles();
+
                 registerReceiver();
-                /* Update time zone in case it changed while we weren't visible. */
+                // Update time zone in case it changed while we weren't visible.
                 mCalendar.setTimeZone(TimeZone.getDefault());
                 invalidate();
             } else {
@@ -529,6 +729,19 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             /* Check and trigger whether or not timer should be running (only in active mode). */
             updateTimer();
+        }
+
+        @Override
+        public void onUnreadCountChanged(int count) {
+            Log.d(TAG, "onUnreadCountChanged(): " + count);
+
+            if (mUnreadNotificationsPreference) {
+
+                if (mNumberOfUnreadNotifications != count) {
+                    mNumberOfUnreadNotifications = count;
+                    invalidate();
+                }
+            }
         }
 
         private void registerReceiver() {
@@ -559,24 +772,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
 
         /**
-         * Returns whether the {@link #mUpdateTimeHandler} timer should be running. The timer
-         * should only run in active mode.
+         * Returns whether the {@link #mUpdateTimeHandler} timer should be running. The timer should
+         * only run in active mode.
          */
         private boolean shouldTimerBeRunning() {
             return isVisible() && !mAmbient;
-        }
-
-        /**
-         * Handle updating the time periodically in interactive mode.
-         */
-        private void handleUpdateTimeMessage() {
-            invalidate();
-            if (shouldTimerBeRunning()) {
-                long timeMs = System.currentTimeMillis();
-                long delayMs = INTERACTIVE_UPDATE_RATE_MS
-                        - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
-                mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
-            }
         }
     }
 }

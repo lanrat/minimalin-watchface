@@ -9,8 +9,13 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.support.wearable.complications.ComplicationHelperActivity;
 import android.support.wearable.complications.ProviderInfoRetriever;
+import android.support.wearable.complications.ComplicationProviderInfo;
+import android.support.wearable.complications.ProviderInfoRetriever.OnProviderInfoReceivedCallback;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +27,16 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.vorsk.minimalin.model.ComplicationConfigData.PreviewAndComplicationsConfigItem;
+import com.vorsk.minimalin.model.ComplicationConfigData.ConfigItemType;
+import com.vorsk.minimalin.model.ComplicationConfigData.MoreOptionsConfigItem;
+import com.vorsk.minimalin.model.ComplicationConfigData.BackgroundComplicationConfigItem;
+import com.vorsk.minimalin.model.ComplicationConfigData.ColorConfigItem;
+import com.vorsk.minimalin.model.ComplicationConfigData.UnreadNotificationConfigItem;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
+import com.vorsk.minimalin.R;
+import static  com.vorsk.minimalin.config.ColorSelectionActivity.EXTRA_SHARED_PREF;
+
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -93,7 +107,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
     // notifyItemChanged(int position) to avoid flicker and re-inflating the view.
     private PreviewAndComplicationsViewHolder mPreviewAndComplicationsViewHolder;
 
-    public AnalogComplicationConfigRecyclerViewAdapter(
+    public ComplicationConfigRecyclerViewAdapter(
             Context context,
             Class watchFaceServiceClass,
             ArrayList<ConfigItemType> settingsDataSet) {
@@ -408,19 +422,19 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                 Activity currentActivity, ComplicationLocation complicationLocation) {
 
             mSelectedComplicationId =
-                    AnalogComplicationWatchFaceService.getComplicationId(complicationLocation);
+                    MinimalinWatchFaceService.getComplicationId(complicationLocation);
 
             mBackgroundComplicationEnabled = false;
 
             if (mSelectedComplicationId >= 0) {
 
                 int[] supportedTypes =
-                        AnalogComplicationWatchFaceService.getSupportedComplicationTypes(
+                        MinimalinWatchFaceService.getSupportedComplicationTypes(
                                 complicationLocation);
 
                 ComponentName watchFace =
                         new ComponentName(
-                                currentActivity, AnalogComplicationWatchFaceService.class);
+                                currentActivity, MinimalinWatchFaceService.class);
 
                 currentActivity.startActivityForResult(
                         ComplicationHelperActivity.createProviderChooserHelperIntent(
@@ -428,7 +442,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                 watchFace,
                                 mSelectedComplicationId,
                                 supportedTypes),
-                        AnalogComplicationConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
+                        MinimalinConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
 
             } else {
                 Log.d(TAG, "Complication not supported by watch face.");
@@ -532,7 +546,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                     .getBackground()
                     .setColorFilter(backgroundColorFilter);
 
-            final int[] complicationIds = AnalogComplicationWatchFaceService.getComplicationIds();
+            final int[] complicationIds = MinimalinWatchFaceService.getComplicationIds();
 
             mProviderInfoRetriever.retrieveProviderInfo(
                     new OnProviderInfoReceivedCallback() {
@@ -619,7 +633,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                 Activity activity = (Activity) view.getContext();
                 activity.startActivityForResult(
                         launchIntent,
-                        AnalogComplicationConfigActivity.UPDATE_COLORS_CONFIG_REQUEST_CODE);
+                        MinimalinConfigActivity.UPDATE_COLORS_CONFIG_REQUEST_CODE);
             }
         }
     }
@@ -739,18 +753,18 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
             Activity currentActivity = (Activity) view.getContext();
 
             mSelectedComplicationId =
-                    AnalogComplicationWatchFaceService.getComplicationId(
+                    MinimalinWatchFaceService.getComplicationId(
                             ComplicationLocation.BACKGROUND);
 
             if (mSelectedComplicationId >= 0) {
 
                 int[] supportedTypes =
-                        AnalogComplicationWatchFaceService.getSupportedComplicationTypes(
+                        MinimalinWatchFaceService.getSupportedComplicationTypes(
                                 ComplicationLocation.BACKGROUND);
 
                 ComponentName watchFace =
                         new ComponentName(
-                                currentActivity, AnalogComplicationWatchFaceService.class);
+                                currentActivity, MinimalinWatchFaceService.class);
 
                 currentActivity.startActivityForResult(
                         ComplicationHelperActivity.createProviderChooserHelperIntent(
@@ -758,7 +772,7 @@ public class ComplicationConfigRecyclerViewAdapter extends RecyclerView.Adapter<
                                 watchFace,
                                 mSelectedComplicationId,
                                 supportedTypes),
-                        AnalogComplicationConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
+                        MinimalinConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
 
             } else {
                 Log.d(TAG, "Complication not supported by watch face.");

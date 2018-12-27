@@ -6,6 +6,7 @@ import android.graphics.Color;
 import java.util.ArrayList;
 
 import com.vorsk.minimalin.R;
+import com.vorsk.minimalin.config.ColorSelectionActivity;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 import com.vorsk.minimalin.config.MinimalinConfigActivity;
 import com.vorsk.minimalin.config.ComplicationConfigRecyclerViewAdapter;
