@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +18,9 @@ import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
@@ -154,6 +158,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private float mSecondHandLength;
         private float mMinuteHandLength;
         private float mHourHandLength;
+        private float mTickLength;
+        private float mMinimalinTextRadiusLength;
 
         // Colors for all hands (hour, minute, seconds, ticks) based on photo loaded.
         private int mWatchComplicationsColor;
@@ -168,6 +174,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private Paint mMinutePaint;
         private Paint mSecondAndHighlightPaint;
         private Paint mTickAndCirclePaint;
+        private TextPaint mMinimalinTimePaint;
 
         private Paint mBackgroundPaint;
 
@@ -354,6 +361,18 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTickAndCirclePaint.setAntiAlias(true);
             mTickAndCirclePaint.setStyle(Paint.Style.STROKE);
             mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+
+            mMinimalinTimePaint = new TextPaint(mTickAndCirclePaint);
+            //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/AtomicAge-Regular.ttf");
+            //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Baumans-Regular.ttf");
+            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Comfortaa-Regular.ttf");
+            //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Voces-Regular.ttf");
+            //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/NovaSquare.ttf");
+            //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/nupe.ttf");
+            mMinimalinTimePaint.setTypeface(custom_font);
+            mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
+//            mMinimalinTimePaint.setLetterSpacing(getResources().getDimensionPixelSize(R.dimen.minimalin_font_spacing));
+            // TODO stylize this
         }
 
         /* Sets active/ambient mode colors for all complications.
@@ -494,16 +513,19 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mMinutePaint.setColor(Color.WHITE);
                 mSecondAndHighlightPaint.setColor(Color.WHITE);
                 mTickAndCirclePaint.setColor(Color.WHITE);
+                mMinimalinTimePaint.setColor(Color.WHITE);
 
                 mHourPaint.setAntiAlias(false);
                 mMinutePaint.setAntiAlias(false);
                 mSecondAndHighlightPaint.setAntiAlias(false);
                 mTickAndCirclePaint.setAntiAlias(false);
+                mMinimalinTimePaint.setAntiAlias(false);
 
                 mHourPaint.clearShadowLayer();
                 mMinutePaint.clearShadowLayer();
                 mSecondAndHighlightPaint.clearShadowLayer();
                 mTickAndCirclePaint.clearShadowLayer();
+                mMinimalinTimePaint.clearShadowLayer();
 
             } else {
 
@@ -512,6 +534,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mHourPaint.setColor(mWatchHourHandHighlightColor);
                 mMinutePaint.setColor(mWatchMinuteHandHighlightColor);
                 mTickAndCirclePaint.setColor(mWatchComplicationsColor);
+                mMinimalinTimePaint.setColor(mWatchComplicationsColor); // TODO change font color?
 
                 mSecondAndHighlightPaint.setColor(mWatchSecondHandHighlightColor);
 
@@ -519,11 +542,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mMinutePaint.setAntiAlias(true);
                 mSecondAndHighlightPaint.setAntiAlias(true);
                 mTickAndCirclePaint.setAntiAlias(true);
+                mMinimalinTimePaint.setAntiAlias(true);
 
                 mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mSecondAndHighlightPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mMinimalinTimePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mMinimalinTimePaint.setTextAlign(Paint.Align.CENTER);
             }
         }
 
@@ -560,6 +586,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mSecondHandLength = (float) (mCenterX * 0.875);
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
+            mTickLength = (float) (mCenterX * 0.1);
+            mMinimalinTextRadiusLength = (float) (mCenterX * 0.2);
 
             /*
              * Calculates location bounds for right and left circular complications. Please note,
@@ -688,44 +716,101 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             }
         }
 
+
+        private void drawTextCentered(Canvas canvas, String text, float x, float y, TextPaint textPaint) {
+            /*StaticLayout mTextLayout = new StaticLayout(text, textPaint, canvas.getWidth(), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+            canvas.save();
+            canvas.translate(x, y);
+            mTextLayout.draw(canvas);
+            canvas.restore();*/
+            float textHeight = textPaint.descent() - textPaint.ascent();
+            float textOffset = (textHeight / 2) - textPaint.descent();
+            canvas.drawText(text, x, y+textOffset, textPaint);
+        }
+
+        private boolean minimalinTimesConflicting(int hour, int minute) {
+            return hour % 12 == minute / 5;
+            //return false;
+        }
+
+        private boolean minimalinTimesConflictingNorthOrSouth(int hour, int minute) {
+            if (!minimalinTimesConflicting(hour, minute)) {
+                return false;
+            }
+            final int hourMod = hour % 12;
+            return hourMod <= 1 || hourMod >= 11 || (hourMod >= 5 && hourMod <= 7);
+            //return false;
+        }
+
         private void drawWatchFace(Canvas canvas) {
             /*
              * Draw ticks. Usually you will want to bake this directly into the photo, but in
              * cases where you want to allow users to select their own photos, this dynamically
              * creates them on top of the photo.
              */
-            float innerTickRadius = mCenterX - 10;
+            float innerTickRadius = mCenterX - mTickLength;
             float outerTickRadius = mCenterX;
+            float minimalinTextCenterRadius = mCenterX - mMinimalinTextRadiusLength;
+
+            int tickIndexHour = mCalendar.get(Calendar.HOUR);
+            int tickIndexMinute = mCalendar.get(Calendar.MINUTE);
 
             // Hour Tick for Minimalin
-            int tickIndexHour = mCalendar.get(Calendar.HOUR);
-            float tickRot = (float) (tickIndexHour * Math.PI * 2 / 12);
-            float innerX = (float) Math.sin(tickRot) * innerTickRadius;
-            float innerY = (float) -Math.cos(tickRot) * innerTickRadius;
-            float outerX = (float) Math.sin(tickRot) * outerTickRadius;
-            float outerY = (float) -Math.cos(tickRot) * outerTickRadius;
-            canvas.drawLine(
-                    mCenterX + innerX,
-                    mCenterY + innerY,
-                    mCenterX + outerX,
-                    mCenterY + outerY,
-                    mTickAndCirclePaint);
-            canvas.drawText(String.format("%2d", tickIndexHour), mCenterX + innerX, mCenterY+innerY, mTickAndCirclePaint);
+            float hourTickRot = (float) (tickIndexHour * Math.PI * 2 / 12);
+            float hourInnerX = (float) Math.sin(hourTickRot) * innerTickRadius;
+            float hourInnerY = (float) -Math.cos(hourTickRot) * innerTickRadius;
+            float hourOuterX = (float) Math.sin(hourTickRot) * outerTickRadius;
+            float hourOuterY = (float) -Math.cos(hourTickRot) * outerTickRadius;
 
-            // Minute Tick for Minimalin
-            int tickIndexMinute = mCalendar.get(Calendar.MINUTE);
-            tickRot = (float) (tickIndexMinute * Math.PI * 2 / 60);
-            innerX = (float) Math.sin(tickRot) * innerTickRadius;
-            innerY = (float) -Math.cos(tickRot) * innerTickRadius;
-            outerX = (float) Math.sin(tickRot) * outerTickRadius;
-            outerY = (float) -Math.cos(tickRot) * outerTickRadius;
             canvas.drawLine(
-                    mCenterX + innerX,
-                    mCenterY + innerY,
-                    mCenterX + outerX,
-                    mCenterY + outerY,
+                    mCenterX + hourInnerX,
+                    mCenterY + hourInnerY,
+                    mCenterX + hourOuterX,
+                    mCenterY + hourOuterY,
                     mTickAndCirclePaint);
-            canvas.drawText(String.format("%02d", tickIndexMinute), mCenterX + innerX, mCenterY+innerY, mTickAndCirclePaint);
+
+            if (minimalinTimesConflicting(tickIndexHour,tickIndexMinute)) {
+                if (minimalinTimesConflictingNorthOrSouth(tickIndexHour, tickIndexMinute)) {
+                    // minimalin horizontal time
+                    float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
+                    float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
+                    drawTextCentered(canvas, String.format("%2d:%02d", tickIndexHour, tickIndexMinute), mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, mMinimalinTimePaint);
+                } else {
+                    // minimalin vertical time
+                    float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
+                    float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
+                    drawTextCentered(canvas, String.format("%2d\n%02d", tickIndexHour, tickIndexMinute), mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, mMinimalinTimePaint);
+                }
+            } else {
+                // Minimalin Hour text
+                float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
+                float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
+                drawTextCentered(canvas, String.format("%2d", tickIndexHour), mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, mMinimalinTimePaint);
+
+                // Minute Tick for Minimalin
+                float minuteTickRot = (float) (tickIndexMinute * Math.PI * 2 / 60);
+                float minuteInnerX = (float) Math.sin(minuteTickRot) * innerTickRadius;
+                float minuteInnerY = (float) -Math.cos(minuteTickRot) * innerTickRadius;
+                float minuteOuterX = (float) Math.sin(minuteTickRot) * outerTickRadius;
+                float minuteOuterY = (float) -Math.cos(minuteTickRot) * outerTickRadius;
+
+                canvas.drawLine(
+                        mCenterX + minuteInnerX,
+                        mCenterY + minuteInnerY,
+                        mCenterX + minuteOuterX,
+                        mCenterY + minuteOuterY,
+                        mTickAndCirclePaint);
+
+                // Minimalin Minute text
+                float minuteTextInnerX = (float) Math.sin(minuteTickRot) * minimalinTextCenterRadius;
+                float minuteTextInnerY = (float) -Math.cos(minuteTickRot) * minimalinTextCenterRadius;
+                drawTextCentered(canvas, String.format("%02d", tickIndexMinute), mCenterX + minuteTextInnerX, mCenterY + minuteTextInnerY, mMinimalinTimePaint);
+            }
+
+            /* calculate the angle between the hour and minutes hand
+             * if under threshold, display time at hour hand
+             */
+
 
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,

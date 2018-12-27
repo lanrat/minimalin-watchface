@@ -31,4 +31,7 @@
     <dimen name="settings_preview_size">180dp</dimen>
     <dimen name="color_picker_size">70dp</dimen>
     <dimen name="watch_face_preview_background_padding">16dp</dimen>
+
+    <dimen name="minimalin_font_size">15sp</dimen>
+    <!--<dimen name="minimalin_font_spacing">0.00sp</dimen>-->
 </resources>
