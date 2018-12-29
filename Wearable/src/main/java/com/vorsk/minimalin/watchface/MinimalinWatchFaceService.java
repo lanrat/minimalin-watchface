@@ -18,8 +18,6 @@ import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
 import android.util.SparseArray;
@@ -27,8 +25,6 @@ import android.view.SurfaceHolder;
 
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -369,7 +365,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             // TODO add more stlying options here like shadow and stroke/color
             //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/AtomicAge-Regular.ttf");
             //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Baumans-Regular.ttf");
-            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Comfortaa-Regular.ttf"); // I like this one
+            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa-Regular.ttf"); // I like this one
             //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Voces-Regular.ttf");
             //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/NovaSquare.ttf");
             //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/nupe.ttf");
@@ -592,7 +588,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
             mTickLength = (float) (mCenterX * 0.1);
-            mMinimalinTextRadiusLength = (float) (mCenterX * 0.2);
+            mMinimalinTextRadiusLength = (float) (mCenterX * 0.2); // TODO this should be a function of the font height (which should be a function of sp)
 
             /*
              * Calculates location bounds for right and left circular complications. Please note,
@@ -605,7 +601,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 5;
-            int sizeOfLongComplication = width/2; //(width * 2)/3;
+            int sizeOfLongComplication = width / 2; //(width * 2)/3;
 
             int midpointOfScreen = width / 2;
 
@@ -640,9 +636,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // Left, Top, Right, Bottom
                     new Rect(
                             midpointOfScreen - (sizeOfComplication / 2),
-                            midpointOfScreen - ((midpointOfScreen - sizeOfComplication)/2) - sizeOfComplication,
+                            midpointOfScreen - ((midpointOfScreen - sizeOfComplication) / 2) - sizeOfComplication,
                             midpointOfScreen + (sizeOfComplication / 2),
-                            midpointOfScreen - (midpointOfScreen - sizeOfComplication)/2);
+                            midpointOfScreen - (midpointOfScreen - sizeOfComplication) / 2);
 
             ComplicationDrawable topComplicationDrawable =
                     mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
@@ -652,9 +648,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // Left, Top, Right, Bottom
                     new Rect(
                             midpointOfScreen - (sizeOfLongComplication / 2),
-                            midpointOfScreen + ((midpointOfScreen - sizeOfComplication)/2),
+                            midpointOfScreen + ((midpointOfScreen - sizeOfComplication) / 2),
                             midpointOfScreen + (sizeOfLongComplication / 2),
-                            midpointOfScreen + ((midpointOfScreen - sizeOfComplication)/2) + sizeOfComplication);
+                            midpointOfScreen + ((midpointOfScreen - sizeOfComplication) / 2) + sizeOfComplication);
 
             ComplicationDrawable bottomComplicationDrawable =
                     mComplicationDrawableSparseArray.get(BOTTOM_COMPLICATION_ID);
@@ -722,30 +718,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
 
 
-
-
-        private void drawTextCentered(Canvas canvas, String text, float x, float y, TextPaint textPaint) {
-            Paint testPaint = new Paint(mSecondAndHighlightPaint);
-            testPaint.setColor(Color.GREEN);
-
-            canvas.drawCircle(
-                    x, y, CENTER_GAP_AND_CIRCLE_RADIUS, testPaint);
-
-
-            Rect r2 = new Rect(); // make static
-            Paint paint2 = new Paint(textPaint);
-            paint2.setColor(Color.YELLOW);
-            paint2.setTextAlign(Paint.Align.LEFT);
-            paint2.getTextBounds(text, 0, text.length(), r2);
-            float x2 = x - r2.width() / 2f - r2.left;
-            float y2 = y + r2.height() / 2f - r2.bottom;
-            canvas.drawText(text, x2, y2, paint2);
-        }
-
-
         private boolean minimalinTimesConflicting(int hour, int minute) {
-            return hour % 12 == minute / 5;
-            //return false;
+            return hour % 12 == (minute + 2)/ 5; // I'm not sure why I need to + 2 here to make this work.
         }
 
         private boolean minimalinTimesConflictingNorthOrSouth(int hour, int minute) {
@@ -754,21 +728,22 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             }
             final int hourMod = hour % 12;
             return hourMod <= 1 || hourMod >= 11 || (hourMod >= 5 && hourMod <= 7);
-            //return false;
         }
 
         private void drawWatchFace(Canvas canvas) {
-            /*
-             * Draw ticks. Usually you will want to bake this directly into the photo, but in
-             * cases where you want to allow users to select their own photos, this dynamically
-             * creates them on top of the photo.
-             */
+            drawMinimalinTime(canvas);
+            drawWatchHands(canvas);
+        }
+
+        private void drawMinimalinTime(Canvas canvas) {
             float innerTickRadius = mCenterX - mTickLength;
             float outerTickRadius = mCenterX;
             float minimalinTextCenterRadius = mCenterX - mMinimalinTextRadiusLength;
+            boolean militaryTime = false;
 
-            int tickIndexHour = mCalendar.get(Calendar.SECOND) % 12; //9;//mCalendar.get(Calendar.HOUR);
-            int tickIndexMinute = 45;//mCalendar.get(Calendar.MINUTE);
+            int tickIndexHour = mCalendar.get(Calendar.MINUTE) % 12; //mCalendar.get(Calendar.HOUR);
+            int tickIndexMinute = mCalendar.get(Calendar.SECOND); //mCalendar.get(Calendar.MINUTE);
+            int printedHour = militaryTime ? mCalendar.get(Calendar.HOUR_OF_DAY) : tickIndexHour == 0 ? 12 : tickIndexHour;
 
             // Hour Tick for Minimalin
             float hourTickRot = (float) (tickIndexHour * Math.PI * 2 / 12);
@@ -784,27 +759,25 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mCenterY + hourOuterY,
                     mTickAndCirclePaint);
 
-            if (minimalinTimesConflicting(tickIndexHour,tickIndexMinute)) {
+            if (minimalinTimesConflicting(tickIndexHour, tickIndexMinute)) {
                 if (minimalinTimesConflictingNorthOrSouth(tickIndexHour, tickIndexMinute)) {
                     // minimalin horizontal time
                     float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                     float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                    drawTextCentered(canvas, String.format("%2d:%02d", tickIndexHour, tickIndexMinute), mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, mMinimalinTimePaint);
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d:%02d", tickIndexHour, tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Middle);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d:%02d", printedHour, tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Middle);
                 } else {
                     // minimalin vertical time
                     float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                     float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d", tickIndexHour), mMinimalinTimePaint, TextVertAlign.Baseline);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d", printedHour), mMinimalinTimePaint, TextVertAlign.Baseline);
                     drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Top);
-                    drawTextCentered(canvas, String.format("%2d\n%02d", tickIndexHour, tickIndexMinute), mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, mMinimalinTimePaint);
                 }
             } else {
                 // Minimalin Hour text
                 float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                 float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                drawTextCentered(canvas, String.format("%2d", tickIndexHour), mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, mMinimalinTimePaint);
-                drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d", tickIndexHour), mMinimalinTimePaint, TextVertAlign.Middle);
+                drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d", printedHour), mMinimalinTimePaint, TextVertAlign.Middle);
+
                 // Minute Tick for Minimalin
                 float minuteTickRot = (float) (tickIndexMinute * Math.PI * 2 / 60);
                 float minuteInnerX = (float) Math.sin(minuteTickRot) * innerTickRadius;
@@ -822,16 +795,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 // Minimalin Minute text
                 float minuteTextInnerX = (float) Math.sin(minuteTickRot) * minimalinTextCenterRadius;
                 float minuteTextInnerY = (float) -Math.cos(minuteTickRot) * minimalinTextCenterRadius;
-                drawTextCentered(canvas, String.format("%02d", tickIndexMinute), mCenterX + minuteTextInnerX, mCenterY + minuteTextInnerY, mMinimalinTimePaint);
                 drawVertAlignedText(canvas, mCenterX + minuteTextInnerX, mCenterY + minuteTextInnerY, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Middle);
-
             }
+        }
 
-            /* calculate the angle between the hour and minutes hand
-             * if under threshold, display time at hour hand
-             */
-
-
+        private void drawWatchHands(Canvas canvas) {
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,
              * 360 / 60 = 6 and 360 / 12 = 30.
@@ -885,6 +853,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             /* Restore the canvas' original orientation. */
             canvas.restore();
+
         }
 
         @Override
@@ -972,23 +941,25 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         Bottom
     }
 
+    private Rect mTextRect = new Rect();
+
     // see https://www.slideshare.net/rtc1/intro-todrawingtextandroid
-    private void drawVertAlignedText(Canvas canvas, float x, float y, String s, Paint p, TextVertAlign vertAlign ) {
-        Rect r = new Rect();
-        p.getTextBounds(s, 0, s.length(), r); //Note r.top will be negative
-        float textX = x - r.width() / 2f - r.left;
+    private void drawVertAlignedText(Canvas canvas, float x, float y, String s, Paint p, TextVertAlign vertAlign) {
+        //Rect r = new Rect();
+        p.getTextBounds(s, 0, s.length(), mTextRect); //Note r.top will be negative
+        float textX = x - mTextRect.width() / 2f - mTextRect.left;
         float textY = y;
-        switch ( vertAlign) {
+        switch (vertAlign) {
             case Top:
-                textY = y - r.top;
+                textY = y - mTextRect.top;
                 break;
             case Middle:
-                textY = y - r.top - r.height()/2;
+                textY = y - mTextRect.top - mTextRect.height() / 2;
                 break;
             case Baseline:
                 break;
             case Bottom:
-                textY = y - (r.height() + r.top);
+                textY = y - (mTextRect.height() + mTextRect.top);
                 break;
         }
         canvas.drawText(s, textX, textY, p);
