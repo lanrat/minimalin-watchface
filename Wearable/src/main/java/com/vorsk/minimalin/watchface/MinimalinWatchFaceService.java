@@ -142,7 +142,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private static final float MINUTE_STROKE_WIDTH = 4f;
         private static final float SECOND_TICK_STROKE_WIDTH = 3f;
 
-        private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 4f;
+        private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 6f;
 
         private static final int SHADOW_RADIUS = 6;
 
@@ -171,7 +171,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         private Paint mHourPaint;
         private Paint mMinutePaint;
-        private Paint mSecondAndHighlightPaint;
+        private Paint mSecondAndNotificationPaint;
         private Paint mTickAndCirclePaint;
         private TextPaint mMinimalinTimePaint;
 
@@ -348,12 +348,12 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mMinutePaint.setStrokeCap(Paint.Cap.ROUND);
             mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
-            mSecondAndHighlightPaint = new Paint();
-            mSecondAndHighlightPaint.setColor(mWatchMinuteHandHighlightColor);
-            mSecondAndHighlightPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
-            mSecondAndHighlightPaint.setAntiAlias(true);
-            mSecondAndHighlightPaint.setStrokeCap(Paint.Cap.ROUND);
-            mSecondAndHighlightPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+            mSecondAndNotificationPaint = new Paint();
+            mSecondAndNotificationPaint.setColor(mWatchMinuteHandHighlightColor);
+            mSecondAndNotificationPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
+            mSecondAndNotificationPaint.setAntiAlias(true);
+            mSecondAndNotificationPaint.setStrokeCap(Paint.Cap.ROUND);
+            mSecondAndNotificationPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mTickAndCirclePaint = new Paint();
             mTickAndCirclePaint.setColor(mWatchComplicationsColor);
@@ -362,7 +362,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTickAndCirclePaint.setStyle(Paint.Style.STROKE);
             mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
-            //mMinimalinTimePaint = new TextPaint(mTickAndCirclePaint);
             mMinimalinTimePaint = new TextPaint();
             // TODO add more stlying options here like shadow and stroke/color
             //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/AtomicAge-Regular.ttf");
@@ -373,8 +372,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/nupe.ttf");
             mMinimalinTimePaint.setTypeface(custom_font);
             mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
+            mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT);
             mMinimalinVerticalTimeGap = getResources().getDimensionPixelOffset(R.dimen.minimalin_vertical_font_gap);
-//            mMinimalinTimePaint.setLetterSpacing(getResources().getDimensionPixelSize(R.dimen.minimalin_font_spacing));
             // TODO stylize this
         }
 
@@ -514,19 +513,19 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
                 mHourPaint.setColor(Color.WHITE);
                 mMinutePaint.setColor(Color.WHITE);
-                mSecondAndHighlightPaint.setColor(Color.WHITE);
+                mSecondAndNotificationPaint.setColor(Color.WHITE);
                 mTickAndCirclePaint.setColor(Color.WHITE);
                 mMinimalinTimePaint.setColor(Color.WHITE);
 
                 mHourPaint.setAntiAlias(false);
                 mMinutePaint.setAntiAlias(false);
-                mSecondAndHighlightPaint.setAntiAlias(false);
+                mSecondAndNotificationPaint.setAntiAlias(false);
                 mTickAndCirclePaint.setAntiAlias(false);
                 mMinimalinTimePaint.setAntiAlias(false);
 
                 mHourPaint.clearShadowLayer();
                 mMinutePaint.clearShadowLayer();
-                mSecondAndHighlightPaint.clearShadowLayer();
+                mSecondAndNotificationPaint.clearShadowLayer();
                 mTickAndCirclePaint.clearShadowLayer();
                 mMinimalinTimePaint.clearShadowLayer();
 
@@ -539,21 +538,20 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mTickAndCirclePaint.setColor(mWatchComplicationsColor);
                 mMinimalinTimePaint.setColor(mWatchComplicationsColor); // TODO change font color?
 
-                mSecondAndHighlightPaint.setColor(mWatchSecondHandHighlightColor);
+                mSecondAndNotificationPaint.setColor(mWatchSecondHandHighlightColor);
 
                 mHourPaint.setAntiAlias(true);
                 mMinutePaint.setAntiAlias(true);
-                mSecondAndHighlightPaint.setAntiAlias(true);
+                mSecondAndNotificationPaint.setAntiAlias(true);
                 mTickAndCirclePaint.setAntiAlias(true);
                 mMinimalinTimePaint.setAntiAlias(true);
 
                 mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mSecondAndHighlightPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mSecondAndNotificationPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
                 mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mMinimalinTimePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT); // don't use this when using StaticLayout
-                mMinimalinTimePaint.bgColor = Color.GREEN; // TODO testing, this does nothg?
+                //mMinimalinTimePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT);
             }
         }
 
@@ -567,7 +565,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mMuteMode = inMuteMode;
                 mHourPaint.setAlpha(inMuteMode ? 100 : 255);
                 mMinutePaint.setAlpha(inMuteMode ? 100 : 255);
-                mSecondAndHighlightPaint.setAlpha(inMuteMode ? 80 : 255);
+                mSecondAndNotificationPaint.setAlpha(inMuteMode ? 80 : 255);
                 invalidate();
             }
         }
@@ -591,7 +589,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
             mTickLength = (float) (mCenterX * 0.1);
-            mMinimalinTextRadiusLength = (float) (mCenterX * 0.2); // TODO this should be a function of the font height (which should be a function of sp)
+            mMinimalinTextRadiusLength = (float) (mCenterX * 0.2); // TODO this should be a function of the font height
 
             /*
              * Calculates location bounds for right and left circular complications. Please note,
@@ -694,7 +692,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                  * we don't burn the screen with a solid circle in ambient mode.
                  */
                 if (!mAmbient) {
-                    canvas.drawCircle(width / 2, height - 40, 4, mSecondAndHighlightPaint);
+                    canvas.drawCircle(width / 2, height - 40, 4, mSecondAndNotificationPaint);
                 }
             }
         }
@@ -850,7 +848,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
                         mCenterX,
                         mCenterY - mSecondHandLength,
-                        mSecondAndHighlightPaint);
+                        mSecondAndNotificationPaint);
             }
             canvas.drawCircle(
                     mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mHourPaint);
