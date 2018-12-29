@@ -21,6 +21,7 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.TextPaint;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 
 import com.vorsk.minimalin.R;
@@ -137,9 +138,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     private class Engine extends CanvasWatchFaceService.Engine {
         private static final int MSG_UPDATE_TIME = 0;
 
-        private static final float HOUR_STROKE_WIDTH = 5f;
-        private static final float MINUTE_STROKE_WIDTH = 3f;
-        private static final float SECOND_TICK_STROKE_WIDTH = 2f;
+        private static final float HOUR_STROKE_WIDTH = 6f;
+        private static final float MINUTE_STROKE_WIDTH = 4f;
+        private static final float SECOND_TICK_STROKE_WIDTH = 3f;
 
         private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 4f;
 
@@ -242,6 +243,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     new WatchFaceStyle.Builder(MinimalinWatchFaceService.this)
                             .setAcceptsTapEvents(true)
                             .setHideNotificationIndicator(true)
+                            .setStatusBarGravity(Gravity.CENTER)
                             .build());
 
             loadSavedPreferences();
@@ -743,7 +745,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             float minimalinTextCenterRadius = mCenterX - mMinimalinTextRadiusLength;
             boolean militaryTime = false;
 
-            int tickIndexHour = 9;//mCalendar.get(Calendar.MINUTE) % 12; //mCalendar.get(Calendar.HOUR);
+            int tickIndexHour = 10;//mCalendar.get(Calendar.MINUTE) % 12; //mCalendar.get(Calendar.HOUR);
             int tickIndexMinute = mCalendar.get(Calendar.SECOND); //mCalendar.get(Calendar.MINUTE);
             int printedHour = militaryTime ? mCalendar.get(Calendar.HOUR_OF_DAY) : tickIndexHour == 0 ? 12 : tickIndexHour;
 
