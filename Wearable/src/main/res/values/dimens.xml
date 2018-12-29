@@ -33,5 +33,4 @@
     <dimen name="watch_face_preview_background_padding">16dp</dimen>
 
     <dimen name="minimalin_font_size">15sp</dimen>
-    <!--<dimen name="minimalin_font_spacing">0.00sp</dimen>-->
-</resources>
+    <dimen name="minimalin_vertical_font_gap">4sp</dimen></resources>
