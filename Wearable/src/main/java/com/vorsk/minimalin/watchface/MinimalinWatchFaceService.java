@@ -338,7 +338,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
 
         private void initializeWatchFace() {
-
             mHourPaint = new Paint();
             mHourPaint.setColor(mWatchHourHandHighlightColor);
             mHourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
@@ -379,9 +378,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/AtomicAge-Regular.ttf");
             //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Baumans-Regular.ttf");
             Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa-Regular.ttf"); // I like this one
-            //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Voces-Regular.ttf");
-            //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/NovaSquare.ttf");
-            //--Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/nupe.ttf");
             mMinimalinTimePaint.setTypeface(custom_font);
             mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
             mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT);
