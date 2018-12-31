@@ -23,5 +23,6 @@
         android:id="@+id/wearable_recycler_view"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:scrollbars="vertical"
        />
 </FrameLayout>
