@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/activity_config_padding"
+        android:scaleType="fitCenter"
+        android:src="@drawable/preview" />
+
+    <ImageButton
+        android:id="@+id/left_complication"
+        android:layout_width="@dimen/complication_preview_size"
+        android:layout_height="@dimen/complication_preview_size"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginLeft="@dimen/complication_preview_margin_horizontal"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_complication" />
+
+    <ImageButton
+        android:id="@+id/right_complication"
+        android:layout_width="@dimen/complication_preview_size"
+        android:layout_height="@dimen/complication_preview_size"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginRight="@dimen/complication_preview_margin_horizontal"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_complication" />
+
+    <ImageButton
+        android:id="@+id/top_complication"
+        android:layout_width="@dimen/complication_preview_size"
+        android:layout_height="@dimen/complication_preview_size"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="@dimen/complication_preview_margin_vertical"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_complication" />
+
+    <ImageButton
+        android:id="@+id/bottom_complication"
+        android:layout_width="@dimen/complication_big_preview_width"
+        android:layout_height="@dimen/complication_big_preview_height"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/complication_preview_margin_vertical"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_big_complication" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:src="@drawable/ic_arrow_down" />
+
+</FrameLayout>

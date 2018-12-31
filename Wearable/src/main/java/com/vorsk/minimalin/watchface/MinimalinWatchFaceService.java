@@ -1,6 +1,5 @@
 package com.vorsk.minimalin.watchface;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.TextPaint;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.SurfaceHolder;
 
 import com.vorsk.minimalin.R;

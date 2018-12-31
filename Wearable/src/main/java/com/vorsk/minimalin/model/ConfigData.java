@@ -80,15 +80,9 @@ public class ConfigData {
         ArrayList<ConfigItemType> settingsConfigData = new ArrayList<>();
 
         // Data for watch face preview and complications UX in settings Activity.
-        // TODO detect long complication and show correct button
         ConfigItemType complicationConfigItem =
-                new PreviewAndComplicationsConfigItem(R.drawable.add_complication);
+                new PreviewAndComplicationsConfigItem(R.drawable.add_complication, R.drawable.add_big_complication, R.drawable.added_complication, R.drawable.added_big_complication);
         settingsConfigData.add(complicationConfigItem);
-
-        // Data for "more options" UX in settings Activity.
-        ConfigItemType moreOptionsConfigItem =
-                new MoreOptionsConfigItem(R.drawable.ic_expand_more_white_18dp);
-        settingsConfigData.add(moreOptionsConfigItem);
 
         // Data for highlight/marker (hour hand) color UX in settings Activity.
         ConfigItemType markerHourColorConfigItem =
@@ -179,39 +173,37 @@ public class ConfigData {
     public static class PreviewAndComplicationsConfigItem implements ConfigItemType {
 
         private int defaultComplicationResourceId;
+        private int defaultComplicationLongResourceId;
+        private int defaultAddedComplicationResourceId;
+        private int defaultAddedComplicationLongResourceId;
 
-        PreviewAndComplicationsConfigItem(int defaultComplicationResourceId) {
+        PreviewAndComplicationsConfigItem(int defaultComplicationResourceId, int defaultComplicationLongResourceId,
+                int defaultAddedComplicationResourceId, int defaultAddedComplicationLongResourceId) {
             this.defaultComplicationResourceId = defaultComplicationResourceId;
+            this.defaultComplicationLongResourceId = defaultComplicationLongResourceId;
+            this.defaultAddedComplicationResourceId = defaultAddedComplicationResourceId;
+            this.defaultAddedComplicationLongResourceId = defaultAddedComplicationLongResourceId;
         }
 
         public int getDefaultComplicationResourceId() {
             return defaultComplicationResourceId;
         }
 
+        public int getDefaultComplicationLongResourceId() {
+            return defaultComplicationLongResourceId;
+        }
+
+        public int getDefaultAddedComplicationResourceId() {
+            return defaultAddedComplicationResourceId;
+        }
+
+        public int getDefaultAddedComplicationLongResourceId() {
+            return defaultAddedComplicationLongResourceId;
+        }
+
         @Override
         public int getConfigType() {
             return ConfigRecyclerViewAdapter.TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG;
-        }
-    }
-
-    /**
-     * Data for "more options" item in RecyclerView.
-     */
-    public static class MoreOptionsConfigItem implements ConfigItemType {
-
-        private int iconResourceId;
-
-        MoreOptionsConfigItem(int iconResourceId) {
-            this.iconResourceId = iconResourceId;
-        }
-
-        public int getIconResourceId() {
-            return iconResourceId;
-        }
-
-        @Override
-        public int getConfigType() {
-            return ConfigRecyclerViewAdapter.TYPE_MORE_OPTIONS;
         }
     }
 
