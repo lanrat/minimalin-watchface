@@ -250,7 +250,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                             .setAcceptsTapEvents(true)
                             .setHideNotificationIndicator(false)
                             .setShowUnreadCountIndicator(true)
-                            .setStatusBarGravity(Gravity.CENTER_HORIZONTAL)
+                            //.setStatusBarGravity(Gravity.CENTER_HORIZONTAL)
                             .setViewProtectionMode(WatchFaceStyle.PROTECT_STATUS_BAR)
                             .build());
 
@@ -755,7 +755,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
 
         private boolean minimalinTimesConflicting(int hour, int minute) {
-            return hour % 12 == (minute + 2)/ 5; // I'm not sure why I need to + 2 here to make this work.
+            // Need to add 2 to minutes to shift center of combined time to overlap point
+            // need to % 60 on minutes to cover the :58, and :59 minutes back to the correct numbers when adding 2
+            return hour % 12 == ((minute + 2) % 60)/ 5;
         }
 
         private boolean minimalinTimesConflictingNorthOrSouth(int hour, int minute) {
