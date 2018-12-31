@@ -3,12 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/activity_config_padding"
-        android:scaleType="fitCenter"
-        android:src="@drawable/preview" />
+        android:background="@drawable/preview" />
 
     <ImageButton
         android:id="@+id/left_complication"

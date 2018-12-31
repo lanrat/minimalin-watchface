@@ -19,5 +19,7 @@
     android:id="@+id/background_complication_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="@dimen/activity_config_padding"
+    android:paddingEnd="@dimen/activity_config_padding"
     style="@style/ButtonConfigurationStyle"
     android:text="Background Complication"/>
