@@ -17,10 +17,11 @@ package com.vorsk.minimalin.config.color;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.wear.widget.WearableLinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 
 import com.vorsk.minimalin.R;
+import com.vorsk.minimalin.config.CustomScrollingLayoutCallback;
 import com.vorsk.minimalin.model.ConfigData;
 
 /**
@@ -51,13 +52,14 @@ public class ColorSelectionActivity extends Activity {
                 sharedPrefString,
                 ConfigData.getColorOptionsDataSet());
 
-        mConfigAppearanceWearableRecyclerView =
-                (WearableRecyclerView) findViewById(R.id.wearable_recycler_view);
+        mConfigAppearanceWearableRecyclerView = findViewById(R.id.wearable_recycler_view);
 
         // Aligns the first and last items on the list vertically centered on the screen.
         mConfigAppearanceWearableRecyclerView.setEdgeItemsCenteringEnabled(true);
 
-        mConfigAppearanceWearableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mConfigAppearanceWearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(this));
+        // TODO might not need custom class below
+        //mConfigAppearanceWearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(this, new CustomScrollingLayoutCallback()));
 
         // Improves performance because we know changes in content do not change the layout size of
         // the RecyclerView.
@@ -65,4 +67,5 @@ public class ColorSelectionActivity extends Activity {
 
         mConfigAppearanceWearableRecyclerView.setAdapter(mColorSelectionRecyclerViewAdapter);
     }
+
 }
