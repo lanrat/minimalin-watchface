@@ -102,7 +102,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     // Maintains reference view holder to dynamically update watch face preview. Used instead of
     // notifyItemChanged(int position) to avoid flicker and re-inflating the view.
-    private PreviewAndComplicationsViewHolder mPreviewAndComplicationsViewHolder;
+    private ComplicationsViewHolder mComplicationsViewHolder;
 
     ConfigRecyclerViewAdapter(
             Context context,
@@ -151,15 +151,15 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             case TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG:
                 // Need direct reference to watch face preview view holder to update watch face
                 // preview based on selections from the user.
-                mPreviewAndComplicationsViewHolder =
-                        new PreviewAndComplicationsViewHolder(
+                mComplicationsViewHolder =
+                        new ComplicationsViewHolder(
                                 LayoutInflater.from(parent.getContext())
                                         .inflate(
                                                 //R.layout.config_list_preview_and_complications_item,
                                                 R.layout.config_item_complications,
                                                 parent,
                                                 false));
-                viewHolder = mPreviewAndComplicationsViewHolder;
+                viewHolder = mComplicationsViewHolder;
                 break;
 
             case TYPE_COLOR_CONFIG:
@@ -202,8 +202,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         switch (viewHolder.getItemViewType()) {
             case TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG:
-                PreviewAndComplicationsViewHolder previewAndComplicationsViewHolder =
-                        (PreviewAndComplicationsViewHolder) viewHolder;
+                ComplicationsViewHolder complicationsViewHolder =
+                        (ComplicationsViewHolder) viewHolder;
 
                 PreviewAndComplicationsConfigItem previewAndComplicationsConfigItem =
                        (PreviewAndComplicationsConfigItem) configItemType;
@@ -216,10 +216,10 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         previewAndComplicationsConfigItem.getDefaultAddedComplicationResourceId();
                 int defaultAddedComplicationLongResourceId =
                         previewAndComplicationsConfigItem.getDefaultAddedComplicationLongResourceId();
-                previewAndComplicationsViewHolder.setDefaultComplicationDrawable(
+                complicationsViewHolder.setDefaultComplicationDrawable(
                         defaultComplicationResourceId, defaultComplicationLongResourceId, defaultAddedComplicationResourceId, defaultAddedComplicationLongResourceId );
 
-                previewAndComplicationsViewHolder.initializesColorsAndComplications();
+                complicationsViewHolder.initializesColorsAndComplications();
                 break;
 
 
@@ -290,11 +290,11 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
      */
     void updateSelectedComplication(ComplicationProviderInfo complicationProviderInfo) {
 
-        Log.d(TAG, "updateSelectedComplication: " + mPreviewAndComplicationsViewHolder);
+        Log.d(TAG, "updateSelectedComplication: " + mComplicationsViewHolder);
 
         // Checks if view is inflated and complication id is valid.
-        if (mPreviewAndComplicationsViewHolder != null && mSelectedComplicationId >= 0) {
-            mPreviewAndComplicationsViewHolder.updateComplicationViews(
+        if (mComplicationsViewHolder != null && mSelectedComplicationId >= 0) {
+            mComplicationsViewHolder.updateComplicationViews(
                     mSelectedComplicationId, complicationProviderInfo);
         }
     }
@@ -307,14 +307,14 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
      void updatePreviewColors() {
-        Log.d(TAG, "updatePreviewColors(): " + mPreviewAndComplicationsViewHolder);
+        Log.d(TAG, "updatePreviewColors(): " + mComplicationsViewHolder);
     }
 
     /**
      * Displays watch face preview along with complication locations. Allows user to tap on the
      * complication they want to change and preview updates dynamically.
      */
-    public class PreviewAndComplicationsViewHolder extends RecyclerView.ViewHolder
+    public class ComplicationsViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         private ImageButton mLeftComplication;
@@ -327,7 +327,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         private Drawable mDefaultAddedComplicationDrawable;
         private Drawable mDefaultAddedComplicationLongDrawable;
 
-        PreviewAndComplicationsViewHolder(final View view) {
+        ComplicationsViewHolder(final View view) {
             super(view);
 
             // Sets up left complication preview.
