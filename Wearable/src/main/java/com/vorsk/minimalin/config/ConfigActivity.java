@@ -3,6 +3,7 @@ package com.vorsk.minimalin.config;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.wear.widget.WearableLinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 import android.support.wearable.complications.ComplicationProviderInfo;
@@ -43,7 +44,7 @@ public class ConfigActivity extends Activity {
         // Aligns the first and last items on the list vertically centered on the screen.
         mWearableRecyclerView.setEdgeItemsCenteringEnabled(true);
 
-        mWearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(this));
+        mWearableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Improves performance because we know changes in content do not change the layout size of
         // the RecyclerView.

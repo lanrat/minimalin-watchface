@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/activity_config_padding"
-        android:background="@drawable/preview" />
+        android:background="@drawable/preview_round_empty" />
 
     <ImageButton
         android:id="@+id/left_complication"
