@@ -302,12 +302,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mWatchTicksColor = mSharedPref.getInt(ticksColorResourceName, Color.WHITE);
             mWatchTimeColor = mSharedPref.getInt(timeColorResourceName, Color.WHITE);
 
-
-            if (mBackgroundColor == Color.WHITE) {
-                mWatchHandShadowColor = Color.WHITE;
-            } else {
-                mWatchHandShadowColor = Color.BLACK;
-            }
+            mWatchHandShadowColor = Color.BLACK;
 
             String unreadNotificationPreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_unread_notifications_pref);
@@ -388,9 +383,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCirclePaint.setStyle(Paint.Style.FILL);
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
 
-            //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/AtomicAge-Regular.ttf");
-            //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Baumans-Regular.ttf");
-            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa-Regular.ttf"); // I like this one
+            // https://fonts.google.com/specimen/Comfortaa?selection.family=Comfortaa
+            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
 
             mNotificationCountPaint = new TextPaint();
             mNotificationCountPaint.setColor(mBackgroundColor);
