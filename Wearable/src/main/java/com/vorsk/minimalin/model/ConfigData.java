@@ -2,17 +2,16 @@ package com.vorsk.minimalin.model;
 
 import android.content.Context;
 import android.graphics.Color;
-
-import java.util.ArrayList;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import com.vorsk.minimalin.R;
-import com.vorsk.minimalin.config.color.ColorSelectionActivity;
-import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 import com.vorsk.minimalin.config.ConfigActivity;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
+import com.vorsk.minimalin.config.color.ColorSelectionActivity;
+import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.support.v7.widget.RecyclerView;
+import java.util.ArrayList;
 
 /**
  * Data represents different views for configuring the
@@ -20,14 +19,6 @@ import android.support.v7.widget.RecyclerView;
  * via {@link ConfigActivity}.
  */
 public class ConfigData {
-
-    /**
-     * Interface all ConfigItems must implement so the {@link RecyclerView}'s Adapter associated
-     * with the configuration activity knows what type of ViewHolder to inflate.
-     */
-    public interface ConfigItemType {
-        int getConfigType();
-    }
 
     /**
      * Returns Watch Face Service class associated with configuration Activity.
@@ -174,6 +165,14 @@ public class ConfigData {
         settingsConfigData.add(backgroundImageComplicationConfigItem);
 
         return settingsConfigData;
+    }
+
+    /**
+     * Interface all ConfigItems must implement so the {@link RecyclerView}'s Adapter associated
+     * with the configuration activity knows what type of ViewHolder to inflate.
+     */
+    public interface ConfigItemType {
+        int getConfigType();
     }
 
     /**

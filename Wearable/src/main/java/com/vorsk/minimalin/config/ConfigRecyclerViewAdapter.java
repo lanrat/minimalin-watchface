@@ -10,10 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.complications.ComplicationHelperActivity;
-import android.support.wearable.complications.ProviderInfoRetriever;
 import android.support.wearable.complications.ComplicationProviderInfo;
+import android.support.wearable.complications.ProviderInfoRetriever;
 import android.support.wearable.complications.ProviderInfoRetriever.OnProviderInfoReceivedCallback;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,20 +21,19 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
 
+import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.color.ColorSelectionActivity;
-import com.vorsk.minimalin.model.ConfigData.ComplicationsConfigItem;
-import com.vorsk.minimalin.model.ConfigData.ConfigItemType;
 import com.vorsk.minimalin.model.ConfigData.BackgroundComplicationConfigItem;
 import com.vorsk.minimalin.model.ConfigData.ColorConfigItem;
+import com.vorsk.minimalin.model.ConfigData.ComplicationsConfigItem;
+import com.vorsk.minimalin.model.ConfigData.ConfigItemType;
 import com.vorsk.minimalin.model.ConfigData.SwitchConfigItem;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
-import com.vorsk.minimalin.R;
-
-import static com.vorsk.minimalin.config.color.ColorSelectionActivity.EXTRA_SHARED_PREF;
-
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
+
+import static com.vorsk.minimalin.config.color.ColorSelectionActivity.EXTRA_SHARED_PREF;
 
 /**
  * Displays different layouts for configuring watch face's complications and appearance settings
@@ -58,48 +56,26 @@ import java.util.concurrent.Executors;
  */
 public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = "CompConfigAdapter";
-
-    /**
-     * Used by associated watch face ({@link MinimalinWatchFaceService}) to let this
-     * adapter know which complication locations are supported, their ids, and supported
-     * complication data types.
-     */
-    public enum ComplicationLocation {
-        BACKGROUND,
-        LEFT,
-        RIGHT,
-        TOP,
-        BOTTOM
-    }
-
     public static final int TYPE_COMPLICATIONS_CONFIG = 0;
     public static final int TYPE_COLOR_CONFIG = 1;
     public static final int TYPE_SWITCH_CONFIG = 2;
     public static final int TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG = 3;
-
+    private static final String TAG = "CompConfigAdapter";
     // ComponentName associated with watch face service (service that renders watch face). Used
     // to retrieve complication information.
     private ComponentName mWatchFaceComponentName;
-
     private ArrayList<ConfigItemType> mSettingsDataSet;
-
     private Context mContext;
-
     private SharedPreferences mSharedPref;
-
     // Selected complication id by user.
     private int mSelectedComplicationId;
-
     private int mBackgroundComplicationId;
     private int mLeftComplicationId;
     private int mRightComplicationId;
     private int mTopComplicationId;
     private int mBottomComplicationId;
-
     // Required to retrieve complication data from watch face for preview.
     private ProviderInfoRetriever mProviderInfoRetriever;
-
     // Maintains reference view holder to dynamically update watch face preview. Used instead of
     // notifyItemChanged(int position) to avoid flicker and re-inflating the view.
     private ComplicationsViewHolder mComplicationsViewHolder;
@@ -204,7 +180,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         (ComplicationsViewHolder) viewHolder;
 
                 ComplicationsConfigItem complicationsConfigItem =
-                       (ComplicationsConfigItem) configItemType;
+                        (ComplicationsConfigItem) configItemType;
 
                 int defaultComplicationResourceId =
                         complicationsConfigItem.getDefaultComplicationResourceId();
@@ -215,7 +191,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 int defaultAddedComplicationLongResourceId =
                         complicationsConfigItem.getDefaultAddedComplicationLongResourceId();
                 complicationsViewHolder.setDefaultComplicationDrawable(
-                        defaultComplicationResourceId, defaultComplicationLongResourceId, defaultAddedComplicationResourceId, defaultAddedComplicationLongResourceId );
+                        defaultComplicationResourceId, defaultComplicationLongResourceId, defaultAddedComplicationResourceId, defaultAddedComplicationLongResourceId);
 
                 complicationsViewHolder.initializesColorsAndComplications();
                 break;
@@ -304,6 +280,19 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     /**
+     * Used by associated watch face ({@link MinimalinWatchFaceService}) to let this
+     * adapter know which complication locations are supported, their ids, and supported
+     * complication data types.
+     */
+    public enum ComplicationLocation {
+        BACKGROUND,
+        LEFT,
+        RIGHT,
+        TOP,
+        BOTTOM
+    }
+
+    /**
      * Displays watch face complication locations. Allows user to tap on the
      * complication they want to change and preview updates dynamically.
      */
@@ -328,7 +317,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mLeftComplication.setOnClickListener(this);
 
             // Sets up right complication preview.
-            mRightComplication =  view.findViewById(R.id.right_complication);
+            mRightComplication = view.findViewById(R.id.right_complication);
             mRightComplication.setOnClickListener(this);
 
             // Sets up top complication preview.

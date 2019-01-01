@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_grey">
+
     <android.support.wear.widget.WearableRecyclerView
         android:id="@+id/wearable_recycler_view"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:scrollbars="vertical"
-       />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 </FrameLayout>

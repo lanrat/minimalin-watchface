@@ -37,7 +37,7 @@
                 android:resource="@drawable/preview_round" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
-                android:value="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION"/>
+                android:value="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION" />
 
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
@@ -46,21 +46,20 @@
             </intent-filter>
         </service>
 
-        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity"/>
+        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity" />
         <activity
             android:name=".config.ConfigActivity"
             android:label="@string/complication_config">
             <intent-filter>
-                <action android:name="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION"/>
+                <action android:name="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION" />
 
-                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
 
-
-        <activity android:name=".config.color.ColorSelectionActivity"/>
+        <activity android:name=".config.color.ColorSelectionActivity" />
     </application>
 
 </manifest>

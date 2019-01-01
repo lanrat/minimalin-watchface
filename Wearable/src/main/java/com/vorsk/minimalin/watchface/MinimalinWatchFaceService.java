@@ -75,6 +75,12 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_LONG_TEXT,
             }
     };
+    /*
+     * Update rate in milliseconds for interactive mode. We update once a second to advance the
+     * second hand.
+     */
+    private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
+    private Rect mTextRect = new Rect();
 
     // Used by {@link ConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config_list activity.
@@ -123,15 +129,38 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
     }
 
-    /*
-     * Update rate in milliseconds for interactive mode. We update once a second to advance the
-     * second hand.
-     */
-    private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
-
     @Override
     public Engine onCreateEngine() {
         return new Engine();
+    }
+
+    // see https://www.slideshare.net/rtc1/intro-todrawingtextandroid
+    private void drawVertAlignedText(Canvas canvas, float x, float y, String s, Paint p, TextVertAlign vertAlign) {
+        //Rect r = new Rect();
+        p.getTextBounds(s, 0, s.length(), mTextRect); //Note r.top will be negative
+        float textX = x - mTextRect.width() / 2f - mTextRect.left;
+        float textY = y;
+        switch (vertAlign) {
+            case Top:
+                textY = y - mTextRect.top;
+                break;
+            case Middle:
+                textY = y - mTextRect.top - mTextRect.height() / 2;
+                break;
+            case Baseline:
+                break;
+            case Bottom:
+                textY = y - (mTextRect.height() + mTextRect.top);
+                break;
+        }
+        canvas.drawText(s, textX, textY, p);
+    }
+
+    public enum TextVertAlign {
+        Top,
+        Middle,
+        Baseline,
+        Bottom
     }
 
     private class Engine extends CanvasWatchFaceService.Engine {
@@ -145,65 +174,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private static final float NOTIFICATION_OUTLINE_STROKE_WIDTH = 2f;
 
         private static final int SHADOW_RADIUS = 6;
-
-        private Calendar mCalendar;
-        private boolean mRegisteredTimeZoneReceiver = false;
-        private boolean mMuteMode;
-
-        private float mCenterX;
-        private float mCenterY;
-
-        private float mSecondHandLength;
-        private float mMinuteHandLength;
-        private float mHourHandLength;
-        private float mTickLength;
-        private float mMinimalinTextRadiusLength;
-        private float mMinimalinVerticalTimeGap;
-
-        // Colors for all hands (hour, minute, seconds, ticks) based on photo loaded.
-        private int mWatchComplicationsColor;
-        private int mWatchSecondHandHighlightColor;
-        private int mWatchMinuteHandHighlightColor;
-        private int mWatchHourHandHighlightColor;
-        private int mWatchHandShadowColor;
-        private int mWatchTicksColor;
-        private int mWatchTimeColor;
-
-        private int mBackgroundColor;
-
-        private Paint mHourPaint;
-        private Paint mMinutePaint;
-        private Paint mSecondPaint;
-        private Paint mNotificationCirclePaint;
-        private Paint mTicksPaint;
-        private TextPaint mMinimalinTimePaint;
-        private TextPaint mNotificationCountPaint;
-
-        private Paint mBackgroundPaint;
-
-        /* Maps active complication ids to the data for that complication. Note: Data will only be
-         * present if the user has chosen a provider via the settings activity for the watch face.
-         */
-        private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
-
-        /* Maps complication ids to corresponding ComplicationDrawable that renders the
-         * the complication data on the watch face.
-         */
-        private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
-
-        private boolean mAmbient;
-        private boolean mLowBitAmbient;
-        private boolean mBurnInProtection;
-
         // Used to pull user's preferences for background color, highlight color, and visual
         // indicating there are unread notifications.
         SharedPreferences mSharedPref;
-
-        // User's preference for if they want visual shown to indicate unread notifications.
-        private boolean mUnreadNotificationsPreference;
-        private int mNumberOfUnreadNotifications = 0;
-        private boolean mMillitaryTimePreference;
-
+        private Calendar mCalendar;
         private final BroadcastReceiver mTimeZoneReceiver =
                 new BroadcastReceiver() {
                     @Override
@@ -212,7 +186,42 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         invalidate();
                     }
                 };
-
+        private boolean mRegisteredTimeZoneReceiver = false;
+        private boolean mMuteMode;
+        private float mCenterX;
+        private float mCenterY;
+        private float mSecondHandLength;
+        private float mMinuteHandLength;
+        private float mHourHandLength;
+        private float mTickLength;
+        private float mMinimalinTextRadiusLength;
+        private float mMinimalinVerticalTimeGap;
+        // Colors for all hands (hour, minute, seconds, ticks) based on photo loaded.
+        private int mWatchComplicationsColor;
+        private int mWatchSecondHandHighlightColor;
+        private int mWatchMinuteHandHighlightColor;
+        private int mWatchHourHandHighlightColor;
+        private int mWatchHandShadowColor;
+        private int mWatchTicksColor;
+        private int mWatchTimeColor;
+        private int mBackgroundColor;
+        private Paint mHourPaint;
+        private Paint mMinutePaint;
+        private Paint mSecondPaint;
+        private Paint mNotificationCirclePaint;
+        private Paint mTicksPaint;
+        private TextPaint mMinimalinTimePaint;
+        private TextPaint mNotificationCountPaint;
+        private Paint mBackgroundPaint;
+        /* Maps active complication ids to the data for that complication. Note: Data will only be
+         * present if the user has chosen a provider via the settings activity for the watch face.
+         */
+        private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
+        /* Maps complication ids to corresponding ComplicationDrawable that renders the
+         * the complication data on the watch face.
+         */
+        private SparseArray<ComplicationDrawable> mComplicationDrawableSparseArray;
+        private boolean mAmbient;
         // Handler to update the time once a second in interactive mode.
         private final Handler mUpdateTimeHandler =
                 new Handler() {
@@ -228,6 +237,12 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         }
                     }
                 };
+        private boolean mLowBitAmbient;
+        private boolean mBurnInProtection;
+        // User's preference for if they want visual shown to indicate unread notifications.
+        private boolean mUnreadNotificationsPreference;
+        private int mNumberOfUnreadNotifications = 0;
+        private boolean mMillitaryTimePreference;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -720,8 +735,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 int count = mNumberOfUnreadNotifications;
                 String countStr = "+";
 
-                if (count <=  9) {
-                    countStr =  String.valueOf(count);
+                if (count <= 9) {
+                    countStr = String.valueOf(count);
                 }
                 //(x,y) coordinates for where to draw the notification indicator
                 float xPos = mCenterX;
@@ -731,7 +746,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 /*canvas.drawText(String.valueOf(count), xPos,
                         yPos - (mNotificationCountPaint.descent()
                                 + mNotificationCountPaint.ascent()) / 2, mNotificationCountPaint);*/
-                drawVertAlignedText(canvas, xPos, yPos, countStr, mNotificationCountPaint,  TextVertAlign.Middle);
+                drawVertAlignedText(canvas, xPos, yPos, countStr, mNotificationCountPaint, TextVertAlign.Middle);
             }
         }
 
@@ -761,7 +776,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean minimalinTimesConflicting(int hour, int minute) {
             // Need to add 2 to minutes to shift center of combined time to overlap point
             // need to % 60 on minutes to cover the :58, and :59 minutes back to the correct numbers when adding 2
-            return hour % 12 == ((minute + 2) % 60)/ 5;
+            return hour % 12 == ((minute + 2) % 60) / 5;
         }
 
         private boolean minimalinTimesConflictingNorthOrSouth(int hour, int minute) {
@@ -810,8 +825,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // minimalin vertical time
                     float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                     float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY - mMinimalinVerticalTimeGap/2, String.format("%2d", printedHour), mMinimalinTimePaint, TextVertAlign.Baseline);
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY + mMinimalinVerticalTimeGap/2, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Top);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY - mMinimalinVerticalTimeGap / 2, String.format("%2d", printedHour), mMinimalinTimePaint, TextVertAlign.Baseline);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY + mMinimalinVerticalTimeGap / 2, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Top);
                 }
             } else {
                 // Minimalin Hour text
@@ -974,36 +989,5 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean shouldTimerBeRunning() {
             return isVisible() && !mAmbient;
         }
-    }
-
-    public enum TextVertAlign {
-        Top,
-        Middle,
-        Baseline,
-        Bottom
-    }
-
-    private Rect mTextRect = new Rect();
-
-    // see https://www.slideshare.net/rtc1/intro-todrawingtextandroid
-    private void drawVertAlignedText(Canvas canvas, float x, float y, String s, Paint p, TextVertAlign vertAlign) {
-        //Rect r = new Rect();
-        p.getTextBounds(s, 0, s.length(), mTextRect); //Note r.top will be negative
-        float textX = x - mTextRect.width() / 2f - mTextRect.left;
-        float textY = y;
-        switch (vertAlign) {
-            case Top:
-                textY = y - mTextRect.top;
-                break;
-            case Middle:
-                textY = y - mTextRect.top - mTextRect.height() / 2;
-                break;
-            case Baseline:
-                break;
-            case Bottom:
-                textY = y - (mTextRect.height() + mTextRect.top);
-                break;
-        }
-        canvas.drawText(s, textX, textY, p);
     }
 }
