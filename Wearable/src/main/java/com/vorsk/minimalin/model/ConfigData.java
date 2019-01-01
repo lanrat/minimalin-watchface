@@ -79,9 +79,9 @@ public class ConfigData {
 
         ArrayList<ConfigItemType> settingsConfigData = new ArrayList<>();
 
-        // Data for watch face preview and complications UX in settings Activity.
+        // Data for watch face complications UX in settings Activity.
         ConfigItemType complicationConfigItem =
-                new PreviewAndComplicationsConfigItem(R.drawable.add_complication, R.drawable.add_big_complication, R.drawable.added_complication, R.drawable.added_big_complication);
+                new ComplicationsConfigItem(R.drawable.add_complication, R.drawable.add_big_complication, R.drawable.added_complication, R.drawable.added_big_complication);
         settingsConfigData.add(complicationConfigItem);
 
         // Data for highlight/marker (hour hand) color UX in settings Activity.
@@ -149,7 +149,7 @@ public class ConfigData {
 
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
         ConfigItemType unreadNotificationsConfigItem =
-                new UnreadNotificationConfigItem(
+                new SwitchConfigItem(
                         context.getString(R.string.config_unread_notifications_label),
                         R.drawable.ic_notifications_white_24dp,
                         R.drawable.ic_notifications_off_white_24dp,
@@ -168,17 +168,17 @@ public class ConfigData {
     }
 
     /**
-     * Data for Watch Face Preview with Complications Preview item in RecyclerView.
+     * Data for Watch Face Complications Preview item in RecyclerView.
      */
-    public static class PreviewAndComplicationsConfigItem implements ConfigItemType {
+    public static class ComplicationsConfigItem implements ConfigItemType {
 
         private int defaultComplicationResourceId;
         private int defaultComplicationLongResourceId;
         private int defaultAddedComplicationResourceId;
         private int defaultAddedComplicationLongResourceId;
 
-        PreviewAndComplicationsConfigItem(int defaultComplicationResourceId, int defaultComplicationLongResourceId,
-                int defaultAddedComplicationResourceId, int defaultAddedComplicationLongResourceId) {
+        ComplicationsConfigItem(int defaultComplicationResourceId, int defaultComplicationLongResourceId,
+                                int defaultAddedComplicationResourceId, int defaultAddedComplicationLongResourceId) {
             this.defaultComplicationResourceId = defaultComplicationResourceId;
             this.defaultComplicationLongResourceId = defaultComplicationLongResourceId;
             this.defaultAddedComplicationResourceId = defaultAddedComplicationResourceId;
@@ -203,7 +203,7 @@ public class ConfigData {
 
         @Override
         public int getConfigType() {
-            return ConfigRecyclerViewAdapter.TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG;
+            return ConfigRecyclerViewAdapter.TYPE_COMPLICATIONS_CONFIG;
         }
     }
 
@@ -251,16 +251,16 @@ public class ConfigData {
     }
 
     /**
-     * Data for Unread Notification preference picker item in RecyclerView.
+     * Data for switch preference picker item in RecyclerView.
      */
-    public static class UnreadNotificationConfigItem implements ConfigItemType {
+    public static class SwitchConfigItem implements ConfigItemType {
 
         private String name;
         private int iconEnabledResourceId;
         private int iconDisabledResourceId;
         private int sharedPrefId;
 
-        UnreadNotificationConfigItem(
+        SwitchConfigItem(
                 String name,
                 int iconEnabledResourceId,
                 int iconDisabledResourceId,
@@ -289,7 +289,7 @@ public class ConfigData {
 
         @Override
         public int getConfigType() {
-            return ConfigRecyclerViewAdapter.TYPE_UNREAD_NOTIFICATION_CONFIG;
+            return ConfigRecyclerViewAdapter.TYPE_SWITCH_CONFIG;
         }
     }
 

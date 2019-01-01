@@ -23,11 +23,11 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 
 import com.vorsk.minimalin.config.color.ColorSelectionActivity;
-import com.vorsk.minimalin.model.ConfigData.PreviewAndComplicationsConfigItem;
+import com.vorsk.minimalin.model.ConfigData.ComplicationsConfigItem;
 import com.vorsk.minimalin.model.ConfigData.ConfigItemType;
 import com.vorsk.minimalin.model.ConfigData.BackgroundComplicationConfigItem;
 import com.vorsk.minimalin.model.ConfigData.ColorConfigItem;
-import com.vorsk.minimalin.model.ConfigData.UnreadNotificationConfigItem;
+import com.vorsk.minimalin.model.ConfigData.SwitchConfigItem;
 import com.vorsk.minimalin.watchface.MinimalinWatchFaceService;
 import com.vorsk.minimalin.R;
 
@@ -73,9 +73,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         BOTTOM
     }
 
-    public static final int TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG = 0;
+    public static final int TYPE_COMPLICATIONS_CONFIG = 0;
     public static final int TYPE_COLOR_CONFIG = 1;
-    public static final int TYPE_UNREAD_NOTIFICATION_CONFIG = 2;
+    public static final int TYPE_SWITCH_CONFIG = 2;
     public static final int TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG = 3;
 
     // ComponentName associated with watch face service (service that renders watch face). Used
@@ -148,14 +148,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         RecyclerView.ViewHolder viewHolder = null;
 
         switch (viewType) {
-            case TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG:
+            case TYPE_COMPLICATIONS_CONFIG:
                 // Need direct reference to watch face preview view holder to update watch face
-                // preview based on selections from the user.
                 mComplicationsViewHolder =
                         new ComplicationsViewHolder(
                                 LayoutInflater.from(parent.getContext())
                                         .inflate(
-                                                //R.layout.config_list_preview_and_complications_item,
                                                 R.layout.config_item_complications,
                                                 parent,
                                                 false));
@@ -169,9 +167,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                         .inflate(R.layout.config_item_button, parent, false));
                 break;
 
-            case TYPE_UNREAD_NOTIFICATION_CONFIG:
+            case TYPE_SWITCH_CONFIG:
                 viewHolder =
-                        new UnreadNotificationViewHolder(
+                        new SwitchViewHolder(
                                 LayoutInflater.from(parent.getContext())
                                         .inflate(
                                                 R.layout.config_item_switch,
@@ -201,21 +199,21 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         ConfigItemType configItemType = mSettingsDataSet.get(position);
 
         switch (viewHolder.getItemViewType()) {
-            case TYPE_PREVIEW_AND_COMPLICATIONS_CONFIG:
+            case TYPE_COMPLICATIONS_CONFIG:
                 ComplicationsViewHolder complicationsViewHolder =
                         (ComplicationsViewHolder) viewHolder;
 
-                PreviewAndComplicationsConfigItem previewAndComplicationsConfigItem =
-                       (PreviewAndComplicationsConfigItem) configItemType;
+                ComplicationsConfigItem complicationsConfigItem =
+                       (ComplicationsConfigItem) configItemType;
 
                 int defaultComplicationResourceId =
-                        previewAndComplicationsConfigItem.getDefaultComplicationResourceId();
+                        complicationsConfigItem.getDefaultComplicationResourceId();
                 int defaultComplicationLongResourceId =
-                        previewAndComplicationsConfigItem.getDefaultComplicationLongResourceId();
+                        complicationsConfigItem.getDefaultComplicationLongResourceId();
                 int defaultAddedComplicationResourceId =
-                        previewAndComplicationsConfigItem.getDefaultAddedComplicationResourceId();
+                        complicationsConfigItem.getDefaultAddedComplicationResourceId();
                 int defaultAddedComplicationLongResourceId =
-                        previewAndComplicationsConfigItem.getDefaultAddedComplicationLongResourceId();
+                        complicationsConfigItem.getDefaultAddedComplicationLongResourceId();
                 complicationsViewHolder.setDefaultComplicationDrawable(
                         defaultComplicationResourceId, defaultComplicationLongResourceId, defaultAddedComplicationResourceId, defaultAddedComplicationLongResourceId );
 
@@ -239,12 +237,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 colorPickerViewHolder.setLaunchActivityToSelectColor(activity);
                 break;
 
-            case TYPE_UNREAD_NOTIFICATION_CONFIG:
-                UnreadNotificationViewHolder unreadViewHolder =
-                        (UnreadNotificationViewHolder) viewHolder;
+            case TYPE_SWITCH_CONFIG:
+                SwitchViewHolder unreadViewHolder =
+                        (SwitchViewHolder) viewHolder;
 
-                UnreadNotificationConfigItem unreadConfigItem =
-                        (UnreadNotificationConfigItem) configItemType;
+                SwitchConfigItem unreadConfigItem =
+                        (SwitchConfigItem) configItemType;
 
                 int unreadEnabledIconResourceId = unreadConfigItem.getIconEnabledResourceId();
                 int unreadDisabledIconResourceId = unreadConfigItem.getIconDisabledResourceId();
@@ -306,12 +304,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         mProviderInfoRetriever.release();
     }
 
-     void updatePreviewColors() {
-        Log.d(TAG, "updatePreviewColors(): " + mComplicationsViewHolder);
-    }
-
     /**
-     * Displays watch face preview along with complication locations. Allows user to tap on the
+     * Displays watch face complication locations. Allows user to tap on the
      * complication they want to change and preview updates dynamically.
      */
     public class ComplicationsViewHolder extends RecyclerView.ViewHolder
@@ -533,28 +527,28 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     /**
-     * Displays switch to indicate whether or not icon appears for unread notifications. User can
+     * Displays switch for toggle settings. User can
      * toggle on/off.
      */
-    public class UnreadNotificationViewHolder extends RecyclerView.ViewHolder
+    public class SwitchViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private Switch mUnreadNotificationSwitch;
+        private Switch mSwitch;
 
         private int mEnabledIconResourceId;
         private int mDisabledIconResourceId;
 
         private int mSharedPrefResourceId;
 
-        UnreadNotificationViewHolder(View view) {
+        SwitchViewHolder(View view) {
             super(view);
 
-            mUnreadNotificationSwitch = view.findViewById(R.id.item_switch);
+            mSwitch = view.findViewById(R.id.item_switch);
             view.setOnClickListener(this);
         }
 
         public void setName(String name) {
-            mUnreadNotificationSwitch.setText(name);
+            mSwitch.setText(name);
         }
 
         void setIcons(int enabledIconResourceId, int disabledIconResourceId) {
@@ -562,19 +556,19 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mEnabledIconResourceId = enabledIconResourceId;
             mDisabledIconResourceId = disabledIconResourceId;
 
-            Context context = mUnreadNotificationSwitch.getContext();
+            Context context = mSwitch.getContext();
 
             // Set default to enabled.
-            mUnreadNotificationSwitch.setCompoundDrawablesWithIntrinsicBounds(
+            mSwitch.setCompoundDrawablesWithIntrinsicBounds(
                     context.getDrawable(mEnabledIconResourceId), null, null, null);
         }
 
         void setSharedPrefId(int sharedPrefId) {
             mSharedPrefResourceId = sharedPrefId;
 
-            if (mUnreadNotificationSwitch != null) {
+            if (mSwitch != null) {
 
-                Context context = mUnreadNotificationSwitch.getContext();
+                Context context = mSwitch.getContext();
                 String sharedPreferenceString = context.getString(mSharedPrefResourceId);
                 Boolean currentState = mSharedPref.getBoolean(sharedPreferenceString, true);
 
@@ -591,8 +585,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 currentIconResourceId = mDisabledIconResourceId;
             }
 
-            mUnreadNotificationSwitch.setChecked(currentState);
-            mUnreadNotificationSwitch.setCompoundDrawablesWithIntrinsicBounds(
+            mSwitch.setChecked(currentState);
+            mSwitch.setCompoundDrawablesWithIntrinsicBounds(
                     context.getDrawable(currentIconResourceId), null, null, null);
         }
 

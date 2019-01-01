@@ -66,12 +66,6 @@ public class ConfigActivity extends Activity {
             // Updates preview with new complication information for selected complication id.
             // Note: complication id is saved and tracked in the adapter class.
             mAdapter.updateSelectedComplication(complicationProviderInfo);
-
-        } else if (requestCode == UPDATE_COLORS_CONFIG_REQUEST_CODE
-                && resultCode == RESULT_OK) {
-
-            // Updates highlight and background colors based on the user preference.
-            mAdapter.updatePreviewColors();
         }
     }
 }
