@@ -140,6 +140,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         mProviderInfoRetriever.init();
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder(): viewType: " + viewType);
@@ -416,17 +417,17 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             Log.d(TAG, "updateComplicationViews(): id: " + watchFaceComplicationId);
             Log.d(TAG, "\tinfo: " + complicationProviderInfo);
 
-            if (watchFaceComplicationId == mBackgroundComplicationId) {
-                // Currently I don't preview the background complication in the preview
-            } else if (watchFaceComplicationId == mLeftComplicationId) {
-                updateComplicationView(complicationProviderInfo, mLeftComplication, false);
-            } else if (watchFaceComplicationId == mRightComplicationId) {
-                updateComplicationView(complicationProviderInfo, mRightComplication, false);
-            } else if (watchFaceComplicationId == mTopComplicationId) {
-                updateComplicationView(complicationProviderInfo, mTopComplication, false);
-            } else if (watchFaceComplicationId == mBottomComplicationId) {
-                updateComplicationView(complicationProviderInfo, mBottomComplication, true);
-            }
+            if (watchFaceComplicationId != mBackgroundComplicationId) {
+                if (watchFaceComplicationId == mLeftComplicationId) {
+                    updateComplicationView(complicationProviderInfo, mLeftComplication, false);
+                } else if (watchFaceComplicationId == mRightComplicationId) {
+                    updateComplicationView(complicationProviderInfo, mRightComplication, false);
+                } else if (watchFaceComplicationId == mTopComplicationId) {
+                    updateComplicationView(complicationProviderInfo, mTopComplication, false);
+                } else if (watchFaceComplicationId == mBottomComplicationId) {
+                    updateComplicationView(complicationProviderInfo, mBottomComplication, true);
+                }
+            } // Currently I don't preview the background complication in the preview
         }
 
         private void updateComplicationView(ComplicationProviderInfo complicationProviderInfo,

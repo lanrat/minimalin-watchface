@@ -18,6 +18,7 @@ package com.vorsk.minimalin.config.color;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.view.CircledImageView;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class ColorSelectionRecyclerViewAdapter extends
     private ArrayList<Integer> mColorOptionsDataSet;
     private String mSharedPrefString;
 
-    public ColorSelectionRecyclerViewAdapter(
+    ColorSelectionRecyclerViewAdapter(
             String sharedPrefString,
             ArrayList<Integer> colorSettingsDataSet) {
 
@@ -51,18 +52,17 @@ public class ColorSelectionRecyclerViewAdapter extends
         mColorOptionsDataSet = colorSettingsDataSet;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder(): viewType: " + viewType);
 
-        RecyclerView.ViewHolder viewHolder =
-                new ColorViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.config_item_color, parent, false));
-        return viewHolder;
+        return new ColorViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.config_item_color, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         Log.d(TAG, "Element " + position + " set.");
 
         Integer color = mColorOptionsDataSet.get(position);
@@ -84,7 +84,7 @@ public class ColorSelectionRecyclerViewAdapter extends
 
         private CircledImageView mColorCircleImageView;
 
-        public ColorViewHolder(final View view) {
+        ColorViewHolder(final View view) {
             super(view);
             mColorCircleImageView = view.findViewById(R.id.color);
             view.setOnClickListener(this);

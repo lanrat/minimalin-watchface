@@ -30,14 +30,8 @@ import com.vorsk.minimalin.model.ConfigData;
  */
 public class ColorSelectionActivity extends Activity {
 
-    private static final String TAG = ColorSelectionActivity.class.getSimpleName();
-
     public static final String EXTRA_SHARED_PREF =
             "com.vorsk.minimalin.config_list.extra.EXTRA_SHARED_PREF";
-
-    private WearableRecyclerView mConfigAppearanceWearableRecyclerView;
-
-    private ColorSelectionRecyclerViewAdapter mColorSelectionRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +41,11 @@ public class ColorSelectionActivity extends Activity {
         // Assigns SharedPreference String used to save color selected.
         String sharedPrefString = getIntent().getStringExtra(EXTRA_SHARED_PREF);
 
-        mColorSelectionRecyclerViewAdapter = new ColorSelectionRecyclerViewAdapter(
+        ColorSelectionRecyclerViewAdapter mColorSelectionRecyclerViewAdapter = new ColorSelectionRecyclerViewAdapter(
                 sharedPrefString,
                 ConfigData.getColorOptionsDataSet());
 
-        mConfigAppearanceWearableRecyclerView = findViewById(R.id.wearable_recycler_view);
+        WearableRecyclerView mConfigAppearanceWearableRecyclerView = findViewById(R.id.wearable_recycler_view);
 
         // Aligns the first and last items on the list vertically centered on the screen.
         mConfigAppearanceWearableRecyclerView.setEdgeItemsCenteringEnabled(true);
