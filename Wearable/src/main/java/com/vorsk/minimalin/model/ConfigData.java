@@ -79,7 +79,7 @@ public class ConfigData {
         ConfigItemType markerHourColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_marker_hour_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_marker_color_hour),
                         ColorSelectionActivity.class);
         settingsConfigData.add(markerHourColorConfigItem);
@@ -88,7 +88,7 @@ public class ConfigData {
         ConfigItemType markerMinuteColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_marker_minute_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_marker_color_minute),
                         ColorSelectionActivity.class);
         settingsConfigData.add(markerMinuteColorConfigItem);
@@ -97,7 +97,7 @@ public class ConfigData {
         ConfigItemType markerSecondColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_marker_second_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_marker_color_second),
                         ColorSelectionActivity.class);
         settingsConfigData.add(markerSecondColorConfigItem);
@@ -106,7 +106,7 @@ public class ConfigData {
         ConfigItemType complicationsColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_complications_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_complications_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(complicationsColorConfigItem);
@@ -115,7 +115,7 @@ public class ConfigData {
         ConfigItemType ticksColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_tick_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_ticks_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(ticksColorConfigItem);
@@ -124,7 +124,7 @@ public class ConfigData {
         ConfigItemType timeColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_time_text_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_time_text_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(timeColorConfigItem);
@@ -133,7 +133,7 @@ public class ConfigData {
         ConfigItemType backgroundColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_background_color_label),
-                        R.drawable.icn_styles,
+                        R.drawable.ic_color_lens,
                         context.getString(R.string.saved_background_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(backgroundColorConfigItem);
@@ -142,8 +142,8 @@ public class ConfigData {
         ConfigItemType unreadNotificationsConfigItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_unread_notifications_label),
-                        R.drawable.ic_notifications_white_24dp,
-                        R.drawable.ic_notifications_off_white_24dp,
+                        R.drawable.ic_notifications,
+                        R.drawable.ic_notifications_off,
                         R.string.saved_unread_notifications_pref);
         settingsConfigData.add(unreadNotificationsConfigItem);
 
@@ -151,8 +151,8 @@ public class ConfigData {
         ConfigItemType militaryTimeConfigItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_24_hour_label),
-                        R.drawable.ic_notifications_white_24dp, // TODO get icons for this
-                        R.drawable.ic_notifications_off_white_24dp,
+                        R.drawable.time_24h, // TODO get icons for this
+                        R.drawable.time_12h,
                         R.string.saved_24h_pref);
         settingsConfigData.add(militaryTimeConfigItem);
 
@@ -161,7 +161,7 @@ public class ConfigData {
                 // TODO (jewalker): Revised in another CL to support background complication.
                 new BackgroundComplicationConfigItem(
                         context.getString(R.string.config_background_image_complication_label),
-                        R.drawable.ic_landscape_white);
+                        R.drawable.ic_landscape);
         settingsConfigData.add(backgroundImageComplicationConfigItem);
 
         return settingsConfigData;
