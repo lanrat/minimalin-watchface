@@ -642,8 +642,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 5;
-            int sizeOfLongComplicationWidth = width / 2; //(width * 2)/3;
-            int sizeOfLongComplicationHeight = height / 6; //(width * 2)/3;
+            int sizeOfLongComplicationWidth = width / 2;
+            int sizeOfLongComplicationHeight = height / 6;
 
             int midpointOfScreen = width / 2;
 

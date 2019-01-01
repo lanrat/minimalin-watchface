@@ -151,7 +151,7 @@ public class ConfigData {
         ConfigItemType militaryTimeConfigItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_24_hour_label),
-                        R.drawable.ic_notifications_white_24dp,
+                        R.drawable.ic_notifications_white_24dp, // TODO get icons for this
                         R.drawable.ic_notifications_off_white_24dp,
                         R.string.saved_24h_pref);
         settingsConfigData.add(militaryTimeConfigItem);
