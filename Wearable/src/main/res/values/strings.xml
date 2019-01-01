@@ -11,6 +11,7 @@
     <string name="config_time_text_color_label">Time Text\nColor</string>
     <string name="config_background_color_label">Background\nColor</string>
     <string name="config_unread_notifications_label">Unread\nNotifications</string>
+    <string name="config_24_hour_label">24 Hour\nTime</string>
     <string name="config_background_image_complication_label">Background\nImage</string>
 
     <string name="saved_complications_color">saved_complications_color</string>
@@ -21,6 +22,7 @@
     <string name="saved_time_text_color">saved_time_text_color</string>
     <string name="saved_background_color">saved_background_color</string>
     <string name="saved_unread_notifications_pref">saved_unread_notifications</string>
+    <string name="saved_24h_pref">saved_24h</string>
 
     <string name="preference_file_key">com.vorsk.minimalin.PREFERENCE_FILE_KEY</string>
 

@@ -202,6 +202,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         // User's preference for if they want visual shown to indicate unread notifications.
         private boolean mUnreadNotificationsPreference;
         private int mNumberOfUnreadNotifications = 0;
+        private boolean mMillitaryTimePreference;
 
         private final BroadcastReceiver mTimeZoneReceiver =
                 new BroadcastReceiver() {
@@ -298,6 +299,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             mUnreadNotificationsPreference =
                     mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, true);
+
+            String militaryTimePreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_24h_pref);
+            mMillitaryTimePreference =
+                    mSharedPref.getBoolean(militaryTimePreferenceResourceName, false);
         }
 
         private void initializeComplicationsAndBackground() {
@@ -775,11 +781,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             float innerTickRadius = mCenterX - mTickLength;
             float outerTickRadius = mCenterX;
             float minimalinTextCenterRadius = mCenterX - mMinimalinTextRadiusLength;
-            boolean militaryTime = false;
 
             int tickIndexHour = mCalendar.get(Calendar.HOUR);
             int tickIndexMinute = mCalendar.get(Calendar.MINUTE);
-            int printedHour = militaryTime ? mCalendar.get(Calendar.HOUR_OF_DAY) : tickIndexHour == 0 ? 12 : tickIndexHour;
+            int printedHour = mMillitaryTimePreference ? mCalendar.get(Calendar.HOUR_OF_DAY) : tickIndexHour == 0 ? 12 : tickIndexHour;
 
             // Hour Tick for Minimalin
             float hourTickRot = (float) (tickIndexHour * Math.PI * 2 / 12);

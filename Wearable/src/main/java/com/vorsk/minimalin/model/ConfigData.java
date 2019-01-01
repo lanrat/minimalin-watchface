@@ -156,6 +156,15 @@ public class ConfigData {
                         R.string.saved_unread_notifications_pref);
         settingsConfigData.add(unreadNotificationsConfigItem);
 
+        // Data for 24 hour mode UX (toggle) in settings Activity.
+        ConfigItemType militaryTimeConfigItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_24_hour_label),
+                        R.drawable.ic_notifications_white_24dp,
+                        R.drawable.ic_notifications_off_white_24dp,
+                        R.string.saved_24h_pref);
+        settingsConfigData.add(militaryTimeConfigItem);
+
         // Data for background complications UX in settings Activity.
         ConfigItemType backgroundImageComplicationConfigItem =
                 // TODO (jewalker): Revised in another CL to support background complication.

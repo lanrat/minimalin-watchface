@@ -287,7 +287,6 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
      * Updates the selected complication id saved earlier with the new information.
      */
     void updateSelectedComplication(ComplicationProviderInfo complicationProviderInfo) {
-
         Log.d(TAG, "updateSelectedComplication: " + mComplicationsViewHolder);
 
         // Checks if view is inflated and complication id is valid.
