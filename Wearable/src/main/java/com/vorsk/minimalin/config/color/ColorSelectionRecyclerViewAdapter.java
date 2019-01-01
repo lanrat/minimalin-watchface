@@ -86,7 +86,7 @@ public class ColorSelectionRecyclerViewAdapter extends
 
         public ColorViewHolder(final View view) {
             super(view);
-            mColorCircleImageView = (CircledImageView) view.findViewById(R.id.color);
+            mColorCircleImageView = view.findViewById(R.id.color);
             view.setOnClickListener(this);
         }
 
@@ -110,7 +110,7 @@ public class ColorSelectionRecyclerViewAdapter extends
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(mSharedPrefString, color);
-                editor.commit();
+                editor.apply();
 
                 // Let's Complication Config Activity know there was an update to colors.
                 activity.setResult(Activity.RESULT_OK);
