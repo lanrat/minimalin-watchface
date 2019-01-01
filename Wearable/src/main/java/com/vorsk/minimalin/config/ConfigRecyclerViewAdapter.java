@@ -165,7 +165,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 viewHolder =
                         new ColorPickerViewHolder(
                                 LayoutInflater.from(parent.getContext())
-                                        .inflate(R.layout.config_list_color_item, parent, false));
+                                        .inflate(R.layout.config_item_button, parent, false));
                 break;
 
             case TYPE_UNREAD_NOTIFICATION_CONFIG:
@@ -173,7 +173,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         new UnreadNotificationViewHolder(
                                 LayoutInflater.from(parent.getContext())
                                         .inflate(
-                                                R.layout.config_list_unread_notif_item,
+                                                R.layout.config_item_switch,
                                                 parent,
                                                 false));
                 break;
@@ -183,7 +183,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         new BackgroundComplicationViewHolder(
                                 LayoutInflater.from(parent.getContext())
                                         .inflate(
-                                                R.layout.config_list_background_complication_item,
+                                                R.layout.config_item_button,
                                                 parent,
                                                 false));
                 break;
@@ -490,7 +490,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         ColorPickerViewHolder(View view) {
             super(view);
 
-            mAppearanceButton = view.findViewById(R.id.color_picker_button);
+            mAppearanceButton = view.findViewById(R.id.item_button);
             view.setOnClickListener(this);
         }
 
@@ -548,7 +548,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         UnreadNotificationViewHolder(View view) {
             super(view);
 
-            mUnreadNotificationSwitch = view.findViewById(R.id.unread_notification_switch);
+            mUnreadNotificationSwitch = view.findViewById(R.id.item_switch);
             view.setOnClickListener(this);
         }
 
@@ -625,7 +625,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         BackgroundComplicationViewHolder(View view) {
             super(view);
 
-            mBackgroundComplicationButton = view.findViewById(R.id.background_complication_button);
+            mBackgroundComplicationButton = view.findViewById(R.id.item_button);
             view.setOnClickListener(this);
         }
 

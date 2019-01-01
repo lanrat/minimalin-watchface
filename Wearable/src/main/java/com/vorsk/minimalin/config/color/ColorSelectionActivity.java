@@ -21,7 +21,6 @@ import android.support.wear.widget.WearableLinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 
 import com.vorsk.minimalin.R;
-import com.vorsk.minimalin.config.CustomScrollingLayoutCallback;
 import com.vorsk.minimalin.model.ConfigData;
 
 /**
@@ -34,7 +33,7 @@ public class ColorSelectionActivity extends Activity {
     private static final String TAG = ColorSelectionActivity.class.getSimpleName();
 
     public static final String EXTRA_SHARED_PREF =
-            "com.vorsk.minimalin.config.extra.EXTRA_SHARED_PREF";
+            "com.vorsk.minimalin.config_list.extra.EXTRA_SHARED_PREF";
 
     private WearableRecyclerView mConfigAppearanceWearableRecyclerView;
 
@@ -43,7 +42,7 @@ public class ColorSelectionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_color_selection_config);
+        setContentView(R.layout.config_list);
 
         // Assigns SharedPreference String used to save color selected.
         String sharedPrefString = getIntent().getStringExtra(EXTRA_SHARED_PREF);
@@ -58,8 +57,6 @@ public class ColorSelectionActivity extends Activity {
         mConfigAppearanceWearableRecyclerView.setEdgeItemsCenteringEnabled(true);
 
         mConfigAppearanceWearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(this));
-        // TODO might not need custom class below
-        //mConfigAppearanceWearableRecyclerView.setLayoutManager(new WearableLinearLayoutManager(this, new CustomScrollingLayoutCallback()));
 
         // Improves performance because we know changes in content do not change the layout size of
         // the RecyclerView.

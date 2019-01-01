@@ -3,7 +3,6 @@ package com.vorsk.minimalin.config;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.wear.widget.WearableLinearLayoutManager;
 import android.support.wear.widget.WearableRecyclerView;
 import android.support.wearable.complications.ComplicationProviderInfo;
@@ -14,7 +13,7 @@ import com.vorsk.minimalin.model.ConfigData;
 
 
 /**
- * The watch-side config activity for {@link com.vorsk.minimalin.watchface.MinimalinWatchFaceService}, which
+ * The watch-side config_list activity for {@link com.vorsk.minimalin.watchface.MinimalinWatchFaceService}, which
  * allows for setting the left and right complications of watch face along with the second's marker
  * color, background color, unread notifications toggle, and background complication image.
  */
@@ -32,7 +31,7 @@ public class ConfigActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.config);
+        setContentView(R.layout.config_list);
 
         mAdapter = new ConfigRecyclerViewAdapter(
                 getApplicationContext(),

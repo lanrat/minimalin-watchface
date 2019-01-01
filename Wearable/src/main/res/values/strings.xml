@@ -2,7 +2,7 @@
 <string name="app_name">Minimalin Watch Face</string>
     <string name="watchface_name">Minimalin</string>
 
-    <!-- Use of "\n" is to conserve horizontal space in config menu. -->
+    <!-- Use of "\n" is to conserve horizontal space in config_list menu. -->
     <string name="config_marker_second_color_label">Second Hand\nColor</string>
     <string name="config_marker_minute_color_label">Minute Hand\nColor</string>
     <string name="config_marker_hour_color_label">Hour Hand\nColor</string>

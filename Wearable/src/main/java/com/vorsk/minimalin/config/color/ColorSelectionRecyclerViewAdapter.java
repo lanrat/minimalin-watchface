@@ -57,7 +57,7 @@ public class ColorSelectionRecyclerViewAdapter extends
 
         RecyclerView.ViewHolder viewHolder =
                 new ColorViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.color_config_list_item, parent, false));
+                        .inflate(R.layout.config_item_color, parent, false));
         return viewHolder;
     }
 

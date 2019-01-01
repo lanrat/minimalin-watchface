@@ -77,7 +77,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     };
 
     // Used by {@link ConfigRecyclerViewAdapter} to check if complication location
-    // is supported in settings config activity.
+    // is supported in settings config_list activity.
     public static int getComplicationId(
             ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
@@ -103,7 +103,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     }
 
     // Used by {@link ConfigRecyclerViewAdapter} to see which complication types
-    // are supported in the settings config activity.
+    // are supported in the settings config_list activity.
     public static int[] getSupportedComplicationTypes(
             ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
@@ -404,8 +404,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             int complicationId;
             ComplicationDrawable complicationDrawable;
 
-            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
-                complicationId = COMPLICATION_IDS[i];
+            for (int COMPLICATION_ID : COMPLICATION_IDS) {
+                complicationId = COMPLICATION_ID;
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
                 if (complicationId == BACKGROUND_COMPLICATION_ID) {
@@ -442,8 +442,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             // screen's capabilities.
             ComplicationDrawable complicationDrawable;
 
-            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
-                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_IDS[i]);
+            for (int COMPLICATION_ID : COMPLICATION_IDS) {
+                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_ID);
 
                 complicationDrawable.setLowBitAmbient(mLowBitAmbient);
                 complicationDrawable.setBurnInProtection(mBurnInProtection);
@@ -513,8 +513,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             // have to inform it to enter ambient mode.
             ComplicationDrawable complicationDrawable;
 
-            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
-                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_IDS[i]);
+            for (int COMPLICATION_ID : COMPLICATION_IDS) {
+                complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_ID);
                 complicationDrawable.setInAmbientMode(mAmbient);
             }
 
@@ -743,8 +743,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             int complicationId;
             ComplicationDrawable complicationDrawable;
 
-            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
-                complicationId = COMPLICATION_IDS[i];
+            for (int COMPLICATION_ID : COMPLICATION_IDS) {
+                complicationId = COMPLICATION_ID;
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
                 complicationDrawable.draw(canvas, currentTimeMillis);
