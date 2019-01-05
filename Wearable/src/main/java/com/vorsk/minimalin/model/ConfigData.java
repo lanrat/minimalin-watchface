@@ -151,14 +151,14 @@ public class ConfigData {
         ConfigItemType militaryTimeConfigItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_24_hour_label),
-                        R.drawable.time_24h, // TODO get icons for this
+                        R.drawable.time_24h,
                         R.drawable.time_12h,
                         R.string.saved_24h_pref);
         settingsConfigData.add(militaryTimeConfigItem);
 
         // Data for background complications UX in settings Activity.
         ConfigItemType backgroundImageComplicationConfigItem =
-                // TODO (jewalker): Revised in another CL to support background complication.
+                // TODO move color and complication selector to same select activity
                 new BackgroundComplicationConfigItem(
                         context.getString(R.string.config_background_image_complication_label),
                         R.drawable.ic_landscape);

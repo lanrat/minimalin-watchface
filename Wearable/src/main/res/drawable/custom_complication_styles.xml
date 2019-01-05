@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ full spec: https://developer.android.com/reference/android/support/wearable/complications/rendering/ComplicationDrawable
+ TODO on square watch, use smaller app:borderRadius for square-like complications
+ app:backgroundColor="#24000000"
+  -->
+<drawable
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    class="android.support.wearable.complications.rendering.ComplicationDrawable"
+    app:backgroundColor="#33FFFFFF"
+    app:borderRadius="50dp"
+    app:borderStyle="none"
+    app:iconColor="@color/dark_blue"
+    app:rangedValuePrimaryColor="@color/dark_blue"
+    app:rangedValueRingWidth="1dp"
+    app:rangedValueSecondaryColor="@android:color/transparent"
+    app:textColor="@color/white"
+    app:textSize="12sp"
+    app:textTypeface="sans-serif-condensed"
+    app:titleColor="@color/gray"
+    app:titleSize="10sp"
+    app:titleTypeface="sans-serif">
+
+    <ambient
+        app:highlightColor="@color/white"
+        app:iconColor="@color/white"
+        app:rangedValuePrimaryColor="@color/white"
+        app:titleColor="@color/white"
+        app:borderColor="@android:color/transparent"
+        app:rangedValueSecondaryColor="@android:color/transparent"/>
+</drawable>

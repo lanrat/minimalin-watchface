@@ -328,15 +328,32 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             // Creates a ComplicationDrawable for each location where the user can render a
             // complication on the watch face. In this watch face, we create one for left, right,
             // and background, but you could add many more.
-            ComplicationDrawable leftComplicationDrawable =
+            /*ComplicationDrawable leftComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
-
             ComplicationDrawable rightComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
             ComplicationDrawable topComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
             ComplicationDrawable bottomComplicationDrawable =
-                    new ComplicationDrawable(getApplicationContext());
+                    new ComplicationDrawable(getApplicationContext());*/
+
+            // Creates a ComplicationDrawable for each location where the user can render a
+            // complication on the watch face.
+            // All styles for the complications are defined in
+            // drawable/custom_complication_styles.xml.
+            ComplicationDrawable leftComplicationDrawable =
+                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            leftComplicationDrawable.setContext(getApplicationContext());
+            ComplicationDrawable rightComplicationDrawable =
+                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            rightComplicationDrawable.setContext(getApplicationContext());
+            ComplicationDrawable topComplicationDrawable =
+                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            topComplicationDrawable.setContext(getApplicationContext());
+            ComplicationDrawable bottomComplicationDrawable =
+                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            bottomComplicationDrawable.setContext(getApplicationContext());
+
             ComplicationDrawable backgroundComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
 
@@ -378,7 +395,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mNotificationCirclePaint = new Paint();
-            mNotificationCirclePaint.setColor(mWatchComplicationsColor); // TODO change this?
+            mNotificationCirclePaint.setColor(mWatchComplicationsColor); // TODO change this? (especially if we allow the border to be hidden)
             mNotificationCirclePaint.setAntiAlias(true);
             mNotificationCirclePaint.setStyle(Paint.Style.FILL);
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
@@ -389,6 +406,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCountPaint = new TextPaint();
             mNotificationCountPaint.setColor(mBackgroundColor);
             mNotificationCountPaint.setStrokeWidth(1.5f);
+            mNotificationCountPaint.setAntiAlias(true);
             mNotificationCountPaint.setStyle(Paint.Style.FILL_AND_STROKE);
             mNotificationCountPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_notification_font_size));
             mNotificationCountPaint.setTypeface(custom_font);
@@ -398,11 +416,13 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTicksPaint.setColor(mWatchTicksColor);
             mTicksPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             mTicksPaint.setAntiAlias(true);
+            mTicksPaint.setStrokeCap(Paint.Cap.ROUND);
             mTicksPaint.setStyle(Paint.Style.STROKE);
 
             mMinimalinTimePaint = new TextPaint();
             mMinimalinTimePaint.setColor(mWatchTimeColor);
             mMinimalinTimePaint.setTypeface(custom_font);
+            mMinimalinTimePaint.setAntiAlias(true);
             mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
             mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT);
             mMinimalinVerticalTimeGap = getResources().getDimensionPixelOffset(R.dimen.minimalin_vertical_font_gap);
@@ -429,12 +449,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     complicationDrawable.setBackgroundColorActive(Color.BLACK);
                 } else {
                     // Active mode colors.
+                    /* TODO testing
                     complicationDrawable.setBorderColorActive(primaryComplicationColor);
+
                     complicationDrawable.setRangedValuePrimaryColorActive(primaryComplicationColor);
 
                     // Ambient mode colors.
                     complicationDrawable.setBorderColorAmbient(Color.GRAY);
-                    complicationDrawable.setRangedValuePrimaryColorAmbient(Color.GRAY);
+                    complicationDrawable.setRangedValuePrimaryColorAmbient(Color.GRAY);*/
                 }
             }
         }
@@ -548,13 +570,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mNotificationCountPaint.setColor(Color.GRAY);
                 mTicksPaint.setColor(Color.WHITE);
 
-                mHourPaint.setAntiAlias(false);
-                mMinutePaint.setAntiAlias(false);
-                mSecondPaint.setAntiAlias(false);
-                mNotificationCirclePaint.setAntiAlias(false);
-                mMinimalinTimePaint.setAntiAlias(false);
-                mTicksPaint.setAntiAlias(false);
-                mNotificationCountPaint.setAntiAlias(false);
+                // TODO testing
+                //mHourPaint.setAntiAlias(false);
+                //mMinutePaint.setAntiAlias(false);
+                //mSecondPaint.setAntiAlias(false);
+                //mNotificationCirclePaint.setAntiAlias(false);
+                //mMinimalinTimePaint.setAntiAlias(false);
+                //mTicksPaint.setAntiAlias(false);
+                //mNotificationCountPaint.setAntiAlias(false);
 
                 mNotificationCirclePaint.setStyle(Paint.Style.STROKE);
 
@@ -573,13 +596,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mTicksPaint.setColor(mWatchTicksColor);
                 mSecondPaint.setColor(mWatchSecondHandHighlightColor);
 
-                mHourPaint.setAntiAlias(true);
-                mMinutePaint.setAntiAlias(true);
-                mSecondPaint.setAntiAlias(true);
-                mNotificationCirclePaint.setAntiAlias(true);
-                mMinimalinTimePaint.setAntiAlias(true);
-                mTicksPaint.setAntiAlias(true);
-                mNotificationCountPaint.setAntiAlias(true);
+                // TODO testing
+//                mHourPaint.setAntiAlias(true);
+//                mMinutePaint.setAntiAlias(true);
+//                mSecondPaint.setAntiAlias(true);
+//                mNotificationCirclePaint.setAntiAlias(true);
+//                mMinimalinTimePaint.setAntiAlias(true);
+//                mTicksPaint.setAntiAlias(true);
+//                mNotificationCountPaint.setAntiAlias(true);
 
                 mNotificationCirclePaint.setStyle(Paint.Style.FILL);
 
