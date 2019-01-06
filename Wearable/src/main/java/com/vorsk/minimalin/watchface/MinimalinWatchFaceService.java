@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
@@ -75,12 +76,23 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_LONG_TEXT,
             }
     };
+
     /*
      * Update rate in milliseconds for interactive mode. We update once a second to advance the
      * second hand.
      */
     private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
     private Rect mTextRect = new Rect();
+
+    // from: https://stackoverflow.com/questions/24260853/check-if-color-is-dark-or-light-in-android/24261119
+    public static boolean isColorDark(int color){
+        double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
+        if(darkness<0.5){
+            return false; // It's a light color
+        }else{
+            return true; // It's a dark color
+        }
+    }
 
     // Used by {@link ConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config_list activity.
@@ -135,7 +147,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     }
 
     // see https://www.slideshare.net/rtc1/intro-todrawingtextandroid
-    private void drawVertAlignedText(Canvas canvas, float x, float y, String s, Paint p, TextVertAlign vertAlign) {
+    private void drawVertAlignedText(Canvas canvas, float x, float y, String s, Paint p, TextVerticalAlign vertAlign) {
         //Rect r = new Rect();
         p.getTextBounds(s, 0, s.length(), mTextRect); //Note r.top will be negative
         float textX = x - mTextRect.width() / 2f - mTextRect.left;
@@ -156,7 +168,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         canvas.drawText(s, textX, textY, p);
     }
 
-    public enum TextVertAlign {
+    public enum TextVerticalAlign {
         Top,
         Middle,
         Baseline,
@@ -197,14 +209,13 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private float mMinimalinTextRadiusLength;
         private float mMinimalinVerticalTimeGap;
         // Colors for all hands (hour, minute, seconds, ticks) based on photo loaded.
-        private int mWatchComplicationsColor;
         private int mWatchSecondHandHighlightColor;
         private int mWatchMinuteHandHighlightColor;
         private int mWatchHourHandHighlightColor;
         private int mWatchHandShadowColor;
-        private int mWatchTicksColor;
-        private int mWatchTimeColor;
         private int mBackgroundColor;
+        private int mWatchComplicationsColor; // TODO change or remove this
+        private boolean mIsBackgroundDark;
         private Paint mHourPaint;
         private Paint mMinutePaint;
         private Paint mSecondPaint;
@@ -242,7 +253,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         // User's preference for if they want visual shown to indicate unread notifications.
         private boolean mUnreadNotificationsPreference;
         private int mNumberOfUnreadNotifications = 0;
-        private boolean mMillitaryTimePreference;
+        private boolean mMilitaryTimePreference;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -280,6 +291,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_background_color);
 
             mBackgroundColor = mSharedPref.getInt(backgroundColorResourceName, Color.BLACK);
+            mIsBackgroundDark = isColorDark(mBackgroundColor);
 
             String markerSecondColorResourceName =
                     getApplicationContext().getString(R.string.saved_marker_color_second);
@@ -289,19 +301,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_marker_color_hour);
             String markerComplicationsColorResourceName =
                     getApplicationContext().getString(R.string.saved_complications_color);
-            String ticksColorResourceName =
-                    getApplicationContext().getString(R.string.saved_ticks_color);
-            String timeColorResourceName =
-                    getApplicationContext().getString(R.string.saved_time_text_color);
 
             // Set defaults for colors
             mWatchComplicationsColor = mSharedPref.getInt(markerComplicationsColorResourceName, Color.WHITE);
             mWatchSecondHandHighlightColor = mSharedPref.getInt(markerSecondColorResourceName, Color.RED);
             mWatchMinuteHandHighlightColor = mSharedPref.getInt(markerMinuteColorResourceName, Color.WHITE);
             mWatchHourHandHighlightColor = mSharedPref.getInt(markerHourColorResourceName, Color.WHITE);
-            mWatchTicksColor = mSharedPref.getInt(ticksColorResourceName, Color.WHITE);
-            mWatchTimeColor = mSharedPref.getInt(timeColorResourceName, Color.WHITE);
 
+            // this is not ideal with black hands on dark background, but changing it to white looks worse
             mWatchHandShadowColor = Color.BLACK;
 
             String unreadNotificationPreferenceResourceName =
@@ -312,7 +319,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             String militaryTimePreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_24h_pref);
-            mMillitaryTimePreference =
+            mMilitaryTimePreference =
                     mSharedPref.getBoolean(militaryTimePreferenceResourceName, false);
         }
 
@@ -324,18 +331,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mBackgroundPaint.setColor(mBackgroundColor);
 
             mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
-
-            // Creates a ComplicationDrawable for each location where the user can render a
-            // complication on the watch face. In this watch face, we create one for left, right,
-            // and background, but you could add many more.
-            /*ComplicationDrawable leftComplicationDrawable =
-                    new ComplicationDrawable(getApplicationContext());
-            ComplicationDrawable rightComplicationDrawable =
-                    new ComplicationDrawable(getApplicationContext());
-            ComplicationDrawable topComplicationDrawable =
-                    new ComplicationDrawable(getApplicationContext());
-            ComplicationDrawable bottomComplicationDrawable =
-                    new ComplicationDrawable(getApplicationContext());*/
 
             // Creates a ComplicationDrawable for each location where the user can render a
             // complication on the watch face.
@@ -413,19 +408,28 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCountPaint.setTextAlign(Paint.Align.LEFT);
 
             mTicksPaint = new Paint();
-            mTicksPaint.setColor(mWatchTicksColor);
+            //mTicksPaint.setColor(mWatchTicksColor); // TODO remove
             mTicksPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             mTicksPaint.setAntiAlias(true);
             mTicksPaint.setStrokeCap(Paint.Cap.ROUND);
             mTicksPaint.setStyle(Paint.Style.STROKE);
 
             mMinimalinTimePaint = new TextPaint();
-            mMinimalinTimePaint.setColor(mWatchTimeColor);
+            //mMinimalinTimePaint.setColor(mWatchTimeColor); // TODO remove
             mMinimalinTimePaint.setTypeface(custom_font);
             mMinimalinTimePaint.setAntiAlias(true);
             mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
             mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT);
             mMinimalinVerticalTimeGap = getResources().getDimensionPixelOffset(R.dimen.minimalin_vertical_font_gap);
+
+            if (mIsBackgroundDark) {
+                mTicksPaint.setColor(Color.WHITE);
+                mMinimalinTimePaint.setColor(Color.WHITE);
+            } else {
+                mTicksPaint.setColor(Color.BLACK);
+                mMinimalinTimePaint.setColor(Color.BLACK);
+            }
+
         }
 
         /* Sets active/ambient mode colors for all complications.
@@ -457,6 +461,16 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // Ambient mode colors.
                     complicationDrawable.setBorderColorAmbient(Color.GRAY);
                     complicationDrawable.setRangedValuePrimaryColorAmbient(Color.GRAY);*/
+
+                    if (mIsBackgroundDark) {
+                        complicationDrawable.setTextColorActive(Color.WHITE);
+                        complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_light));
+                        complicationDrawable.setTitleColorActive(Color.GRAY);
+                    } else {
+                        complicationDrawable.setTextColorActive(Color.BLACK);
+                        complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_dark));
+                        complicationDrawable.setTitleColorActive(Color.DKGRAY);
+                    }
                 }
             }
         }
@@ -570,14 +584,13 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mNotificationCountPaint.setColor(Color.GRAY);
                 mTicksPaint.setColor(Color.WHITE);
 
-                // TODO testing
-                //mHourPaint.setAntiAlias(false);
-                //mMinutePaint.setAntiAlias(false);
-                //mSecondPaint.setAntiAlias(false);
-                //mNotificationCirclePaint.setAntiAlias(false);
-                //mMinimalinTimePaint.setAntiAlias(false);
-                //mTicksPaint.setAntiAlias(false);
-                //mNotificationCountPaint.setAntiAlias(false);
+                mHourPaint.setAntiAlias(!mLowBitAmbient);
+                mMinutePaint.setAntiAlias(!mLowBitAmbient);
+                mSecondPaint.setAntiAlias(!mLowBitAmbient);
+                mNotificationCirclePaint.setAntiAlias(!mLowBitAmbient);
+                mMinimalinTimePaint.setAntiAlias(!mLowBitAmbient);
+                mTicksPaint.setAntiAlias(!mLowBitAmbient);
+                mNotificationCountPaint.setAntiAlias(!mLowBitAmbient);
 
                 mNotificationCirclePaint.setStyle(Paint.Style.STROKE);
 
@@ -588,22 +601,29 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             } else {
                 mNotificationCountPaint.setColor(mBackgroundColor);
                 mBackgroundPaint.setColor(mBackgroundColor);
-                mTicksPaint.setColor(mBackgroundColor);
+                //mTicksPaint.setColor(mBackgroundColor);
                 mHourPaint.setColor(mWatchHourHandHighlightColor);
                 mMinutePaint.setColor(mWatchMinuteHandHighlightColor);
                 mNotificationCirclePaint.setColor(mWatchComplicationsColor);
-                mMinimalinTimePaint.setColor(mWatchTimeColor);
-                mTicksPaint.setColor(mWatchTicksColor);
+                //mMinimalinTimePaint.setColor(mWatchTimeColor);
+                //mTicksPaint.setColor(mWatchTicksColor);
                 mSecondPaint.setColor(mWatchSecondHandHighlightColor);
 
-                // TODO testing
-//                mHourPaint.setAntiAlias(true);
-//                mMinutePaint.setAntiAlias(true);
-//                mSecondPaint.setAntiAlias(true);
-//                mNotificationCirclePaint.setAntiAlias(true);
-//                mMinimalinTimePaint.setAntiAlias(true);
-//                mTicksPaint.setAntiAlias(true);
-//                mNotificationCountPaint.setAntiAlias(true);
+                if (mIsBackgroundDark) {
+                    mTicksPaint.setColor(Color.WHITE);
+                    mMinimalinTimePaint.setColor(Color.WHITE);
+                } else {
+                    mTicksPaint.setColor(Color.BLACK);
+                    mMinimalinTimePaint.setColor(Color.BLACK);
+                }
+
+                mHourPaint.setAntiAlias(true);
+                mMinutePaint.setAntiAlias(true);
+                mSecondPaint.setAntiAlias(true);
+                mNotificationCirclePaint.setAntiAlias(true);
+                mMinimalinTimePaint.setAntiAlias(true);
+                mTicksPaint.setAntiAlias(true);
+                mNotificationCountPaint.setAntiAlias(true);
 
                 mNotificationCirclePaint.setStyle(Paint.Style.FILL);
 
@@ -764,7 +784,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 /*canvas.drawText(String.valueOf(count), xPos,
                         yPos - (mNotificationCountPaint.descent()
                                 + mNotificationCountPaint.ascent()) / 2, mNotificationCountPaint);*/
-                drawVertAlignedText(canvas, xPos, yPos, countStr, mNotificationCountPaint, TextVertAlign.Middle);
+                drawVertAlignedText(canvas, xPos, yPos, countStr, mNotificationCountPaint, TextVerticalAlign.Middle);
             }
         }
 
@@ -817,7 +837,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             int tickIndexHour = mCalendar.get(Calendar.HOUR);
             int tickIndexMinute = mCalendar.get(Calendar.MINUTE);
-            int printedHour = mMillitaryTimePreference ? mCalendar.get(Calendar.HOUR_OF_DAY) : tickIndexHour == 0 ? 12 : tickIndexHour;
+            int printedHour = mMilitaryTimePreference ? mCalendar.get(Calendar.HOUR_OF_DAY) : tickIndexHour == 0 ? 12 : tickIndexHour;
 
             // Hour Tick for Minimalin
             float hourTickRot = (float) (tickIndexHour * Math.PI * 2 / 12);
@@ -838,19 +858,19 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // minimalin horizontal time
                     float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                     float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d:%02d", printedHour, tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Middle);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d:%02d", printedHour, tickIndexMinute), mMinimalinTimePaint, TextVerticalAlign.Middle);
                 } else {
                     // minimalin vertical time
                     float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                     float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY - mMinimalinVerticalTimeGap / 2, String.format("%2d", printedHour), mMinimalinTimePaint, TextVertAlign.Baseline);
-                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY + mMinimalinVerticalTimeGap / 2, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Top);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY - mMinimalinVerticalTimeGap / 2, String.format("%2d", printedHour), mMinimalinTimePaint, TextVerticalAlign.Baseline);
+                    drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY + mMinimalinVerticalTimeGap / 2, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVerticalAlign.Top);
                 }
             } else {
                 // Minimalin Hour text
                 float hourTextInnerX = (float) Math.sin(hourTickRot) * minimalinTextCenterRadius;
                 float hourTextInnerY = (float) -Math.cos(hourTickRot) * minimalinTextCenterRadius;
-                drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d", printedHour), mMinimalinTimePaint, TextVertAlign.Middle);
+                drawVertAlignedText(canvas, mCenterX + hourTextInnerX, mCenterY + hourTextInnerY, String.format("%2d", printedHour), mMinimalinTimePaint, TextVerticalAlign.Middle);
 
                 // Minute Tick for Minimalin
                 float minuteTickRot = (float) (tickIndexMinute * Math.PI * 2 / 60);
@@ -869,7 +889,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 // Minimalin Minute text
                 float minuteTextInnerX = (float) Math.sin(minuteTickRot) * minimalinTextCenterRadius;
                 float minuteTextInnerY = (float) -Math.cos(minuteTickRot) * minimalinTextCenterRadius;
-                drawVertAlignedText(canvas, mCenterX + minuteTextInnerX, mCenterY + minuteTextInnerY, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVertAlign.Middle);
+                drawVertAlignedText(canvas, mCenterX + minuteTextInnerX, mCenterY + minuteTextInnerY, String.format("%02d", tickIndexMinute), mMinimalinTimePaint, TextVerticalAlign.Middle);
             }
         }
 

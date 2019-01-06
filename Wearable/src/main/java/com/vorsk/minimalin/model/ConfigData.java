@@ -102,33 +102,6 @@ public class ConfigData {
                         ColorSelectionActivity.class);
         settingsConfigData.add(markerSecondColorConfigItem);
 
-        // Data for highlight of outline and complications color UX in settings Activity.
-        ConfigItemType complicationsColorConfigItem =
-                new ColorConfigItem(
-                        context.getString(R.string.config_complications_color_label),
-                        R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_complications_color),
-                        ColorSelectionActivity.class);
-        settingsConfigData.add(complicationsColorConfigItem);
-
-        // Data for tick marks on watchface
-        ConfigItemType ticksColorConfigItem =
-                new ColorConfigItem(
-                        context.getString(R.string.config_tick_color_label),
-                        R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_ticks_color),
-                        ColorSelectionActivity.class);
-        settingsConfigData.add(ticksColorConfigItem);
-
-        // Data for minimalin time marks
-        ConfigItemType timeColorConfigItem =
-                new ColorConfigItem(
-                        context.getString(R.string.config_time_text_color_label),
-                        R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_time_text_color),
-                        ColorSelectionActivity.class);
-        settingsConfigData.add(timeColorConfigItem);
-
         // Data for Background color UX in settings Activity.
         ConfigItemType backgroundColorConfigItem =
                 new ColorConfigItem(
