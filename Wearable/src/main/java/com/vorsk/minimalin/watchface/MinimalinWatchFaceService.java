@@ -229,6 +229,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private int mNumberOfUnreadNotifications = 0;
         private boolean mMilitaryTimePreference;
         private boolean mBackgroundGradient;
+        private boolean mComplicationBackgrounds;
         private Bitmap mBackgroundGradientBitmap;
 
 
@@ -335,6 +336,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_unread_notifications_pref);
             mUnreadNotificationsPreference =
                     mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, true);
+
+            String complicationBackgroundPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_complication_background);
+            mComplicationBackgrounds =
+                    mSharedPref.getBoolean(complicationBackgroundPreferenceResourceName, true);
 
             String militaryTimePreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_24h_pref);
@@ -471,17 +477,19 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     complicationDrawable.setRangedValuePrimaryColorActive(primaryComplicationColor);
                     if (mIsBackgroundDark) {
                         complicationDrawable.setTextColorActive(Color.WHITE);
-                        complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_light));
+                        if (mComplicationBackgrounds) {
+                            complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_light));
+                        }
                         //complicationDrawable.setTitleColorActive(Color.GRAY);
                         complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(200));
                     } else {
                         complicationDrawable.setTextColorActive(Color.BLACK);
-                        complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_dark));
+                        if (mComplicationBackgrounds) {
+                            complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_dark));
+                        }
                         //complicationDrawable.setTitleColorActive(Color.DKGRAY);
                         complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(800));
                     }
-                    // TODO testing
-                    //complicationDrawable.setBackgroundColorActive(0);
                 }
             }
         }

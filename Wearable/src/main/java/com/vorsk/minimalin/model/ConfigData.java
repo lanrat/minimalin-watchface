@@ -138,6 +138,15 @@ public class ConfigData {
                         R.string.saved_background_gradient);
         settingsConfigData.add(gradientConfigItem);
 
+        // Data for complication background
+        ConfigItemType complicationBackgroundConfigItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_complication_background_label),
+                        R.drawable.ic_plus_circle,
+                        R.drawable.ic_plus,
+                        R.string.saved_complication_background);
+        settingsConfigData.add(complicationBackgroundConfigItem);
+
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
         ConfigItemType unreadNotificationsConfigItem =
                 new SwitchConfigItem(
