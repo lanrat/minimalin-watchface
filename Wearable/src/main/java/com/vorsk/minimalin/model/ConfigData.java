@@ -129,12 +129,12 @@ public class ConfigData {
                         ColorSelectionActivity.class);
         settingsConfigData.add(backgroundColorConfigItem);
 
-        // Data for background gradient
+        // Data for background ic_gradient
         ConfigItemType gradientConfigItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_background_gradient_label),
-                        R.drawable.ic_notifications,
-                        R.drawable.time_12h,
+                        R.drawable.ic_gradient,
+                        R.drawable.ic_square,
                         R.string.saved_background_gradient);
         settingsConfigData.add(gradientConfigItem);
 
