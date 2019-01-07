@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -217,6 +220,16 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private Paint mBackgroundPaint;
         private MaterialColors.Color mPrimaryMaterialColor;
         private MaterialColors.Color mSecondaryMaterialColor;
+        private MaterialColors.Color mBackgroundMaterialColor;
+
+        private boolean mLowBitAmbient;
+        private boolean mBurnInProtection;
+        // User's preference for if they want visual shown to indicate unread notifications.
+        private boolean mUnreadNotificationsPreference;
+        private int mNumberOfUnreadNotifications = 0;
+        private boolean mMilitaryTimePreference;
+        private boolean mBackgroundGradient;
+        private Bitmap mBackgroundGradientBitmap;
 
 
         /* Maps active complication ids to the data for that complication. Note: Data will only be
@@ -244,12 +257,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         }
                     }
                 };
-        private boolean mLowBitAmbient;
-        private boolean mBurnInProtection;
-        // User's preference for if they want visual shown to indicate unread notifications.
-        private boolean mUnreadNotificationsPreference;
-        private int mNumberOfUnreadNotifications = 0;
-        private boolean mMilitaryTimePreference;
+
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -276,7 +284,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                             .build());
 
             loadSavedPreferences();
-            initializeComplicationsAndBackground();
+            initializeComplications();
             initializeWatchFace();
         }
 
@@ -292,16 +300,31 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String secondaryColorName = mSharedPref.getString(secondaryColorResourceName, MaterialColors.Color.ORANGE.name());
             mSecondaryMaterialColor = MaterialColors.Get(secondaryColorName);
 
+            String backgroundGradientPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_background_gradient);
+            mBackgroundGradient =
+                    mSharedPref.getBoolean(backgroundGradientPreferenceResourceName, false);
+
             String backgroundColorResourceName =
                     getApplicationContext().getString(R.string.saved_background_color);
             String backgroundColorName = mSharedPref.getString(backgroundColorResourceName, MaterialColors.Color.BLUE_GRAY.name());
-            MaterialColors.Color backgroundMaterialColor = MaterialColors.Get(backgroundColorName);
+            mBackgroundMaterialColor = MaterialColors.Get(backgroundColorName);
 
-            mBackgroundColor = backgroundMaterialColor.Color(500);
+            mBackgroundColor = mBackgroundMaterialColor.Color(500);
             mWatchComplicationsColor = mSecondaryMaterialColor.Color(800);
             mWatchSecondHandHighlightColor = mPrimaryMaterialColor.Color(500);
             mWatchMinuteHandHighlightColor = mPrimaryMaterialColor.Color(300);
             mWatchHourHandHighlightColor = mPrimaryMaterialColor.Color(200);
+
+            // Initialize background color (in case background complication is inactive).
+            mBackgroundPaint = new Paint();
+            mBackgroundPaint.setColor(mBackgroundColor);
+
+
+            // invalidate cache of mBackgroundGradient in case color changed
+            if (mBackgroundGradient) {
+                mBackgroundGradientBitmap = null;
+            }
 
             mIsBackgroundDark = MaterialColors.isColorDark(mBackgroundColor);
 
@@ -319,12 +342,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mSharedPref.getBoolean(militaryTimePreferenceResourceName, false);
         }
 
-        private void initializeComplicationsAndBackground() {
+        private void initializeComplications() {
             Log.d(TAG, "initializeComplications()");
-
-            // Initialize background color (in case background complication is inactive).
-            mBackgroundPaint = new Paint();
-            mBackgroundPaint.setColor(mBackgroundColor);
 
             mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
 
@@ -461,6 +480,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         //complicationDrawable.setTitleColorActive(Color.DKGRAY);
                         complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(800));
                     }
+                    // TODO testing
+                    //complicationDrawable.setBackgroundColorActive(0);
                 }
             }
         }
@@ -733,6 +754,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable backgroundComplicationDrawable =
                     mComplicationDrawableSparseArray.get(BACKGROUND_COMPLICATION_ID);
             backgroundComplicationDrawable.setBounds(screenForBackgroundBound);
+
+            // invalidate cache of mBackgroundGradientBitmap in case bounds changed
+            if (mBackgroundGradient) {
+                mBackgroundGradientBitmap = null;
+            }
         }
 
         @Override
@@ -782,8 +808,29 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
                 canvas.drawColor(Color.BLACK);
             } else {
-                canvas.drawColor(mBackgroundColor);
+                if (mBackgroundGradient) {
+                    // if cache for mBackgroundGradientBitmap is null, rebuild
+                    if (mBackgroundGradientBitmap == null) {
+                        mBackgroundGradientBitmap = generateBackgroundGradient(mBackgroundMaterialColor);
+                    }
+                    canvas.drawBitmap(mBackgroundGradientBitmap, 0,0, mBackgroundPaint);
+                } else {
+                    canvas.drawColor(mBackgroundColor);
+                }
             }
+        }
+
+        private Bitmap generateBackgroundGradient(MaterialColors.Color color) {
+            LinearGradient gradient = new LinearGradient(0f, mCenterX * 2f, mCenterY * 2f, 0f,
+                    color.Color(400),
+                    color.Color(700),
+                    Shader.TileMode.CLAMP);
+            mBackgroundPaint.setShader(gradient);
+            mBackgroundPaint.setDither(true);
+            Bitmap bitmap = Bitmap.createBitmap((int)mCenterX * 2, (int)mCenterY * 2, Bitmap.Config.ARGB_8888);
+            Canvas c1 = new Canvas(bitmap);
+            c1.drawRect(0, 0, (int)mCenterX * 2, (int)mCenterY * 2, mBackgroundPaint);
+            return bitmap;
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
