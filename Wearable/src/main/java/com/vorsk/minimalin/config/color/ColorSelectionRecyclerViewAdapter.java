@@ -29,8 +29,6 @@ import android.view.ViewGroup;
 import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 
-import java.util.ArrayList;
-
 /**
  * Provides a binding from color selection data set to views that are displayed within
  * {@link ColorSelectionActivity}.

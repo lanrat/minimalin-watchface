@@ -1,7 +1,5 @@
 package com.vorsk.minimalin;
 
-import android.graphics.Color;
-
 public class MaterialColors {
 
     public static final int A100 = 10;

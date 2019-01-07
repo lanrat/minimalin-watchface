@@ -1,11 +1,9 @@
 package com.vorsk.minimalin.model;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
-import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ConfigActivity;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
@@ -87,9 +85,9 @@ public class ConfigData {
 
         ConfigItemType accentColorConfigItem =
                 new ColorConfigItem(
-                        context.getString(R.string.config_accent_color_label),
+                        context.getString(R.string.config_secondary_color_label),
                         R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_accent_color),
+                        context.getString(R.string.saved_secondary_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(accentColorConfigItem);
 
@@ -120,6 +118,7 @@ public class ConfigData {
                         context.getString(R.string.saved_marker_color_second),
                         ColorSelectionActivity.class);
         settingsConfigData.add(markerSecondColorConfigItem);
+        */
 
         // Data for Background color UX in settings Activity.
         ConfigItemType backgroundColorConfigItem =
@@ -129,7 +128,6 @@ public class ConfigData {
                         context.getString(R.string.saved_background_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(backgroundColorConfigItem);
-        */
 
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
         ConfigItemType unreadNotificationsConfigItem =
