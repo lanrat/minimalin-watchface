@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
+import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ConfigActivity;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
@@ -30,8 +31,8 @@ public class ConfigData {
     /**
      * Returns Material Design color options.
      */
-    public static ArrayList<Integer> getColorOptionsDataSet() {
-        ArrayList<Integer> colorOptionsDataSet = new ArrayList<>();
+    /*public static ArrayList<MaterialColors.Color> getColorOptionsDataSet() {
+        ArrayList<MaterialColors.Color> colorOptionsDataSet = new ArrayList<>();
         colorOptionsDataSet.add(Color.parseColor("#FFFFFF")); // White
 
         colorOptionsDataSet.add(Color.parseColor("#FFEB3B")); // Yellow
@@ -59,8 +60,9 @@ public class ConfigData {
         colorOptionsDataSet.add(Color.parseColor("#795548")); // Brown
         colorOptionsDataSet.add(Color.parseColor("#000000")); // Black
 
+
         return colorOptionsDataSet;
-    }
+    }*/
 
     /**
      * Includes all data to populate each of the 5 different custom
@@ -75,6 +77,23 @@ public class ConfigData {
                 new ComplicationsConfigItem(R.drawable.add_complication, R.drawable.add_big_complication, R.drawable.added_complication, R.drawable.added_big_complication);
         settingsConfigData.add(complicationConfigItem);
 
+        ConfigItemType primaryColorConfigItem =
+                new ColorConfigItem(
+                        context.getString(R.string.config_primary_color_label),
+                        R.drawable.ic_color_lens,
+                        context.getString(R.string.saved_primary_color),
+                        ColorSelectionActivity.class);
+        settingsConfigData.add(primaryColorConfigItem);
+
+        ConfigItemType accentColorConfigItem =
+                new ColorConfigItem(
+                        context.getString(R.string.config_accent_color_label),
+                        R.drawable.ic_color_lens,
+                        context.getString(R.string.saved_accent_color),
+                        ColorSelectionActivity.class);
+        settingsConfigData.add(accentColorConfigItem);
+
+        /*
         // Data for highlight/marker (hour hand) color UX in settings Activity.
         ConfigItemType markerHourColorConfigItem =
                 new ColorConfigItem(
@@ -110,6 +129,7 @@ public class ConfigData {
                         context.getString(R.string.saved_background_color),
                         ColorSelectionActivity.class);
         settingsConfigData.add(backgroundColorConfigItem);
+        */
 
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
         ConfigItemType unreadNotificationsConfigItem =

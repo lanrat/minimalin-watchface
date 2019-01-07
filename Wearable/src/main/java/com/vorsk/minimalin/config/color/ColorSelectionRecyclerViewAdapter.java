@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 
 import java.util.ArrayList;
@@ -41,15 +42,14 @@ public class ColorSelectionRecyclerViewAdapter extends
         RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ColorSelectionRecyclerViewAdapter.class.getSimpleName();
 
-    private ArrayList<Integer> mColorOptionsDataSet;
+    private MaterialColors.Color[] mColorOptionsDataSet;
     private String mSharedPrefString;
 
     ColorSelectionRecyclerViewAdapter(
-            String sharedPrefString,
-            ArrayList<Integer> colorSettingsDataSet) {
+            String sharedPrefString) {
 
         mSharedPrefString = sharedPrefString;
-        mColorOptionsDataSet = colorSettingsDataSet;
+        mColorOptionsDataSet = MaterialColors.Colors();
     }
 
     @NonNull
@@ -65,14 +65,15 @@ public class ColorSelectionRecyclerViewAdapter extends
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         Log.d(TAG, "Element " + position + " set.");
 
-        Integer color = mColorOptionsDataSet.get(position);
+        MaterialColors.Color color = mColorOptionsDataSet[position];
         ColorViewHolder colorViewHolder = (ColorViewHolder) viewHolder;
-        colorViewHolder.setColor(color);
+        colorViewHolder.setColor(color.Color());
+        Log.d(TAG, "setting color picker color: "+ color.NiceName()+" "+color.Color());
     }
 
     @Override
     public int getItemCount() {
-        return mColorOptionsDataSet.size();
+        return mColorOptionsDataSet.length;
     }
 
     /**
@@ -97,7 +98,7 @@ public class ColorSelectionRecyclerViewAdapter extends
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            Integer color = mColorOptionsDataSet.get(position);
+            MaterialColors.Color color = mColorOptionsDataSet[position];
 
             Log.d(TAG, "Color: " + color + " onClick() position: " + position);
 
@@ -109,7 +110,7 @@ public class ColorSelectionRecyclerViewAdapter extends
                         Context.MODE_PRIVATE);
 
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(mSharedPrefString, color);
+                editor.putString(mSharedPrefString, color.name());
                 editor.apply();
 
                 // Let's Complication Config Activity know there was an update to colors.

@@ -3,20 +3,24 @@
     <string name="watchface_name">Minimalin</string>
 
     <!-- Use of "\n" is to conserve horizontal space in config_list menu. -->
-    <string name="config_marker_second_color_label">Second Hand\nColor</string>
-    <string name="config_marker_minute_color_label">Minute Hand\nColor</string>
-    <string name="config_marker_hour_color_label">Hour Hand\nColor</string>
-    <string name="config_complications_color_label">Complications Outline\nColor</string>
-    <string name="config_background_color_label">Background\nColor</string>
+    <string name="config_primary_color_label">Primary\nColor</string>
+    <string name="config_accent_color_label">Accent\nColor</string>
+    <!--<string name="config_marker_second_color_label">Second Hand\nColor</string>-->
+    <!--<string name="config_marker_minute_color_label">Minute Hand\nColor</string>-->
+    <!--<string name="config_marker_hour_color_label">Hour Hand\nColor</string>-->
+    <!--<string name="config_complications_color_label">Complications Outline\nColor</string>-->
+    <!--<string name="config_background_color_label">Background\nColor</string>-->
     <string name="config_unread_notifications_label">Unread\nNotifications</string>
     <string name="config_24_hour_label">Military\n24 Hour Time</string>
     <string name="config_background_image_complication_label">Background\nImage</string>
 
-    <string name="saved_complications_color">saved_complications_color</string>
-    <string name="saved_marker_color_second">saved_marker_color_second</string>
-    <string name="saved_marker_color_minute">saved_marker_color_minute</string>
-    <string name="saved_marker_color_hour">saved_marker_color_hour</string>
-    <string name="saved_background_color">saved_background_color</string>
+    <string name="saved_primary_color">saved_primary_color</string>
+    <string name="saved_accent_color">saved_accent_color</string>
+    <!--<string name="saved_complications_color">saved_complications_color</string>-->
+    <!--<string name="saved_marker_color_second">saved_marker_color_second</string>-->
+    <!--<string name="saved_marker_color_minute">saved_marker_color_minute</string>-->
+    <!--<string name="saved_marker_color_hour">saved_marker_color_hour</string>-->
+    <!--<string name="saved_background_color">saved_background_color</string>-->
     <string name="saved_unread_notifications_pref">saved_unread_notifications</string>
     <string name="saved_24h_pref">saved_24h</string>
 

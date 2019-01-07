@@ -24,6 +24,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 
+import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
 
@@ -83,16 +84,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
      */
     private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
     private Rect mTextRect = new Rect();
-
-    // from: https://stackoverflow.com/questions/24260853/check-if-color-is-dark-or-light-in-android/24261119
-    public static boolean isColorDark(int color){
-        double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
-        if(darkness<0.5){
-            return false; // It's a light color
-        }else{
-            return true; // It's a dark color
-        }
-    }
 
     // Used by {@link ConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config_list activity.
@@ -214,7 +205,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private int mWatchHourHandHighlightColor;
         private int mWatchHandShadowColor;
         private int mBackgroundColor;
-        private int mWatchComplicationsColor; // TODO change or remove this
+        private int mWatchComplicationsColor; // TODO change or remove this, currently just used for notification dot
         private boolean mIsBackgroundDark;
         private Paint mHourPaint;
         private Paint mMinutePaint;
@@ -224,10 +215,15 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private TextPaint mMinimalinTimePaint;
         private TextPaint mNotificationCountPaint;
         private Paint mBackgroundPaint;
+        private MaterialColors.Color mPrimaryMaterialColor;
+        private MaterialColors.Color mAccentMaterialColor;
+
+
         /* Maps active complication ids to the data for that complication. Note: Data will only be
          * present if the user has chosen a provider via the settings activity for the watch face.
          */
         private SparseArray<ComplicationData> mActiveComplicationDataSparseArray;
+
         /* Maps complication ids to corresponding ComplicationDrawable that renders the
          * the complication data on the watch face.
          */
@@ -286,34 +282,29 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         // Pulls all user's preferences for watch face appearance.
         private void loadSavedPreferences() {
+            String primaryColorResourceName =
+                    getApplicationContext().getString(R.string.saved_primary_color);
+            String primaryColorName = mSharedPref.getString(primaryColorResourceName, MaterialColors.Color.BLUE_GRAY.name());
+            mPrimaryMaterialColor = MaterialColors.Get(primaryColorName);
 
-            String backgroundColorResourceName =
-                    getApplicationContext().getString(R.string.saved_background_color);
+            String accentColorResourceName =
+                    getApplicationContext().getString(R.string.saved_accent_color);
+            String accentColorName = mSharedPref.getString(accentColorResourceName, MaterialColors.Color.ORANGE.name());
+            mAccentMaterialColor = MaterialColors.Get(accentColorName);
 
-            mBackgroundColor = mSharedPref.getInt(backgroundColorResourceName, Color.BLACK);
-            mIsBackgroundDark = isColorDark(mBackgroundColor);
+            mBackgroundColor = mPrimaryMaterialColor.Color(700);
+            mWatchComplicationsColor = mPrimaryMaterialColor.Color(800);
+            mWatchSecondHandHighlightColor = mAccentMaterialColor.Color(500);
+            mWatchMinuteHandHighlightColor = mAccentMaterialColor.Color(300);
+            mWatchHourHandHighlightColor = mAccentMaterialColor.Color(200);
 
-            String markerSecondColorResourceName =
-                    getApplicationContext().getString(R.string.saved_marker_color_second);
-            String markerMinuteColorResourceName =
-                    getApplicationContext().getString(R.string.saved_marker_color_minute);
-            String markerHourColorResourceName =
-                    getApplicationContext().getString(R.string.saved_marker_color_hour);
-            String markerComplicationsColorResourceName =
-                    getApplicationContext().getString(R.string.saved_complications_color);
-
-            // Set defaults for colors
-            mWatchComplicationsColor = mSharedPref.getInt(markerComplicationsColorResourceName, Color.WHITE);
-            mWatchSecondHandHighlightColor = mSharedPref.getInt(markerSecondColorResourceName, Color.RED);
-            mWatchMinuteHandHighlightColor = mSharedPref.getInt(markerMinuteColorResourceName, Color.WHITE);
-            mWatchHourHandHighlightColor = mSharedPref.getInt(markerHourColorResourceName, Color.WHITE);
+            mIsBackgroundDark = MaterialColors.isColorDark(mBackgroundColor);
 
             // this is not ideal with black hands on dark background, but changing it to white looks worse
             mWatchHandShadowColor = Color.BLACK;
 
             String unreadNotificationPreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_unread_notifications_pref);
-
             mUnreadNotificationsPreference =
                     mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, true);
 
@@ -461,15 +452,18 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // Ambient mode colors.
                     complicationDrawable.setBorderColorAmbient(Color.GRAY);
                     complicationDrawable.setRangedValuePrimaryColorAmbient(Color.GRAY);*/
-
+                    complicationDrawable.setIconColorActive(primaryComplicationColor);
+                    complicationDrawable.setRangedValuePrimaryColorActive(primaryComplicationColor);
                     if (mIsBackgroundDark) {
                         complicationDrawable.setTextColorActive(Color.WHITE);
                         complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_light));
-                        complicationDrawable.setTitleColorActive(Color.GRAY);
+                        //complicationDrawable.setTitleColorActive(Color.GRAY);
+                        complicationDrawable.setTitleColorActive(mPrimaryMaterialColor.Color(200));
                     } else {
                         complicationDrawable.setTextColorActive(Color.BLACK);
                         complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_dark));
-                        complicationDrawable.setTitleColorActive(Color.DKGRAY);
+                        //complicationDrawable.setTitleColorActive(Color.DKGRAY);
+                        complicationDrawable.setTitleColorActive(mPrimaryMaterialColor.Color(800));
                     }
                 }
             }
@@ -789,10 +783,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
 
         private void drawBackground(Canvas canvas) {
-
             if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
                 canvas.drawColor(Color.BLACK);
-
             } else {
                 canvas.drawColor(mBackgroundColor);
             }
