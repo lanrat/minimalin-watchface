@@ -30,6 +30,7 @@ import android.view.SurfaceHolder;
 import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
+import com.vorsk.minimalin.model.ConfigData;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -304,7 +305,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String backgroundGradientPreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_background_gradient);
             mBackgroundGradient =
-                    mSharedPref.getBoolean(backgroundGradientPreferenceResourceName, false);
+                    mSharedPref.getBoolean(backgroundGradientPreferenceResourceName, ConfigData.DEFAULT_BACKGROUND_GRADIENT);
 
             String backgroundColorResourceName =
                     getApplicationContext().getString(R.string.saved_background_color);
@@ -335,17 +336,17 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String unreadNotificationPreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_unread_notifications_pref);
             mUnreadNotificationsPreference =
-                    mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, true);
+                    mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, ConfigData.DEFAULT_UNREAD_NOTIFICATION);
 
             String complicationBackgroundPreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_complication_background);
             mComplicationBackgrounds =
-                    mSharedPref.getBoolean(complicationBackgroundPreferenceResourceName, true);
+                    mSharedPref.getBoolean(complicationBackgroundPreferenceResourceName, ConfigData.DEFAULT_COMPLICATION_BACKGROUND);
 
             String militaryTimePreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_24h_pref);
             mMilitaryTimePreference =
-                    mSharedPref.getBoolean(militaryTimePreferenceResourceName, false);
+                    mSharedPref.getBoolean(militaryTimePreferenceResourceName, ConfigData.DEFAULT_24_HOUR_TIME);
         }
 
         private void initializeComplications() {

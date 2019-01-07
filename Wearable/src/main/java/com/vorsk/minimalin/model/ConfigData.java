@@ -19,6 +19,12 @@ import java.util.ArrayList;
  */
 public class ConfigData {
 
+    // default setting for booleans
+    public static boolean DEFAULT_BACKGROUND_GRADIENT = false;
+    public static boolean DEFAULT_COMPLICATION_BACKGROUND = true;
+    public static boolean DEFAULT_UNREAD_NOTIFICATION = true;
+    public static boolean DEFAULT_24_HOUR_TIME = false;
+
     /**
      * Returns Watch Face Service class associated with configuration Activity.
      */
@@ -71,7 +77,7 @@ public class ConfigData {
                         R.drawable.ic_gradient,
                         R.drawable.ic_square,
                         R.string.saved_background_gradient,
-                        false);
+                        DEFAULT_BACKGROUND_GRADIENT);
         settingsConfigData.add(gradientConfigItem);
 
         // Data for complication background
@@ -81,7 +87,7 @@ public class ConfigData {
                         R.drawable.ic_plus_circle,
                         R.drawable.ic_plus,
                         R.string.saved_complication_background,
-                        true);
+                        DEFAULT_COMPLICATION_BACKGROUND);
         settingsConfigData.add(complicationBackgroundConfigItem);
 
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
@@ -91,7 +97,7 @@ public class ConfigData {
                         R.drawable.ic_notifications,
                         R.drawable.ic_notifications_off,
                         R.string.saved_unread_notifications_pref,
-                        true);
+                        DEFAULT_UNREAD_NOTIFICATION);
         settingsConfigData.add(unreadNotificationsConfigItem);
 
         // Data for 24 hour mode UX (toggle) in settings Activity.
@@ -101,7 +107,7 @@ public class ConfigData {
                         R.drawable.time_24h,
                         R.drawable.time_12h,
                         R.string.saved_24h_pref,
-                        false);
+                        DEFAULT_24_HOUR_TIME);
         settingsConfigData.add(militaryTimeConfigItem);
 
         // Data for background complications UX in settings Activity.
