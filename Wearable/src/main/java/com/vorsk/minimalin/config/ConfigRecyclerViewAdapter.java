@@ -225,11 +225,13 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 String switchName = switchConfigItem.getName();
                 int SharedPrefId = switchConfigItem.getSharedPrefId();
+                boolean switchDefault = switchConfigItem.getDefault();
 
                 switchViewHolder.setIcons(
                         switchEnabledIconResourceId, switchDisabledIconResourceId);
                 switchViewHolder.setName(switchName);
                 switchViewHolder.setSharedPrefId(SharedPrefId);
+                switchViewHolder.setDefault(switchDefault);
                 break;
 
             case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
@@ -522,6 +524,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             implements View.OnClickListener {
 
         private Switch mSwitch;
+        boolean mDefault;
 
         private int mEnabledIconResourceId;
         private int mDisabledIconResourceId;
@@ -533,6 +536,10 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             mSwitch = view.findViewById(R.id.item_switch);
             view.setOnClickListener(this);
+        }
+
+        public void setDefault(boolean d) {
+            mDefault = d;
         }
 
         public void setName(String name) {
@@ -558,7 +565,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Context context = mSwitch.getContext();
                 String sharedPreferenceString = context.getString(mSharedPrefResourceId);
-                Boolean currentState = mSharedPref.getBoolean(sharedPreferenceString, true);
+                Boolean currentState = mSharedPref.getBoolean(sharedPreferenceString, mDefault);
 
                 updateIcon(context, currentState);
             }
@@ -587,7 +594,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             String sharedPreferenceString = context.getString(mSharedPrefResourceId);
 
             // Since user clicked on a switch, new state should be opposite of current state.
-            Boolean newState = !mSharedPref.getBoolean(sharedPreferenceString, true);
+            Boolean newState = !mSharedPref.getBoolean(sharedPreferenceString, mDefault);
 
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putBoolean(sharedPreferenceString, newState);
