@@ -214,22 +214,22 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 break;
 
             case TYPE_SWITCH_CONFIG:
-                SwitchViewHolder unreadViewHolder =
+                SwitchViewHolder switchViewHolder =
                         (SwitchViewHolder) viewHolder;
 
-                SwitchConfigItem unreadConfigItem =
+                SwitchConfigItem switchConfigItem =
                         (SwitchConfigItem) configItemType;
 
-                int unreadEnabledIconResourceId = unreadConfigItem.getIconEnabledResourceId();
-                int unreadDisabledIconResourceId = unreadConfigItem.getIconDisabledResourceId();
+                int switchEnabledIconResourceId = switchConfigItem.getIconEnabledResourceId();
+                int switchDisabledIconResourceId = switchConfigItem.getIconDisabledResourceId();
 
-                String unreadName = unreadConfigItem.getName();
-                int unreadSharedPrefId = unreadConfigItem.getSharedPrefId();
+                String switchName = switchConfigItem.getName();
+                int SharedPrefId = switchConfigItem.getSharedPrefId();
 
-                unreadViewHolder.setIcons(
-                        unreadEnabledIconResourceId, unreadDisabledIconResourceId);
-                unreadViewHolder.setName(unreadName);
-                unreadViewHolder.setSharedPrefId(unreadSharedPrefId);
+                switchViewHolder.setIcons(
+                        switchEnabledIconResourceId, switchDisabledIconResourceId);
+                switchViewHolder.setName(switchName);
+                switchViewHolder.setSharedPrefId(SharedPrefId);
                 break;
 
             case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
