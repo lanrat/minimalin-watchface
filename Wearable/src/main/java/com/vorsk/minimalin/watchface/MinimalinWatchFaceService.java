@@ -481,6 +481,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         complicationDrawable.setTextColorActive(Color.WHITE);
                         if (mComplicationBackgrounds) {
                             complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_light));
+                        } else {
+                            complicationDrawable.setBackgroundColorActive(Color.TRANSPARENT);
                         }
                         //complicationDrawable.setTitleColorActive(Color.GRAY);
                         complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(200));
@@ -488,6 +490,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                         complicationDrawable.setTextColorActive(Color.BLACK);
                         if (mComplicationBackgrounds) {
                             complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_dark));
+                        } else {
+                            complicationDrawable.setBackgroundColorActive(Color.TRANSPARENT);
                         }
                         //complicationDrawable.setTitleColorActive(Color.DKGRAY);
                         complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(800));
