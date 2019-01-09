@@ -7,7 +7,7 @@
     <dimen name="color_picker_size">40dp</dimen>
 
     <dimen name="minimalin_font_size">15sp</dimen>
-    <dimen name="minimalin_notification_font_size">8sp</dimen>
+    <dimen name="minimalin_notification_font_size">6sp</dimen>
     <dimen name="minimalin_vertical_font_gap">4sp</dimen>
 
     <dimen name="complication_preview_size">36dp</dimen>
