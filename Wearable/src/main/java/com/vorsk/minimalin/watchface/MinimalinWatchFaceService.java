@@ -180,7 +180,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 6f;
         private static final float NOTIFICATION_OUTLINE_STROKE_WIDTH = 2f;
 
-        private static final int SHADOW_RADIUS = 6;
+        private static final int SHADOW_RADIUS = 3;
         // Used to pull user's preferences for background color, highlight color, and visual
         // indicating there are unread notifications.
         SharedPreferences mSharedPref;
@@ -279,8 +279,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             setWatchFaceStyle(
                     new WatchFaceStyle.Builder(MinimalinWatchFaceService.this)
                             .setAcceptsTapEvents(true)
-                            .setHideNotificationIndicator(false)
-                            .setShowUnreadCountIndicator(true)
+                            .setHideNotificationIndicator(false) // TODO set to true
+                            .setShowUnreadCountIndicator(false) // TODO set to false
                             //.setStatusBarGravity(Gravity.CENTER_HORIZONTAL)
                             .setViewProtectionMode(WatchFaceStyle.PROTECT_STATUS_BAR)
                             .build());
@@ -292,6 +292,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         // Pulls all user's preferences for watch face appearance.
         private void loadSavedPreferences() {
+            //mSharedPref.edit().clear().commit(); // used for testing, resets all settings to default
             String primaryColorResourceName =
                     getApplicationContext().getString(R.string.saved_primary_color);
             String primaryColorName = mSharedPref.getString(primaryColorResourceName, MaterialColors.Color.BLUE.name());

@@ -230,8 +230,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 switchViewHolder.setIcons(
                         switchEnabledIconResourceId, switchDisabledIconResourceId);
                 switchViewHolder.setName(switchName);
-                switchViewHolder.setSharedPrefId(SharedPrefId);
-                switchViewHolder.setDefault(switchDefault);
+                switchViewHolder.setSharedPrefId(SharedPrefId, switchDefault);
                 break;
 
             case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
@@ -538,10 +537,6 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             view.setOnClickListener(this);
         }
 
-        public void setDefault(boolean d) {
-            mDefault = d;
-        }
-
         public void setName(String name) {
             mSwitch.setText(name);
         }
@@ -558,14 +553,17 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     context.getDrawable(mEnabledIconResourceId), null, null, null);
         }
 
-        void setSharedPrefId(int sharedPrefId) {
+        void setSharedPrefId(int sharedPrefId, boolean d) {
             mSharedPrefResourceId = sharedPrefId;
+            mDefault = d;
 
             if (mSwitch != null) {
 
                 Context context = mSwitch.getContext();
                 String sharedPreferenceString = context.getString(mSharedPrefResourceId);
                 Boolean currentState = mSharedPref.getBoolean(sharedPreferenceString, mDefault);
+
+                Log.d(TAG, "Setting switch pref: "+sharedPreferenceString+": "+currentState);
 
                 updateIcon(context, currentState);
             }
@@ -598,6 +596,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putBoolean(sharedPreferenceString, newState);
+            Log.d(TAG, "Saving switch pref: "+sharedPreferenceString+": "+newState);
             editor.apply();
 
             updateIcon(context, newState);
