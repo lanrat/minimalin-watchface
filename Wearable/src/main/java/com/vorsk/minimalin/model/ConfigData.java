@@ -20,8 +20,8 @@ import java.util.ArrayList;
 public class ConfigData {
 
     // default setting for booleans
-    public static boolean DEFAULT_BACKGROUND_GRADIENT = false;
-    public static boolean DEFAULT_COMPLICATION_BACKGROUND = true;
+    public static boolean DEFAULT_BACKGROUND_GRADIENT = true;
+    public static boolean DEFAULT_COMPLICATION_BACKGROUND = false;
     public static boolean DEFAULT_UNREAD_NOTIFICATION = true;
     public static boolean DEFAULT_24_HOUR_TIME = false;
 
