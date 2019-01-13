@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
+import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.ConfigActivity;
 import com.vorsk.minimalin.config.ConfigRecyclerViewAdapter;
@@ -20,10 +21,13 @@ import java.util.ArrayList;
 public class ConfigData {
 
     // default setting for booleans
-    public static boolean DEFAULT_BACKGROUND_GRADIENT = true;
-    public static boolean DEFAULT_COMPLICATION_BACKGROUND = false;
-    public static boolean DEFAULT_UNREAD_NOTIFICATION = true;
-    public static boolean DEFAULT_24_HOUR_TIME = false;
+    public static final boolean DEFAULT_BACKGROUND_GRADIENT = true;
+    public static final boolean DEFAULT_COMPLICATION_BACKGROUND = false;
+    public static final boolean DEFAULT_UNREAD_NOTIFICATION = true;
+    public static final boolean DEFAULT_24_HOUR_TIME = false;
+    public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.BLUE_GRAY.name();
+    public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
+    public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.ORANGE.name();
 
     /**
      * Returns Watch Face Service class associated with configuration Activity.

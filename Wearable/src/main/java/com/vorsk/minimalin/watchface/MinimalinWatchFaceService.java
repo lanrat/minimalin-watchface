@@ -295,12 +295,12 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             //mSharedPref.edit().clear().commit(); // used for testing, resets all settings to default
             String primaryColorResourceName =
                     getApplicationContext().getString(R.string.saved_primary_color);
-            String primaryColorName = mSharedPref.getString(primaryColorResourceName, MaterialColors.Color.BLUE.name());
+            String primaryColorName = mSharedPref.getString(primaryColorResourceName, ConfigData.DEFAULT_PRIMARY_COLOR);
             mPrimaryMaterialColor = MaterialColors.Get(primaryColorName);
 
             String secondaryColorResourceName =
                     getApplicationContext().getString(R.string.saved_secondary_color);
-            String secondaryColorName = mSharedPref.getString(secondaryColorResourceName, MaterialColors.Color.ORANGE.name());
+            String secondaryColorName = mSharedPref.getString(secondaryColorResourceName, ConfigData.DEFAULT_SECONDARY_COLOR);
             mSecondaryMaterialColor = MaterialColors.Get(secondaryColorName);
 
             String backgroundGradientPreferenceResourceName =
@@ -310,7 +310,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             String backgroundColorResourceName =
                     getApplicationContext().getString(R.string.saved_background_color);
-            String backgroundColorName = mSharedPref.getString(backgroundColorResourceName, MaterialColors.Color.BLUE_GRAY.name());
+            String backgroundColorName = mSharedPref.getString(backgroundColorResourceName, ConfigData.DEFAULT_BACKGROUND_COLOR);
             mBackgroundMaterialColor = MaterialColors.Get(backgroundColorName);
 
             mBackgroundColor = mBackgroundMaterialColor.Color(500);
