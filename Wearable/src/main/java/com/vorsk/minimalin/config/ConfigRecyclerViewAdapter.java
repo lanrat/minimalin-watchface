@@ -406,7 +406,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 } else if (watchFaceComplicationId == mRightComplicationId) {
                     updateComplicationView(complicationProviderInfo, mRightComplication, false);
                 } else if (watchFaceComplicationId == mTopComplicationId) {
-                    updateComplicationView(complicationProviderInfo, mTopComplication, false);
+                    updateComplicationView(complicationProviderInfo, mTopComplication, true);
                 } else if (watchFaceComplicationId == mBottomComplicationId) {
                     updateComplicationView(complicationProviderInfo, mBottomComplication, true);
                 }

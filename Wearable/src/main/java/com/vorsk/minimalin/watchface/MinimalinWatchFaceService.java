@@ -16,10 +16,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.wearable.complications.ComplicationData;
-import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -58,29 +56,41 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
+            // background
             {ComplicationData.TYPE_LARGE_IMAGE},
             {
+                    // left
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
+                    ComplicationData.TYPE_SMALL_IMAGE,
+                    ComplicationData.TYPE_NO_PERMISSION
             },
             {
+                    // right
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
+                    ComplicationData.TYPE_SMALL_IMAGE,
+                    ComplicationData.TYPE_NO_PERMISSION
             },
             {
-                    ComplicationData.TYPE_RANGED_VALUE,
-                    ComplicationData.TYPE_ICON,
-                    ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
-            },
-            {
-                    ComplicationData.TYPE_RANGED_VALUE,
-                    ComplicationData.TYPE_ICON,
+                    // top
                     ComplicationData.TYPE_LONG_TEXT,
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE,
+                    ComplicationData.TYPE_NO_PERMISSION
+            },
+            {
+                    // bottom
+                    ComplicationData.TYPE_LONG_TEXT,
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE,
+                    ComplicationData.TYPE_NO_PERMISSION
             }
     };
 
@@ -757,10 +767,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             Rect topBounds =
                     // Left, Top, Right, Bottom
                     new Rect(
-                            midpointOfScreen - (sizeOfComplication / 2),
-                            midpointOfScreen - ((midpointOfScreen - sizeOfComplication) / 2) - sizeOfComplication,
-                            midpointOfScreen + (sizeOfComplication / 2),
-                            midpointOfScreen - (midpointOfScreen - sizeOfComplication) / 2);
+                            midpointOfScreen - (sizeOfLongComplicationWidth / 2),
+                            midpointOfScreen - ((midpointOfScreen - sizeOfLongComplicationHeight) / 2) - sizeOfLongComplicationHeight,
+                            midpointOfScreen + (sizeOfLongComplicationWidth / 2),
+                            midpointOfScreen - (midpointOfScreen - sizeOfLongComplicationHeight) / 2);
 
             ComplicationDrawable topComplicationDrawable =
                     mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
