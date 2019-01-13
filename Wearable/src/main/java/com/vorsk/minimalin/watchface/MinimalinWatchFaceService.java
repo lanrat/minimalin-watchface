@@ -218,6 +218,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private Paint mSecondPaint;
         private Paint mNotificationCirclePaint;
         private Paint mTicksPaint;
+        private Paint mBackgroundCirclePaint;
         private TextPaint mMinimalinTimePaint;
         private TextPaint mNotificationCountPaint;
         private Paint mBackgroundPaint;
@@ -426,6 +427,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCirclePaint.setAntiAlias(true);
             mNotificationCirclePaint.setStyle(Paint.Style.FILL);
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
+
+            mBackgroundCirclePaint = new Paint();
+            mBackgroundCirclePaint.setColor(getApplicationContext().getColor(R.color.color_complication_background_dark));
+            mBackgroundCirclePaint.setStyle(Paint.Style.STROKE);
+            mBackgroundCirclePaint.setAntiAlias(true);
 
             // https://fonts.google.com/specimen/Comfortaa?selection.family=Comfortaa
             Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
@@ -703,6 +709,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTickLength = (float) (mCenterX * 0.1);
             mMinimalinTextRadiusLength = (float) (mCenterX * 0.2); // TODO this should be a function of the font height
 
+            mBackgroundCirclePaint.setStrokeWidth( (float)(mCenterX * 0.3));
+
             /*
              * Calculates location bounds for right and left circular complications. Please note,
              * we are not demonstrating a long text complication in this watch face.
@@ -840,6 +848,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 } else {
                     canvas.drawColor(mBackgroundColor);
                 }
+                //  TODO circle outline testing
+                canvas.drawCircle(mCenterX, mCenterY, mSecondHandLength, mBackgroundCirclePaint);
             }
         }
 
