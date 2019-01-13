@@ -3,6 +3,8 @@ package com.vorsk.minimalin.model;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.wearable.complications.ComplicationData;
+import android.support.wearable.complications.SystemProviders;
 
 import com.vorsk.minimalin.MaterialColors;
 import com.vorsk.minimalin.R;
@@ -28,6 +30,10 @@ public class ConfigData {
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.BLUE_GRAY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.ORANGE.name();
+    public static final int[] DEFAULT_LEFT_COMPLICATION = {SystemProviders.SUNRISE_SUNSET,  ComplicationData.TYPE_SHORT_TEXT};
+    public static final int[] DEFAULT_RIGHT_COMPLICATION = {SystemProviders.STEP_COUNT,  ComplicationData.TYPE_SHORT_TEXT};
+    public static final int[] DEFAULT_TOP_COMPLICATION = {SystemProviders.DATE,  ComplicationData.TYPE_SHORT_TEXT};
+    public static final int[] DEFAULT_BOTTOM_COMPLICATION = {SystemProviders.NEXT_EVENT,  ComplicationData.TYPE_LONG_TEXT};
 
     /**
      * Returns Watch Face Service class associated with configuration Activity.
