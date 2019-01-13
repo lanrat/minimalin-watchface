@@ -856,7 +856,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private Bitmap generateBackgroundGradient(MaterialColors.Color color) {
             LinearGradient gradient = new LinearGradient(0f, mCenterX * 2f, mCenterY * 2f, 0f,
                     color.Color(400),
-                    color.Color(700),
+                    color.Color(800),
                     Shader.TileMode.CLAMP);
             mBackgroundPaint.setShader(gradient);
             mBackgroundPaint.setDither(true);
