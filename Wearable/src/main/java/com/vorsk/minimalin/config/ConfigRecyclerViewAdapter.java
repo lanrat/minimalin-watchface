@@ -74,6 +74,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int mRightComplicationId;
     private int mTopComplicationId;
     private int mBottomComplicationId;
+    private int mNotificationComplicationId;
     // Required to retrieve complication data from watch face for preview.
     private ProviderInfoRetriever mProviderInfoRetriever;
     // Maintains reference view holder to dynamically update watch face preview. Used instead of
@@ -104,6 +105,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 MinimalinWatchFaceService.getComplicationId(ComplicationLocation.TOP);
         mBottomComplicationId =
                 MinimalinWatchFaceService.getComplicationId(ComplicationLocation.BOTTOM);
+        mNotificationComplicationId =
+                MinimalinWatchFaceService.getComplicationId(ComplicationLocation.NOTIFICATION);
 
         mSharedPref =
                 context.getSharedPreferences(
@@ -290,7 +293,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         LEFT,
         RIGHT,
         TOP,
-        BOTTOM
+        BOTTOM,
+        NOTIFICATION
     }
 
     /**
@@ -304,6 +308,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         private ImageButton mRightComplication;
         private ImageButton mTopComplication;
         private ImageButton mBottomComplication;
+        private ImageButton mNotificationComplication;
 
         private Drawable mDefaultComplicationDrawable;
         private Drawable mDefaultComplicationLongDrawable;
@@ -328,6 +333,10 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             // Sets up bottom complication preview.
             mBottomComplication = view.findViewById(R.id.bottom_complication);
             mBottomComplication.setOnClickListener(this);
+
+            // hidden notification complication
+            mNotificationComplication = view.findViewById(R.id.notification_complication);
+            mNotificationComplication.setOnClickListener(this);
         }
 
         @Override
@@ -353,6 +362,11 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.BOTTOM);
+            } else if (view.equals(mNotificationComplication)) {
+                Log.d(TAG, "Notification Complication click()");
+
+                Activity currentActivity = (Activity) view.getContext();
+                launchComplicationHelperActivity(currentActivity, ComplicationLocation.NOTIFICATION);
             }
         }
 
@@ -409,6 +423,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     updateComplicationView(complicationProviderInfo, mTopComplication, true);
                 } else if (watchFaceComplicationId == mBottomComplicationId) {
                     updateComplicationView(complicationProviderInfo, mBottomComplication, true);
+                }else if (watchFaceComplicationId == mNotificationComplicationId) {
+                    updateComplicationView(complicationProviderInfo, mNotificationComplication, true);
                 }
             } // Currently I don't preview the background complication in the preview
         }

@@ -48,10 +48,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
     private static final int RIGHT_COMPLICATION_ID = 101;
     private static final int TOP_COMPLICATION_ID = 102;
     private static final int BOTTOM_COMPLICATION_ID = 103;
+    private static final int NOTIFICATION_COMPLICATION_ID = 104;
 
     // Background, Left and right complication IDs as array for Complication API.
     private static final int[] COMPLICATION_IDS = {
-            BACKGROUND_COMPLICATION_ID, LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID
+            BACKGROUND_COMPLICATION_ID, LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID, NOTIFICATION_COMPLICATION_ID
     };
 
     // Left and right dial supported types.
@@ -91,6 +92,15 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_SHORT_TEXT,
                     ComplicationData.TYPE_SMALL_IMAGE,
                     ComplicationData.TYPE_NO_PERMISSION
+            },
+            {
+                    // notification
+                    ComplicationData.TYPE_LONG_TEXT,
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE,
+                    ComplicationData.TYPE_NO_PERMISSION
             }
     };
 
@@ -117,6 +127,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 return TOP_COMPLICATION_ID;
             case BOTTOM:
                 return BOTTOM_COMPLICATION_ID;
+            case NOTIFICATION:
+                return NOTIFICATION_COMPLICATION_ID;
             default:
                 return -1;
         }
@@ -143,6 +155,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 return COMPLICATION_SUPPORTED_TYPES[3];
             case BOTTOM:
                 return COMPLICATION_SUPPORTED_TYPES[4];
+            case NOTIFICATION:
+                return COMPLICATION_SUPPORTED_TYPES[5];
             default:
                 return new int[]{};
         }
@@ -384,6 +398,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable bottomComplicationDrawable =
                     (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
             bottomComplicationDrawable.setContext(getApplicationContext());
+            ComplicationDrawable notificationComplicationDrawable =
+                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            notificationComplicationDrawable.setContext(getApplicationContext());
 
             ComplicationDrawable backgroundComplicationDrawable =
                     new ComplicationDrawable(getApplicationContext());
@@ -396,6 +413,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mComplicationDrawableSparseArray.put(RIGHT_COMPLICATION_ID, rightComplicationDrawable);
             mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
             mComplicationDrawableSparseArray.put(BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
+            mComplicationDrawableSparseArray.put(NOTIFICATION_COMPLICATION_ID, notificationComplicationDrawable);
             mComplicationDrawableSparseArray.put(
                     BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
@@ -404,7 +422,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             setDefaultSystemComplicationProvider(LEFT_COMPLICATION_ID, ConfigData.DEFAULT_LEFT_COMPLICATION[0], ConfigData.DEFAULT_LEFT_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(RIGHT_COMPLICATION_ID, ConfigData.DEFAULT_RIGHT_COMPLICATION[0], ConfigData.DEFAULT_RIGHT_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(BOTTOM_COMPLICATION_ID, ConfigData.DEFAULT_BOTTOM_COMPLICATION[0], ConfigData.DEFAULT_BOTTOM_COMPLICATION[1]);
-
+            // TODO notification complication
 
             setComplicationsActiveAndAmbientColors(mWatchComplicationsColor);
             setActiveComplications(COMPLICATION_IDS);
@@ -788,6 +806,18 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mComplicationDrawableSparseArray.get(BOTTOM_COMPLICATION_ID);
             bottomComplicationDrawable.setBounds(bottomBounds);
 
+            Rect topBounds2 =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            midpointOfScreen - (sizeOfLongComplicationWidth / 2),
+                            midpointOfScreen - ((midpointOfScreen - sizeOfLongComplicationHeight) / 2) - sizeOfLongComplicationHeight,
+                            midpointOfScreen + (sizeOfLongComplicationWidth / 2),
+                            midpointOfScreen - (midpointOfScreen - sizeOfLongComplicationHeight) / 2);
+
+            ComplicationDrawable notificationComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(NOTIFICATION_COMPLICATION_ID);
+            notificationComplicationDrawable.setBounds(topBounds2);
+
             Rect screenForBackgroundBound =
                     // Left, Top, Right, Bottom
                     new Rect(0, 0, width, height);
@@ -877,13 +907,18 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
-            int complicationId;
             ComplicationDrawable complicationDrawable;
 
-            for (int COMPLICATION_ID : COMPLICATION_IDS) {
-                complicationId = COMPLICATION_ID;
-                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+            int skipComplication = NOTIFICATION_COMPLICATION_ID;
+            if (getNotificationCount() > 0) {
+                skipComplication = TOP_COMPLICATION_ID;
+            }
 
+            for (int complicationId : COMPLICATION_IDS) {
+                if (complicationId == skipComplication) {
+                    continue;
+                }
+                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
                 complicationDrawable.draw(canvas, currentTimeMillis);
             }
         }

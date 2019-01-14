@@ -49,6 +49,16 @@
         android:scaleType="centerInside"
         android:src="@drawable/add_big_complication" />
 
+    <ImageButton
+        android:id="@+id/notification_complication"
+        android:layout_width="@dimen/complication_big_preview_width"
+        android:layout_height="@dimen/complication_big_preview_height"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/complication_preview_margin_vertical"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_big_complication" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
