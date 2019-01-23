@@ -20,9 +20,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.config.color.ColorSelectionActivity;
+import com.vorsk.minimalin.model.ConfigData.ComplicationSwitchConfigItem;
 import com.vorsk.minimalin.model.ConfigData.BackgroundComplicationConfigItem;
 import com.vorsk.minimalin.model.ConfigData.ColorConfigItem;
 import com.vorsk.minimalin.model.ConfigData.ComplicationsConfigItem;
@@ -60,6 +62,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public static final int TYPE_COLOR_CONFIG = 1;
     public static final int TYPE_SWITCH_CONFIG = 2;
     public static final int TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG = 3;
+    public static final int TYPE_COMPLICATION_SWITCH_CONFIG = 4;
     private static final String TAG = "CompConfigAdapter";
     // ComponentName associated with watch face service (service that renders watch face). Used
     // to retrieve complication information.
@@ -165,6 +168,16 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                                 parent,
                                                 false));
                 break;
+
+            case TYPE_COMPLICATION_SWITCH_CONFIG:
+                viewHolder =
+                        new ComplicationSwitchViewHolder(
+                                LayoutInflater.from(parent.getContext())
+                                        .inflate(
+                                                R.layout.config_item_switch,
+                                                parent,
+                                                false));
+                break;
         }
 
         return viewHolder;
@@ -234,6 +247,26 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         switchEnabledIconResourceId, switchDisabledIconResourceId);
                 switchViewHolder.setName(switchName);
                 switchViewHolder.setSharedPrefId(SharedPrefId, switchDefault);
+                break;
+
+            case TYPE_COMPLICATION_SWITCH_CONFIG:
+                ComplicationSwitchViewHolder complicationSwitchViewHolder =
+                        (ComplicationSwitchViewHolder) viewHolder;
+
+                ComplicationSwitchConfigItem complicationSwitchConfigItem =
+                        (ComplicationSwitchConfigItem) configItemType;
+
+                switchEnabledIconResourceId = complicationSwitchConfigItem.getIconEnabledResourceId();
+                switchDisabledIconResourceId = complicationSwitchConfigItem.getIconDisabledResourceId();
+
+                String complicationSwitchName = complicationSwitchConfigItem.getName();
+                SharedPrefId = complicationSwitchConfigItem.getSharedPrefId();
+                switchDefault = complicationSwitchConfigItem.getDefault();
+
+                complicationSwitchViewHolder.setComplicationID(complicationSwitchConfigItem.getComplicationLocation());
+                complicationSwitchViewHolder.setIcons(switchEnabledIconResourceId, switchDisabledIconResourceId);
+                complicationSwitchViewHolder.setName(complicationSwitchName);
+                complicationSwitchViewHolder.setSharedPrefId(SharedPrefId, switchDefault);
                 break;
 
             case TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG:
@@ -498,7 +531,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mAppearanceButton.setText(name);
         }
 
-        public void setIcon(int resourceId) {
+        void setIcon(int resourceId) {
             Context context = mAppearanceButton.getContext();
             mAppearanceButton.setCompoundDrawablesWithIntrinsicBounds(
                     context.getDrawable(resourceId), null, null, null);
@@ -531,6 +564,60 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
+
+    public class ComplicationSwitchViewHolder extends SwitchViewHolder {
+        private ComplicationLocation complicationID;
+        ComplicationSwitchViewHolder(View view) {
+            super(view);
+        }
+
+        void setComplicationID(ComplicationLocation complicationID) {
+            this.complicationID = complicationID;
+        }
+
+        @Override
+        public void onClick(View view) {
+            super.onClick(view);
+
+            boolean enabled = super.getState();
+
+            if (enabled) {
+                Activity currentActivity = (Activity) view.getContext();
+
+                // show informative toast
+                // TODO don't hardcode notification toast to this ComplicationSwitchViewHolder
+                Toast.makeText(currentActivity, R.string.notification_complication_instruction_toast, Toast.LENGTH_LONG).show();
+
+                // start intent to select complication
+                mSelectedComplicationId =
+                        MinimalinWatchFaceService.getComplicationId(
+                                complicationID);
+
+                if (mSelectedComplicationId >= 0) {
+
+                    int[] supportedTypes =
+                            MinimalinWatchFaceService.getSupportedComplicationTypes(
+                                    complicationID);
+
+                    ComponentName watchFace =
+                            new ComponentName(
+                                    currentActivity, MinimalinWatchFaceService.class);
+
+                    currentActivity.startActivityForResult(
+                            ComplicationHelperActivity.createProviderChooserHelperIntent(
+                                    currentActivity,
+                                    watchFace,
+                                    mSelectedComplicationId,
+                                    supportedTypes),
+                            ConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE);
+
+                } else {
+                    Log.d(TAG, "Complication not supported by watch face.");
+                }
+            }
+        }
+    }
+
     /**
      * Displays switch for toggle settings. User can
      * toggle on/off.
@@ -551,6 +638,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             mSwitch = view.findViewById(R.id.item_switch);
             view.setOnClickListener(this);
+        }
+
+        boolean getState() {
+            Context context = mSwitch.getContext();
+            String sharedPreferenceString = context.getString(mSharedPrefResourceId);
+            return mSharedPref.getBoolean(sharedPreferenceString, mDefault);
         }
 
         public void setName(String name) {
@@ -574,11 +667,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mDefault = d;
 
             if (mSwitch != null) {
-
+                Boolean currentState = getState();
                 Context context = mSwitch.getContext();
-                String sharedPreferenceString = context.getString(mSharedPrefResourceId);
-                Boolean currentState = mSharedPref.getBoolean(sharedPreferenceString, mDefault);
-
                 updateIcon(context, currentState);
             }
         }
@@ -606,7 +696,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             String sharedPreferenceString = context.getString(mSharedPrefResourceId);
 
             // Since user clicked on a switch, new state should be opposite of current state.
-            Boolean newState = !mSharedPref.getBoolean(sharedPreferenceString, mDefault);
+            boolean newState = !getState();
 
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putBoolean(sharedPreferenceString, newState);
@@ -635,7 +725,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mBackgroundComplicationButton.setText(name);
         }
 
-        public void setIcon(int resourceId) {
+        void setIcon(int resourceId) {
             Context context = mBackgroundComplicationButton.getContext();
             mBackgroundComplicationButton.setCompoundDrawablesWithIntrinsicBounds(
                     context.getDrawable(resourceId), null, null, null);

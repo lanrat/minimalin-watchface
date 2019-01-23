@@ -27,6 +27,7 @@ public class ConfigData {
     public static final boolean DEFAULT_COMPLICATION_BACKGROUND = false;
     public static final boolean DEFAULT_UNREAD_NOTIFICATION = true;
     public static final boolean DEFAULT_24_HOUR_TIME = false;
+    public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.BLUE_GRAY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.ORANGE.name();
@@ -36,7 +37,7 @@ public class ConfigData {
     public static final int[] DEFAULT_RIGHT_COMPLICATION = {SystemProviders.STEP_COUNT,  ComplicationData.TYPE_SHORT_TEXT};
     public static final int[] DEFAULT_TOP_COMPLICATION = {SystemProviders.DATE,  ComplicationData.TYPE_SHORT_TEXT};
     public static final int[] DEFAULT_BOTTOM_COMPLICATION = {SystemProviders.NEXT_EVENT,  ComplicationData.TYPE_LONG_TEXT};
-    public static final int[] DEFAULT_NOTIFICATION_COMPLICATION = {SystemProviders.UNREAD_NOTIFICATION_COUNT,  ComplicationData.TYPE_LONG_TEXT};
+    //public static final int[] DEFAULT_NOTIFICATION_COMPLICATION = {SystemProviders.UNREAD_NOTIFICATION_COUNT,  ComplicationData.TYPE_LONG_TEXT};
 
     /**
      * Returns Watch Face Service class associated with configuration Activity.
@@ -92,6 +93,17 @@ public class ConfigData {
                         R.string.saved_background_gradient,
                         DEFAULT_BACKGROUND_GRADIENT);
         settingsConfigData.add(gradientConfigItem);
+
+        // Data notification complication
+        ConfigItemType notificationComplicationToggle =
+                new ComplicationSwitchConfigItem(
+                        context.getString(R.string.config_notification_complication_label),
+                        R.drawable.ic_plus_circle,
+                        R.drawable.ic_plus,
+                        R.string.saved_notification_complication,
+                        ConfigRecyclerViewAdapter.ComplicationLocation.NOTIFICATION,
+                        DEFAULT_NOTIFICATION_COMPLICATION);
+        settingsConfigData.add(notificationComplicationToggle);
 
         // Data for complication background
         ConfigItemType complicationBackgroundConfigItem =
@@ -272,6 +284,29 @@ public class ConfigData {
         @Override
         public int getConfigType() {
             return ConfigRecyclerViewAdapter.TYPE_SWITCH_CONFIG;
+        }
+    }
+
+    public static class ComplicationSwitchConfigItem extends SwitchConfigItem {
+        private ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation;
+        ComplicationSwitchConfigItem(
+                String name,
+                int iconEnabledResourceId,
+                int iconDisabledResourceId,
+                int sharedPrefId,
+                ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation,
+                boolean switchDefault) {
+            super(name, iconEnabledResourceId, iconDisabledResourceId, sharedPrefId, switchDefault);
+            this.complicationLocation = complicationLocation;
+        }
+
+        public ConfigRecyclerViewAdapter.ComplicationLocation getComplicationLocation() {
+            return this.complicationLocation;
+        }
+
+        @Override
+        public int getConfigType() {
+            return ConfigRecyclerViewAdapter.TYPE_COMPLICATION_SWITCH_CONFIG;
         }
     }
 

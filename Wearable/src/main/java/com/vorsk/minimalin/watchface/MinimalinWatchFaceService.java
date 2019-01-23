@@ -256,6 +256,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean mMilitaryTimePreference;
         private boolean mBackgroundGradient;
         private boolean mComplicationBackgrounds;
+        private boolean mNotificationComplication;
         private Bitmap mBackgroundGradientBitmap;
 
 
@@ -332,6 +333,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_background_gradient);
             mBackgroundGradient =
                     mSharedPref.getBoolean(backgroundGradientPreferenceResourceName, ConfigData.DEFAULT_BACKGROUND_GRADIENT);
+
+            String notificationComplicationResourceName =
+                    getApplicationContext().getString(R.string.saved_notification_complication);
+            mNotificationComplication =
+                    mSharedPref.getBoolean(notificationComplicationResourceName, ConfigData.DEFAULT_NOTIFICATION_COMPLICATION);
 
             String backgroundColorResourceName =
                     getApplicationContext().getString(R.string.saved_background_color);
@@ -418,7 +424,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             setDefaultSystemComplicationProvider(LEFT_COMPLICATION_ID, ConfigData.DEFAULT_LEFT_COMPLICATION[0], ConfigData.DEFAULT_LEFT_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(RIGHT_COMPLICATION_ID, ConfigData.DEFAULT_RIGHT_COMPLICATION[0], ConfigData.DEFAULT_RIGHT_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(BOTTOM_COMPLICATION_ID, ConfigData.DEFAULT_BOTTOM_COMPLICATION[0], ConfigData.DEFAULT_BOTTOM_COMPLICATION[1]);
-            setDefaultSystemComplicationProvider(NOTIFICATION_COMPLICATION_ID, ConfigData.DEFAULT_NOTIFICATION_COMPLICATION[0], ConfigData.DEFAULT_NOTIFICATION_COMPLICATION[1]);
+            //setDefaultSystemComplicationProvider(NOTIFICATION_COMPLICATION_ID, ConfigData.DEFAULT_NOTIFICATION_COMPLICATION[0], ConfigData.DEFAULT_NOTIFICATION_COMPLICATION[1]);
 
             setComplicationsActiveAndAmbientColors();
             setActiveComplications(COMPLICATION_IDS);
@@ -724,7 +730,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTickLength = (float) (mCenterX * 0.05);
             mMinimalinTextRadiusLength = mTickLength/2 + mMinimalinTimePaint.getTextSize(); // (float) (mCenterX * 0.15); // testing this being a function of font size
 
-
             /*
              * Calculates location bounds for right and left circular complications. Please note,
              * we are not demonstrating a long text complication in this watch face.
@@ -800,6 +805,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                             midpointOfScreen + (sizeOfLongComplicationWidth / 2),
                             midpointOfScreen - (midpointOfScreen - sizeOfLongComplicationHeight) / 2);
 
+            // TODO test setting this to use topBounds for both
             ComplicationDrawable notificationComplicationDrawable =
                     mComplicationDrawableSparseArray.get(NOTIFICATION_COMPLICATION_ID);
             notificationComplicationDrawable.setBounds(topBounds2);
@@ -887,7 +893,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable complicationDrawable;
 
             int skipComplication = NOTIFICATION_COMPLICATION_ID;
-            if (getNotificationCount() > 0) {
+            if (mNotificationComplication && getNotificationCount() > 0) { // TODO mNumberOfUnreadNotifications?
                 skipComplication = TOP_COMPLICATION_ID;
             }
 
