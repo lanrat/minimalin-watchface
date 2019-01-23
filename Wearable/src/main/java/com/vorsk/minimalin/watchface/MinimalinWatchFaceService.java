@@ -734,8 +734,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mSecondHandLength = (float) (mCenterX * 0.875);
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
-            mTickLength = (float) (mCenterX * 0.1);
-            mMinimalinTextRadiusLength = (float) (mCenterX * 0.2); // TODO this should be a function of the font height
+            mTickLength = (float) (mCenterX * 0.05);
+            mMinimalinTextRadiusLength = (float) (mCenterX * 0.15); // TODO this should be a function of the font height
 
             mBackgroundCirclePaint.setStrokeWidth( (float)(mCenterX * 0.3));
 
