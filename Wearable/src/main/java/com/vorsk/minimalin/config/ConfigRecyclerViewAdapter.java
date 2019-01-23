@@ -264,6 +264,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 switchDefault = complicationSwitchConfigItem.getDefault();
 
                 complicationSwitchViewHolder.setComplicationID(complicationSwitchConfigItem.getComplicationLocation());
+                complicationSwitchViewHolder.setInstructionToastResource(complicationSwitchConfigItem.getInstructionToastTextID());
                 complicationSwitchViewHolder.setIcons(switchEnabledIconResourceId, switchDisabledIconResourceId);
                 complicationSwitchViewHolder.setName(complicationSwitchName);
                 complicationSwitchViewHolder.setSharedPrefId(SharedPrefId, switchDefault);
@@ -341,7 +342,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         private ImageButton mRightComplication;
         private ImageButton mTopComplication;
         private ImageButton mBottomComplication;
-        private ImageButton mNotificationComplication;
+        //private ImageButton mNotificationComplication;
 
         private Drawable mDefaultComplicationDrawable;
         private Drawable mDefaultComplicationLongDrawable;
@@ -368,8 +369,8 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mBottomComplication.setOnClickListener(this);
 
             // hidden notification complication
-            mNotificationComplication = view.findViewById(R.id.notification_complication);
-            mNotificationComplication.setOnClickListener(this);
+            //mNotificationComplication = view.findViewById(R.id.notification_complication);
+            //mNotificationComplication.setOnClickListener(this);
         }
 
         @Override
@@ -395,12 +396,12 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.BOTTOM);
-            } else if (view.equals(mNotificationComplication)) {
+            } /*else if (view.equals(mNotificationComplication)) {
                 Log.d(TAG, "Notification Complication click()");
 
                 Activity currentActivity = (Activity) view.getContext();
                 launchComplicationHelperActivity(currentActivity, ComplicationLocation.NOTIFICATION);
-            }
+            }*/
         }
 
 
@@ -456,9 +457,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     updateComplicationView(complicationProviderInfo, mTopComplication, true);
                 } else if (watchFaceComplicationId == mBottomComplicationId) {
                     updateComplicationView(complicationProviderInfo, mBottomComplication, true);
-                }else if (watchFaceComplicationId == mNotificationComplicationId) {
+                }/*else if (watchFaceComplicationId == mNotificationComplicationId) {
                     updateComplicationView(complicationProviderInfo, mNotificationComplication, true);
-                }
+                }*/
             } // Currently I don't preview the background complication in the preview
         }
 
@@ -566,13 +567,20 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
 
     public class ComplicationSwitchViewHolder extends SwitchViewHolder {
+
         private ComplicationLocation complicationID;
+        private int instructionToastResource;
+
         ComplicationSwitchViewHolder(View view) {
             super(view);
         }
 
         void setComplicationID(ComplicationLocation complicationID) {
             this.complicationID = complicationID;
+        }
+
+        void setInstructionToastResource(int id) {
+            this.instructionToastResource = id;
         }
 
         @Override
@@ -585,8 +593,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 Activity currentActivity = (Activity) view.getContext();
 
                 // show informative toast
-                // TODO don't hardcode notification toast to this ComplicationSwitchViewHolder
-                Toast.makeText(currentActivity, R.string.notification_complication_instruction_toast, Toast.LENGTH_LONG).show();
+                Toast.makeText(currentActivity, instructionToastResource, Toast.LENGTH_LONG).show();
 
                 // start intent to select complication
                 mSelectedComplicationId =

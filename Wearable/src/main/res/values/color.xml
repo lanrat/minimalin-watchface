@@ -19,7 +19,7 @@
     <color name="elements_digital_black">#211e1d</color>
     <color name="elements_digital_white">#FFFFFF</color>
     <color name="elements_digital_grey">#908f8e</color>
-<!--TODO remove unused colors-->
+    <!-- unused colors below -->
     <color name="white">#FFFFFF</color>
     <color name="yellow">#FFFF00</color>
     <color name="fuchsia">#FF00FF</color>

@@ -98,10 +98,11 @@ public class ConfigData {
         ConfigItemType notificationComplicationToggle =
                 new ComplicationSwitchConfigItem(
                         context.getString(R.string.config_notification_complication_label),
-                        R.drawable.ic_plus_circle,
-                        R.drawable.ic_plus,
+                        R.drawable.ic_notifications,
+                        R.drawable.ic_notification_outline,
                         R.string.saved_notification_complication,
                         ConfigRecyclerViewAdapter.ComplicationLocation.NOTIFICATION,
+                        R.string.notification_complication_instruction_toast,
                         DEFAULT_NOTIFICATION_COMPLICATION);
         settingsConfigData.add(notificationComplicationToggle);
 
@@ -288,20 +289,29 @@ public class ConfigData {
     }
 
     public static class ComplicationSwitchConfigItem extends SwitchConfigItem {
+
         private ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation;
+        private int instructionToastTextID;
+
         ComplicationSwitchConfigItem(
                 String name,
                 int iconEnabledResourceId,
                 int iconDisabledResourceId,
                 int sharedPrefId,
                 ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation,
+                int instructionToastTextID,
                 boolean switchDefault) {
             super(name, iconEnabledResourceId, iconDisabledResourceId, sharedPrefId, switchDefault);
             this.complicationLocation = complicationLocation;
+            this.instructionToastTextID = instructionToastTextID;
         }
 
         public ConfigRecyclerViewAdapter.ComplicationLocation getComplicationLocation() {
             return this.complicationLocation;
+        }
+
+        public int getInstructionToastTextID() {
+            return instructionToastTextID;
         }
 
         @Override

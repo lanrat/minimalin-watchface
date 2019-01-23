@@ -797,18 +797,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mComplicationDrawableSparseArray.get(BOTTOM_COMPLICATION_ID);
             bottomComplicationDrawable.setBounds(bottomBounds);
 
-            Rect topBounds2 =
-                    // Left, Top, Right, Bottom
-                    new Rect(
-                            midpointOfScreen - (sizeOfLongComplicationWidth / 2),
-                            midpointOfScreen - ((midpointOfScreen - sizeOfLongComplicationHeight) / 2) - sizeOfLongComplicationHeight,
-                            midpointOfScreen + (sizeOfLongComplicationWidth / 2),
-                            midpointOfScreen - (midpointOfScreen - sizeOfLongComplicationHeight) / 2);
-
-            // TODO test setting this to use topBounds for both
+            // notification bounds same as top
             ComplicationDrawable notificationComplicationDrawable =
                     mComplicationDrawableSparseArray.get(NOTIFICATION_COMPLICATION_ID);
-            notificationComplicationDrawable.setBounds(topBounds2);
+            notificationComplicationDrawable.setBounds(topBounds);
 
             Rect screenForBackgroundBound =
                     // Left, Top, Right, Bottom
@@ -893,7 +885,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable complicationDrawable;
 
             int skipComplication = NOTIFICATION_COMPLICATION_ID;
-            if (mNotificationComplication && getNotificationCount() > 0) { // TODO mNumberOfUnreadNotifications?
+            if (mNotificationComplication && getNotificationCount() > 0) {
                 skipComplication = TOP_COMPLICATION_ID;
             }
 
