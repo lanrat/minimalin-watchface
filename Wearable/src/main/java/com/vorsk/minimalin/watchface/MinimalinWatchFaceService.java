@@ -235,7 +235,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private int mWatchHourHandHighlightColor;
         private int mWatchHandShadowColor;
         private int mBackgroundColor;
-        private int mWatchComplicationsColor; // TODO change or remove this, currently just used for notification dot
         private boolean mIsBackgroundDark;
         private Paint mHourPaint;
         private Paint mMinutePaint;
@@ -341,7 +340,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mBackgroundMaterialColor = MaterialColors.Get(backgroundColorName);
 
             mBackgroundColor = mBackgroundMaterialColor.Color(500);
-            mWatchComplicationsColor = mSecondaryMaterialColor.Color(800);
             mWatchSecondHandHighlightColor = mPrimaryMaterialColor.Color(500);
             mWatchMinuteHandHighlightColor = mPrimaryMaterialColor.Color(300);
             mWatchHourHandHighlightColor = mPrimaryMaterialColor.Color(200);
@@ -414,17 +412,16 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
             mComplicationDrawableSparseArray.put(BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
             mComplicationDrawableSparseArray.put(NOTIFICATION_COMPLICATION_ID, notificationComplicationDrawable);
-            mComplicationDrawableSparseArray.put(
-                    BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
+            mComplicationDrawableSparseArray.put(BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
             // set default values
             setDefaultSystemComplicationProvider(TOP_COMPLICATION_ID, ConfigData.DEFAULT_TOP_COMPLICATION[0], ConfigData.DEFAULT_TOP_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(LEFT_COMPLICATION_ID, ConfigData.DEFAULT_LEFT_COMPLICATION[0], ConfigData.DEFAULT_LEFT_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(RIGHT_COMPLICATION_ID, ConfigData.DEFAULT_RIGHT_COMPLICATION[0], ConfigData.DEFAULT_RIGHT_COMPLICATION[1]);
             setDefaultSystemComplicationProvider(BOTTOM_COMPLICATION_ID, ConfigData.DEFAULT_BOTTOM_COMPLICATION[0], ConfigData.DEFAULT_BOTTOM_COMPLICATION[1]);
-            // TODO notification complication
+            setDefaultSystemComplicationProvider(NOTIFICATION_COMPLICATION_ID, ConfigData.DEFAULT_NOTIFICATION_COMPLICATION[0], ConfigData.DEFAULT_NOTIFICATION_COMPLICATION[1]);
 
-            setComplicationsActiveAndAmbientColors(mWatchComplicationsColor);
+            setComplicationsActiveAndAmbientColors();
             setActiveComplications(COMPLICATION_IDS);
         }
 
@@ -504,7 +501,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
          * the active/ambient colors, we only set the colors twice. Once at initialization and
          * again if the user changes the highlight color via ConfigActivity.
          */
-        private void setComplicationsActiveAndAmbientColors(int primaryComplicationColor) {
+        private void setComplicationsActiveAndAmbientColors() {
             int complicationId;
             ComplicationDrawable complicationDrawable;
 
@@ -517,8 +514,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     // watch face's background takes some time to load.
                     complicationDrawable.setBackgroundColorActive(Color.BLACK);
                 } else {
-                    complicationDrawable.setIconColorActive(primaryComplicationColor);
-                    complicationDrawable.setRangedValuePrimaryColorActive(primaryComplicationColor);
+                    complicationDrawable.setIconColorActive(mSecondaryMaterialColor.Color(800));
+                    complicationDrawable.setRangedValuePrimaryColorActive(mSecondaryMaterialColor.Color(800));
                     if (mIsBackgroundDark) {
                         complicationDrawable.setTextColorActive(Color.WHITE);
                         if (mComplicationBackgrounds) {
@@ -731,7 +728,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
             mTickLength = (float) (mCenterX * 0.05);
-            mMinimalinTextRadiusLength = (float) (mCenterX * 0.15); // TODO this could be a function of the font height
+            mMinimalinTextRadiusLength = mTickLength/2 + mMinimalinTimePaint.getTextSize(); // (float) (mCenterX * 0.15); // testing this being a function of font size
 
             //mBackgroundCirclePaint.setStrokeWidth( (float)(mCenterX * 0.3));
 
@@ -1051,7 +1048,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             /* Restore the canvas' original orientation. */
             canvas.restore();
-
         }
 
         @Override
@@ -1068,7 +1064,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 // the active/ambient colors, we only need to update the complications' colors when
                 // the user actually makes a change to the highlight color, not when the watch goes
                 // in and out of ambient mode.
-                setComplicationsActiveAndAmbientColors(mWatchComplicationsColor);
+                setComplicationsActiveAndAmbientColors();
                 updateWatchPaintStyles();
 
                 registerReceiver();

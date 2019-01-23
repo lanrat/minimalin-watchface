@@ -36,6 +36,7 @@ public class ConfigData {
     public static final int[] DEFAULT_RIGHT_COMPLICATION = {SystemProviders.STEP_COUNT,  ComplicationData.TYPE_SHORT_TEXT};
     public static final int[] DEFAULT_TOP_COMPLICATION = {SystemProviders.DATE,  ComplicationData.TYPE_SHORT_TEXT};
     public static final int[] DEFAULT_BOTTOM_COMPLICATION = {SystemProviders.NEXT_EVENT,  ComplicationData.TYPE_LONG_TEXT};
+    public static final int[] DEFAULT_NOTIFICATION_COMPLICATION = {SystemProviders.UNREAD_NOTIFICATION_COUNT,  ComplicationData.TYPE_LONG_TEXT};
 
     /**
      * Returns Watch Face Service class associated with configuration Activity.
