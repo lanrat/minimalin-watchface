@@ -203,7 +203,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private static final float MINUTE_STROKE_WIDTH = 4f;
         private static final float SECOND_TICK_STROKE_WIDTH = 3f;
 
-        private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 6f;
+        private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 8f;
         private static final float NOTIFICATION_OUTLINE_STROKE_WIDTH = 2f;
 
         private static final int SHADOW_RADIUS = 3;
@@ -451,7 +451,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
 
             mNotificationCirclePaint = new Paint();
-            mNotificationCirclePaint.setColor(mWatchComplicationsColor); // TODO change this? (especially if we allow the border to be hidden)
+            mNotificationCirclePaint.setColor(mWatchHourHandHighlightColor);
             mNotificationCirclePaint.setAntiAlias(true);
             mNotificationCirclePaint.setStyle(Paint.Style.FILL);
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
@@ -466,22 +466,21 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             mNotificationCountPaint = new TextPaint();
             mNotificationCountPaint.setColor(mBackgroundColor);
-            mNotificationCountPaint.setStrokeWidth(1.5f);
             mNotificationCountPaint.setAntiAlias(true);
             mNotificationCountPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-            mNotificationCountPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_notification_font_size));
-            mNotificationCountPaint.setTypeface(custom_font);
+            //mNotificationCountPaint.setTypeface(custom_font);
             mNotificationCountPaint.setTextAlign(Paint.Align.LEFT);
+            mNotificationCountPaint.setTextSize(CENTER_GAP_AND_CIRCLE_RADIUS * 1.5f);
+            mNotificationCountPaint.setStrokeWidth(1f);
+            mNotificationCountPaint.setTypeface(Typeface.SERIF);
 
             mTicksPaint = new Paint();
-            //mTicksPaint.setColor(mWatchTicksColor); // TODO remove
             mTicksPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             mTicksPaint.setAntiAlias(true);
             mTicksPaint.setStrokeCap(Paint.Cap.ROUND);
             mTicksPaint.setStyle(Paint.Style.STROKE);
 
             mMinimalinTimePaint = new TextPaint();
-            //mMinimalinTimePaint.setColor(mWatchTimeColor); // TODO remove
             mMinimalinTimePaint.setTypeface(custom_font);
             mMinimalinTimePaint.setAntiAlias(true);
             mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
@@ -650,7 +649,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mNotificationCirclePaint.setColor(Color.GRAY);
                 mMinimalinTimePaint.setColor(Color.WHITE);
                 mNotificationCountPaint.setColor(Color.GRAY);
-                mTicksPaint.setColor(Color.WHITE);
+                mTicksPaint.setColor(Color.GRAY);
 
                 mHourPaint.setAntiAlias(!mLowBitAmbient);
                 mMinutePaint.setAntiAlias(!mLowBitAmbient);
@@ -662,7 +661,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
                 mNotificationCirclePaint.setStyle(Paint.Style.STROKE);
 
-
                 mHourPaint.clearShadowLayer();
                 mMinutePaint.clearShadowLayer();
                 mSecondPaint.clearShadowLayer();
@@ -672,9 +670,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 //mTicksPaint.setColor(mBackgroundColor);
                 mHourPaint.setColor(mWatchHourHandHighlightColor);
                 mMinutePaint.setColor(mWatchMinuteHandHighlightColor);
-                mNotificationCirclePaint.setColor(mWatchComplicationsColor);
-                //mMinimalinTimePaint.setColor(mWatchTimeColor);
-                //mTicksPaint.setColor(mWatchTicksColor);
+                mNotificationCirclePaint.setColor(mWatchHourHandHighlightColor);
                 mSecondPaint.setColor(mWatchSecondHandHighlightColor);
 
                 if (mIsBackgroundDark) {
@@ -839,10 +835,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
             drawBackground(canvas);
             drawComplications(canvas, now);
-            drawNotificationCount(canvas);
             drawWatchFace(canvas);
+            drawNotificationCount(canvas);
         }
-
 
         /**
          * Handles drawing the notification count
@@ -850,12 +845,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
          * @param canvas to draw to
          */
         private void drawNotificationCount(Canvas canvas) {
-            /*if (mNotificationIndicatorUnread) {
-                count = getUnreadCount();
-            } else if (mNotificationIndicatorAll) {
-                count = getNotificationCount();
-            }*/
-
             if (mUnreadNotificationsPreference && (mNumberOfUnreadNotifications > 0)) {
                 int count = mNumberOfUnreadNotifications;
                 String countStr = "+";
@@ -865,18 +854,18 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 }
                 //(x,y) coordinates for where to draw the notification indicator
                 float xPos = mCenterX;
-                float yPos = mCenterY + (mCenterY / 4);
+                float yPos = mCenterY;
 
-                canvas.drawCircle(xPos, yPos, mCenterX * 0.05f, mNotificationCirclePaint);
-                /*canvas.drawText(String.valueOf(count), xPos,
-                        yPos - (mNotificationCountPaint.descent()
-                                + mNotificationCountPaint.ascent()) / 2, mNotificationCountPaint);*/
+                canvas.drawCircle(xPos, yPos, CENTER_GAP_AND_CIRCLE_RADIUS, mNotificationCirclePaint);
                 drawVertAlignedText(canvas, xPos, yPos, countStr, mNotificationCountPaint, TextVerticalAlign.Middle);
+            } else {
+                canvas.drawCircle(mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mNotificationCirclePaint);
             }
         }
 
         private void drawBackground(Canvas canvas) {
-            if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
+            //if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
+            if (mAmbient) {
                 canvas.drawColor(Color.BLACK);
             } else {
                 if (mBackgroundGradient) {
@@ -888,7 +877,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 } else {
                     canvas.drawColor(mBackgroundColor);
                 }
-                //  TODO circle outline testing
+                //  circle outline testing, not sued for now
                 //mBackgroundCirclePaint.setColor(mBackgroundMaterialColor.Color(300));
                 //canvas.drawCircle(mCenterX, mCenterY, mSecondHandLength, mBackgroundCirclePaint);
             }
@@ -1030,7 +1019,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             canvas.rotate(hoursRotation, mCenterX, mCenterY);
             canvas.drawLine(
                     mCenterX,
-                    mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                    mCenterY,
                     mCenterX,
                     mCenterY - mHourHandLength,
                     mHourPaint);
@@ -1038,7 +1027,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             canvas.rotate(minutesRotation - hoursRotation, mCenterX, mCenterY);
             canvas.drawLine(
                     mCenterX,
-                    mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                    mCenterY,
                     mCenterX,
                     mCenterY - mMinuteHandLength,
                     mMinutePaint);
@@ -1051,13 +1040,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 canvas.rotate(secondsRotation - minutesRotation, mCenterX, mCenterY);
                 canvas.drawLine(
                         mCenterX,
-                        mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                        mCenterY,
                         mCenterX,
                         mCenterY - mSecondHandLength,
                         mSecondPaint);
             }
+            // cover up center dot location for notifications
             canvas.drawCircle(
-                    mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mHourPaint);
+                    mCenterX, mCenterY, CENTER_GAP_AND_CIRCLE_RADIUS, mBackgroundPaint);
 
             /* Restore the canvas' original orientation. */
             canvas.restore();
