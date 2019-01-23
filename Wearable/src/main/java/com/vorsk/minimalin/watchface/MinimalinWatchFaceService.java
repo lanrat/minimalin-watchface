@@ -241,7 +241,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private Paint mSecondPaint;
         private Paint mNotificationCirclePaint;
         private Paint mTicksPaint;
-        //private Paint mBackgroundCirclePaint;
         private TextPaint mMinimalinTimePaint;
         private TextPaint mNotificationCountPaint;
         private Paint mBackgroundPaint;
@@ -452,11 +451,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCirclePaint.setAntiAlias(true);
             mNotificationCirclePaint.setStyle(Paint.Style.FILL);
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
-
-            //mBackgroundCirclePaint = new Paint();
-            //mBackgroundCirclePaint.setColor(getApplicationContext().getColor(R.color.color_complication_background_dark));
-            //mBackgroundCirclePaint.setStyle(Paint.Style.STROKE);
-            //mBackgroundCirclePaint.setAntiAlias(true);
 
             // https://fonts.google.com/specimen/Comfortaa?selection.family=Comfortaa
             Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
@@ -730,7 +724,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTickLength = (float) (mCenterX * 0.05);
             mMinimalinTextRadiusLength = mTickLength/2 + mMinimalinTimePaint.getTextSize(); // (float) (mCenterX * 0.15); // testing this being a function of font size
 
-            //mBackgroundCirclePaint.setStrokeWidth( (float)(mCenterX * 0.3));
 
             /*
              * Calculates location bounds for right and left circular complications. Please note,
@@ -874,9 +867,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 } else {
                     canvas.drawColor(mBackgroundColor);
                 }
-                //  circle outline testing, not sued for now
-                //mBackgroundCirclePaint.setColor(mBackgroundMaterialColor.Color(300));
-                //canvas.drawCircle(mCenterX, mCenterY, mSecondHandLength, mBackgroundCirclePaint);
             }
         }
 
