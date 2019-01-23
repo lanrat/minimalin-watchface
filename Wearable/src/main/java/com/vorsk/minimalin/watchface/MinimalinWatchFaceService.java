@@ -306,8 +306,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             setWatchFaceStyle(
                     new WatchFaceStyle.Builder(MinimalinWatchFaceService.this)
                             .setAcceptsTapEvents(true)
-                            .setHideNotificationIndicator(false) // TODO set to true
-                            .setShowUnreadCountIndicator(false) // TODO set to false
+                            .setHideNotificationIndicator(true) // unread top indicator
+                            .setShowUnreadCountIndicator(false) // unread count #
                             //.setStatusBarGravity(Gravity.CENTER_HORIZONTAL)
                             .setViewProtectionMode(WatchFaceStyle.PROTECT_STATUS_BAR)
                             .build());
