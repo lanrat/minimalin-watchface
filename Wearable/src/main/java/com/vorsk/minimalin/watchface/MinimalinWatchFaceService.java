@@ -856,7 +856,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             if (mAmbient) {
                 canvas.drawColor(Color.BLACK);
             } else {
-                if (mBackgroundGradient) {
+                    if (mBackgroundGradient) {
                     // if cache for mBackgroundGradientBitmap is null, rebuild
                     if (mBackgroundGradientBitmap == null) {
                         mBackgroundGradientBitmap = generateBackgroundGradient(mBackgroundMaterialColor, 400, 800);

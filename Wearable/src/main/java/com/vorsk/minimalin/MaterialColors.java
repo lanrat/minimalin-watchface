@@ -51,9 +51,7 @@ public class MaterialColors {
         AMBER,
         YELLOW,
         LIME,
-        LIGHT_GREEN,
-        WHITE,
-        BLACK;
+        LIGHT_GREEN;
 
         private static int getValueOffset(int weight) {
             if (weight < 50) {
@@ -150,10 +148,6 @@ public class MaterialColors {
                     return "Lime";
                 case LIGHT_GREEN:
                     return "Light Green";
-                case WHITE:
-                    return "White";
-                case BLACK:
-                    return "Black";
             }
             // should never happen
             return "???";
@@ -164,12 +158,6 @@ public class MaterialColors {
         }
 
         public int Color(int weight) {
-            if (this == WHITE) {
-                return 0xFF000000;
-            }
-            if (this == BLACK) {
-                return 0xFFFFFFFF;
-            }
             int[] colors = this.getColors();
             int offset = getValueOffset(weight);
             if (offset >= colors.length) {
