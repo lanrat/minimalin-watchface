@@ -242,7 +242,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private Paint mSecondPaint;
         private Paint mNotificationCirclePaint;
         private Paint mTicksPaint;
-        private Paint mBackgroundCirclePaint;
+        //private Paint mBackgroundCirclePaint;
         private TextPaint mMinimalinTimePaint;
         private TextPaint mNotificationCountPaint;
         private Paint mBackgroundPaint;
@@ -456,10 +456,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCirclePaint.setStyle(Paint.Style.FILL);
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
 
-            mBackgroundCirclePaint = new Paint();
-            mBackgroundCirclePaint.setColor(getApplicationContext().getColor(R.color.color_complication_background_dark));
-            mBackgroundCirclePaint.setStyle(Paint.Style.STROKE);
-            mBackgroundCirclePaint.setAntiAlias(true);
+            //mBackgroundCirclePaint = new Paint();
+            //mBackgroundCirclePaint.setColor(getApplicationContext().getColor(R.color.color_complication_background_dark));
+            //mBackgroundCirclePaint.setStyle(Paint.Style.STROKE);
+            //mBackgroundCirclePaint.setAntiAlias(true);
 
             // https://fonts.google.com/specimen/Comfortaa?selection.family=Comfortaa
             Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
@@ -735,9 +735,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
             mTickLength = (float) (mCenterX * 0.05);
-            mMinimalinTextRadiusLength = (float) (mCenterX * 0.15); // TODO this should be a function of the font height
+            mMinimalinTextRadiusLength = (float) (mCenterX * 0.15); // TODO this could be a function of the font height
 
-            mBackgroundCirclePaint.setStrokeWidth( (float)(mCenterX * 0.3));
+            //mBackgroundCirclePaint.setStrokeWidth( (float)(mCenterX * 0.3));
 
             /*
              * Calculates location bounds for right and left circular complications. Please note,
@@ -882,21 +882,22 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 if (mBackgroundGradient) {
                     // if cache for mBackgroundGradientBitmap is null, rebuild
                     if (mBackgroundGradientBitmap == null) {
-                        mBackgroundGradientBitmap = generateBackgroundGradient(mBackgroundMaterialColor);
+                        mBackgroundGradientBitmap = generateBackgroundGradient(mBackgroundMaterialColor, 400, 800);
                     }
                     canvas.drawBitmap(mBackgroundGradientBitmap, 0,0, mBackgroundPaint);
                 } else {
                     canvas.drawColor(mBackgroundColor);
                 }
                 //  TODO circle outline testing
-                canvas.drawCircle(mCenterX, mCenterY, mSecondHandLength, mBackgroundCirclePaint);
+                //mBackgroundCirclePaint.setColor(mBackgroundMaterialColor.Color(300));
+                //canvas.drawCircle(mCenterX, mCenterY, mSecondHandLength, mBackgroundCirclePaint);
             }
         }
 
-        private Bitmap generateBackgroundGradient(MaterialColors.Color color) {
+        private Bitmap generateBackgroundGradient(MaterialColors.Color color, int startWeight, int endWeight) {
             LinearGradient gradient = new LinearGradient(0f, mCenterX * 2f, mCenterY * 2f, 0f,
-                    color.Color(400),
-                    color.Color(800),
+                    color.Color(startWeight),
+                    color.Color(endWeight),
                     Shader.TileMode.CLAMP);
             mBackgroundPaint.setShader(gradient);
             mBackgroundPaint.setDither(true);
