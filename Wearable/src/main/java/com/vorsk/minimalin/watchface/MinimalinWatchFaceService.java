@@ -573,6 +573,15 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 int complicationId, ComplicationData complicationData) {
             Log.d(TAG, "onComplicationDataUpdate() id: " + complicationId);
 
+            // this is where the watchface can interact with the complications it is displaying
+            // TODO resize the large complications if a small one is selected
+            //if (complicationId == TOP_COMPLICATION_ID && complicationData.getType() == ComplicationData.TYPE_ICON) {
+                // etc.. TODO
+            //}
+
+            // TODO print info about complications to prevent the need for selecting the notification preview complication manually
+            // also other info?
+
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
 
@@ -863,7 +872,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     }
                     canvas.drawBitmap(mBackgroundGradientBitmap, 0,0, mBackgroundPaint);
                 } else {
-                    canvas.drawColor(mBackgroundColor);
+                    //canvas.drawColor(mBackgroundColor);
+                        // TODO hardcode test color
+                        canvas.drawColor(ContextCompat.getColor(getApplicationContext(), R.color.elements_background));
                 }
             }
         }
