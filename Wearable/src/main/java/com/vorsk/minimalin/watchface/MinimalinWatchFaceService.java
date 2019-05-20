@@ -189,7 +189,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         private static final float HOUR_STROKE_WIDTH = 6f;
         private static final float MINUTE_STROKE_WIDTH = 4f;
-        private static final float SECOND_TICK_STROKE_WIDTH = 3f;
+        private static final float SECOND_TICK_STROKE_WIDTH = 4f;
 
         private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 8f;
         private static final float NOTIFICATION_OUTLINE_STROKE_WIDTH = 2f;
@@ -695,10 +695,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             /*
              * Calculate lengths of different hands based on watch screen size.
              */
-            mSecondHandLength = (float) (mCenterX * 0.875);
+            mTickLength = (float) (mCenterX * 0.05);
+            mSecondHandLength = mTickLength * 2; // (float) (mCenterX * 0.875);
             mMinuteHandLength = (float) (mCenterX * 0.75);
             mHourHandLength = (float) (mCenterX * 0.5);
-            mTickLength = (float) (mCenterX * 0.05);
             mMinimalinTextRadiusLength = mTickLength/2 + mMinimalinTimePaint.getTextSize(); // (float) (mCenterX * 0.15); // testing this being a function of font size
 
             /*
@@ -960,11 +960,15 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
              */
             if (!mAmbient) {
                 canvas.rotate(secondsRotation - minutesRotation, mCenterX, mCenterY);
+                // this is a standard second hand
+                //canvas.drawLine(mCenterX, mCenterY, mCenterX,mCenterY - mSecondHandLength,mSecondPaint);
+
+                // tick mark second hand
                 canvas.drawLine(
                         mCenterX,
-                        mCenterY,
+                        0,
                         mCenterX,
-                        mCenterY - mSecondHandLength,
+                        mSecondHandLength,
                         mSecondPaint);
             }
             // cover up center dot location for notifications
