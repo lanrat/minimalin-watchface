@@ -23,12 +23,10 @@ import java.util.ArrayList;
 public class ConfigData {
 
     // default setting for booleans
-    public static final boolean DEFAULT_BACKGROUND_GRADIENT = true;
-    public static final boolean DEFAULT_COMPLICATION_BACKGROUND = false;
     public static final boolean DEFAULT_UNREAD_NOTIFICATION = true;
     public static final boolean DEFAULT_24_HOUR_TIME = false;
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
-    public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.BLUE_GRAY.name();
+    public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.ORANGE.name();
     // best to choose complications that do not require the RECEIVE_COMPLICATION_DATA permission so they render on first load
@@ -75,24 +73,14 @@ public class ConfigData {
                         ColorSelectionActivity.class);
         settingsConfigData.add(accentColorConfigItem);
 
-        // Data for Background color UX in settings Activity.
-        ConfigItemType backgroundColorConfigItem =
-                new ColorConfigItem(
-                        context.getString(R.string.config_background_color_label),
-                        R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_background_color),
-                        ColorSelectionActivity.class);
-        settingsConfigData.add(backgroundColorConfigItem);
-
-        // Data for background ic_gradient
-        ConfigItemType gradientConfigItem =
-                new SwitchConfigItem(
-                        context.getString(R.string.config_background_gradient_label),
-                        R.drawable.ic_gradient,
-                        R.drawable.ic_square,
-                        R.string.saved_background_gradient,
-                        DEFAULT_BACKGROUND_GRADIENT);
-        settingsConfigData.add(gradientConfigItem);
+//        // Data for Background color UX in settings Activity.
+//        ConfigItemType backgroundColorConfigItem =
+//                new ColorConfigItem(
+//                        context.getString(R.string.config_background_color_label),
+//                        R.drawable.ic_color_lens,
+//                        context.getString(R.string.saved_background_color),
+//                        ColorSelectionActivity.class);
+//        settingsConfigData.add(backgroundColorConfigItem);
 
         // Data notification complication
         ConfigItemType notificationComplicationToggle =
@@ -105,16 +93,6 @@ public class ConfigData {
                         R.string.notification_complication_instruction_toast,
                         DEFAULT_NOTIFICATION_COMPLICATION);
         settingsConfigData.add(notificationComplicationToggle);
-
-        // Data for complication background
-        ConfigItemType complicationBackgroundConfigItem =
-                new SwitchConfigItem(
-                        context.getString(R.string.config_complication_background_label),
-                        R.drawable.ic_plus_circle,
-                        R.drawable.ic_plus,
-                        R.string.saved_complication_background,
-                        DEFAULT_COMPLICATION_BACKGROUND);
-        settingsConfigData.add(complicationBackgroundConfigItem);
 
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
         ConfigItemType unreadNotificationsConfigItem =
@@ -135,14 +113,6 @@ public class ConfigData {
                         R.string.saved_24h_pref,
                         DEFAULT_24_HOUR_TIME);
         settingsConfigData.add(militaryTimeConfigItem);
-
-        // Data for background complications UX in settings Activity.
-        ConfigItemType backgroundImageComplicationConfigItem =
-                // TODO move color and complication selector to same select activity
-                new BackgroundComplicationConfigItem(
-                        context.getString(R.string.config_background_image_complication_label),
-                        R.drawable.ic_landscape);
-        settingsConfigData.add(backgroundImageComplicationConfigItem);
 
         return settingsConfigData;
     }
@@ -317,36 +287,6 @@ public class ConfigData {
         @Override
         public int getConfigType() {
             return ConfigRecyclerViewAdapter.TYPE_COMPLICATION_SWITCH_CONFIG;
-        }
-    }
-
-    /**
-     * Data for background image complication picker item in RecyclerView.
-     */
-    public static class BackgroundComplicationConfigItem implements ConfigItemType {
-
-        private String name;
-        private int iconResourceId;
-
-        BackgroundComplicationConfigItem(
-                String name,
-                int iconResourceId) {
-
-            this.name = name;
-            this.iconResourceId = iconResourceId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getIconResourceId() {
-            return iconResourceId;
-        }
-
-        @Override
-        public int getConfigType() {
-            return ConfigRecyclerViewAdapter.TYPE_BACKGROUND_COMPLICATION_IMAGE_CONFIG;
         }
     }
 }

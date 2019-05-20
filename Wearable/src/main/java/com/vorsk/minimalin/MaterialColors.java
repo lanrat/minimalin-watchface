@@ -184,7 +184,28 @@ public class MaterialColors {
         return Color.values();
     }
 
+    public static int[] AllColors() {
+        // TODO optimize & debug this
+        Color[] baseColors = Color.values();
+        int[] colors = new int[0];
+        for (Color base : baseColors) {
+            colors = concatenate(colors, base.getColors());
+        }
+        return colors;
+    }
+
     public static Color Get(String name) {
         return Color.valueOf(name);
+    }
+
+    private static int[] concatenate(int[] a, int[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+
+        int[] c = new int[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+
+        return c;
     }
 }

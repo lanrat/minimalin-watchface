@@ -5,18 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
@@ -42,8 +38,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
     // Unique IDs for each complication. The settings activity that supports allowing users
     // to select their complication data provider requires numbers to be >= 0.
-    private static final int BACKGROUND_COMPLICATION_ID = 0;
-
     private static final int LEFT_COMPLICATION_ID = 100;
     private static final int RIGHT_COMPLICATION_ID = 101;
     private static final int TOP_COMPLICATION_ID = 102;
@@ -52,13 +46,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
     // Background, Left and right complication IDs as array for Complication API.
     private static final int[] COMPLICATION_IDS = {
-            BACKGROUND_COMPLICATION_ID, LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID, NOTIFICATION_COMPLICATION_ID
+            LEFT_COMPLICATION_ID, RIGHT_COMPLICATION_ID, TOP_COMPLICATION_ID, BOTTOM_COMPLICATION_ID, NOTIFICATION_COMPLICATION_ID
     };
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
-            // background
-            {ComplicationData.TYPE_LARGE_IMAGE},
             {
                     // left
                     ComplicationData.TYPE_RANGED_VALUE,
@@ -117,8 +109,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
         switch (complicationLocation) {
-            case BACKGROUND:
-                return BACKGROUND_COMPLICATION_ID;
             case LEFT:
                 return LEFT_COMPLICATION_ID;
             case RIGHT:
@@ -145,18 +135,16 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
         switch (complicationLocation) {
-            case BACKGROUND:
-                return COMPLICATION_SUPPORTED_TYPES[0];
             case LEFT:
-                return COMPLICATION_SUPPORTED_TYPES[1];
+                return COMPLICATION_SUPPORTED_TYPES[0];
             case RIGHT:
-                return COMPLICATION_SUPPORTED_TYPES[2];
+                return COMPLICATION_SUPPORTED_TYPES[1];
             case TOP:
-                return COMPLICATION_SUPPORTED_TYPES[3];
+                return COMPLICATION_SUPPORTED_TYPES[2];
             case BOTTOM:
-                return COMPLICATION_SUPPORTED_TYPES[4];
+                return COMPLICATION_SUPPORTED_TYPES[3];
             case NOTIFICATION:
-                return COMPLICATION_SUPPORTED_TYPES[5];
+                return COMPLICATION_SUPPORTED_TYPES[4];
             default:
                 return new int[]{};
         }
@@ -254,10 +242,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean mUnreadNotificationsPreference;
         private int mNumberOfUnreadNotifications = 0;
         private boolean mMilitaryTimePreference;
-        private boolean mBackgroundGradient;
-        private boolean mComplicationBackgrounds;
         private boolean mNotificationComplication;
-        private Bitmap mBackgroundGradientBitmap;
 
 
         /* Maps active complication ids to the data for that complication. Note: Data will only be
@@ -329,11 +314,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String secondaryColorName = mSharedPref.getString(secondaryColorResourceName, ConfigData.DEFAULT_SECONDARY_COLOR);
             mSecondaryMaterialColor = MaterialColors.Get(secondaryColorName);
 
-            String backgroundGradientPreferenceResourceName =
-                    getApplicationContext().getString(R.string.saved_background_gradient);
-            mBackgroundGradient =
-                    mSharedPref.getBoolean(backgroundGradientPreferenceResourceName, ConfigData.DEFAULT_BACKGROUND_GRADIENT);
-
             String notificationComplicationResourceName =
                     getApplicationContext().getString(R.string.saved_notification_complication);
             mNotificationComplication =
@@ -344,7 +324,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String backgroundColorName = mSharedPref.getString(backgroundColorResourceName, ConfigData.DEFAULT_BACKGROUND_COLOR);
             mBackgroundMaterialColor = MaterialColors.Get(backgroundColorName);
 
-            mBackgroundColor = mBackgroundMaterialColor.Color(500);
+            // TODO don't hardcode these weights
+            mBackgroundColor = mBackgroundMaterialColor.Color(900); // (900) was 500 when background was not hard-coded
             mWatchSecondHandHighlightColor = mPrimaryMaterialColor.Color(500);
             mWatchMinuteHandHighlightColor = mPrimaryMaterialColor.Color(300);
             mWatchHourHandHighlightColor = mPrimaryMaterialColor.Color(200);
@@ -353,11 +334,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(mBackgroundColor);
 
-
-            // invalidate cache of mBackgroundGradient in case color changed
-            if (mBackgroundGradient) {
-                mBackgroundGradientBitmap = null;
-            }
 
             mIsBackgroundDark = MaterialColors.isColorDark(mBackgroundColor);
 
@@ -368,11 +344,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_unread_notifications_pref);
             mUnreadNotificationsPreference =
                     mSharedPref.getBoolean(unreadNotificationPreferenceResourceName, ConfigData.DEFAULT_UNREAD_NOTIFICATION);
-
-            String complicationBackgroundPreferenceResourceName =
-                    getApplicationContext().getString(R.string.saved_complication_background);
-            mComplicationBackgrounds =
-                    mSharedPref.getBoolean(complicationBackgroundPreferenceResourceName, ConfigData.DEFAULT_COMPLICATION_BACKGROUND);
 
             String militaryTimePreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_24h_pref);
@@ -405,8 +376,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
             notificationComplicationDrawable.setContext(getApplicationContext());
 
-            ComplicationDrawable backgroundComplicationDrawable =
-                    new ComplicationDrawable(getApplicationContext());
 
             // Adds new complications to a SparseArray to simplify setting styles and ambient
             // properties for all complications, i.e., iterate over them all.
@@ -417,7 +386,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
             mComplicationDrawableSparseArray.put(BOTTOM_COMPLICATION_ID, bottomComplicationDrawable);
             mComplicationDrawableSparseArray.put(NOTIFICATION_COMPLICATION_ID, notificationComplicationDrawable);
-            mComplicationDrawableSparseArray.put(BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
 
             // set default values
             setDefaultSystemComplicationProvider(TOP_COMPLICATION_ID, ConfigData.DEFAULT_TOP_COMPLICATION[0], ConfigData.DEFAULT_TOP_COMPLICATION[1]);
@@ -509,34 +477,21 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 complicationId = COMPLICATION_ID;
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
-                if (complicationId == BACKGROUND_COMPLICATION_ID) {
-                    // It helps for the background color to be black in case the image used for the
-                    // watch face's background takes some time to load.
-                    complicationDrawable.setBackgroundColorActive(Color.BLACK);
+                complicationDrawable.setIconColorActive(mSecondaryMaterialColor.Color(800));
+                complicationDrawable.setRangedValuePrimaryColorActive(mSecondaryMaterialColor.Color(800));
+                if (mIsBackgroundDark) {
+                    complicationDrawable.setTextColorActive(Color.WHITE);
+                    complicationDrawable.setBackgroundColorActive(Color.TRANSPARENT);
+                    //complicationDrawable.setTitleColorActive(Color.GRAY);
+                    complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(200));
                 } else {
-                    complicationDrawable.setIconColorActive(mSecondaryMaterialColor.Color(800));
-                    complicationDrawable.setRangedValuePrimaryColorActive(mSecondaryMaterialColor.Color(800));
-                    if (mIsBackgroundDark) {
-                        complicationDrawable.setTextColorActive(Color.WHITE);
-                        if (mComplicationBackgrounds) {
-                            complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_light));
-                        } else {
-                            complicationDrawable.setBackgroundColorActive(Color.TRANSPARENT);
-                        }
-                        //complicationDrawable.setTitleColorActive(Color.GRAY);
-                        complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(200));
-                    } else {
-                        complicationDrawable.setTextColorActive(Color.BLACK);
-                        if (mComplicationBackgrounds) {
-                            complicationDrawable.setBackgroundColorActive(ContextCompat.getColor(getApplicationContext(), R.color.color_complication_background_dark));
-                        } else {
-                            complicationDrawable.setBackgroundColorActive(Color.TRANSPARENT);
-                        }
-                        //complicationDrawable.setTitleColorActive(Color.DKGRAY);
-                        complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(800));
-                    }
+                    complicationDrawable.setTextColorActive(Color.BLACK);
+                    complicationDrawable.setBackgroundColorActive(Color.TRANSPARENT);
+                    //complicationDrawable.setTitleColorActive(Color.DKGRAY);
+                    complicationDrawable.setTitleColorActive(mSecondaryMaterialColor.Color(800));
                 }
             }
+
         }
 
         @Override
@@ -580,7 +535,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             //}
 
             // TODO print info about complications to prevent the need for selecting the notification preview complication manually
-            // also other info?
 
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
@@ -810,19 +764,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable notificationComplicationDrawable =
                     mComplicationDrawableSparseArray.get(NOTIFICATION_COMPLICATION_ID);
             notificationComplicationDrawable.setBounds(topBounds);
-
-            Rect screenForBackgroundBound =
-                    // Left, Top, Right, Bottom
-                    new Rect(0, 0, width, height);
-
-            ComplicationDrawable backgroundComplicationDrawable =
-                    mComplicationDrawableSparseArray.get(BACKGROUND_COMPLICATION_ID);
-            backgroundComplicationDrawable.setBounds(screenForBackgroundBound);
-
-            // invalidate cache of mBackgroundGradientBitmap in case bounds changed
-            if (mBackgroundGradient) {
-                mBackgroundGradientBitmap = null;
-            }
         }
 
         @Override
@@ -865,31 +806,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             if (mAmbient) {
                 canvas.drawColor(Color.BLACK);
             } else {
-                    if (mBackgroundGradient) {
-                    // if cache for mBackgroundGradientBitmap is null, rebuild
-                    if (mBackgroundGradientBitmap == null) {
-                        mBackgroundGradientBitmap = generateBackgroundGradient(mBackgroundMaterialColor, 400, 800);
-                    }
-                    canvas.drawBitmap(mBackgroundGradientBitmap, 0,0, mBackgroundPaint);
-                } else {
-                    //canvas.drawColor(mBackgroundColor);
-                        // TODO hardcode test color
-                        canvas.drawColor(ContextCompat.getColor(getApplicationContext(), R.color.elements_background));
-                }
+                canvas.drawColor(mBackgroundColor);
             }
-        }
-
-        private Bitmap generateBackgroundGradient(MaterialColors.Color color, int startWeight, int endWeight) {
-            LinearGradient gradient = new LinearGradient(0f, mCenterX * 2f, mCenterY * 2f, 0f,
-                    color.Color(startWeight),
-                    color.Color(endWeight),
-                    Shader.TileMode.CLAMP);
-            mBackgroundPaint.setShader(gradient);
-            mBackgroundPaint.setDither(true);
-            Bitmap bitmap = Bitmap.createBitmap((int)mCenterX * 2, (int)mCenterY * 2, Bitmap.Config.ARGB_8888);
-            Canvas c1 = new Canvas(bitmap);
-            c1.drawRect(0, 0, (int)mCenterX * 2, (int)mCenterY * 2, mBackgroundPaint);
-            return bitmap;
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
