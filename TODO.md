@@ -6,3 +6,4 @@
  * smart complication: Complication for now playing music state/toggle? & next event
  * animations for changing/moving tick marks, and when going in/out of ambient mode, or notification change
  * square watchface support (extend minimalin ticks and time to border)
+ * organize settings page
