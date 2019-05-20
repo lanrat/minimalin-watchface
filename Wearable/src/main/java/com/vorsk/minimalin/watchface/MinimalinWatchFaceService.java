@@ -477,6 +477,14 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 complicationId = COMPLICATION_ID;
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
+                // Ambient colors
+                complicationDrawable.setTextColorAmbient(Color.GRAY);
+                complicationDrawable.setTitleColorAmbient(Color.GRAY);
+                complicationDrawable.setIconColorAmbient(Color.GRAY);
+                complicationDrawable.setRangedValuePrimaryColorAmbient(Color.GRAY);
+                complicationDrawable.setBackgroundColorAmbient(Color.TRANSPARENT);
+
+                // Active colors
                 complicationDrawable.setIconColorActive(mSecondaryMaterialColor.Color(800));
                 complicationDrawable.setRangedValuePrimaryColorActive(mSecondaryMaterialColor.Color(800));
                 if (mIsBackgroundDark) {
