@@ -71,4 +71,14 @@ convert "${FRAMEFILE}" \
     "${OUTPUT_FILE}"
 echo "Created $OUTPUT_FILE"
 
+SCREENSHOT1="$DIR/screenshots/icon.png"
+OUTPUT_FILE="$DIR/out/out-icon.png"
+FRAMEFILE="$DIR/stock_input/moto360.png"
+FRAMEFILE1_SCREEN_GEOMETRY="275x275"
+FRAMEFILE1_TOP_LEFT_OFFSET="+118+120"
+convert "${FRAMEFILE}" \
+    \( "${SCREENSHOT1}" -scale ${FRAMEFILE1_SCREEN_GEOMETRY} \) -geometry ${FRAMEFILE1_TOP_LEFT_OFFSET} -compose SrcOver -composite \
+    "${OUTPUT_FILE}"
+echo "Created $OUTPUT_FILE"
+
 echo "done"
