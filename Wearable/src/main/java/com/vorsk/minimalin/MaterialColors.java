@@ -30,6 +30,7 @@ public class MaterialColors {
     private static final int[] yellowPalette = {0xFFFDE7, 0xFFF9C4, 0xFFF590, 0xFFF176, 0xFFEE58, 0xFFEB3B, 0xFDD835, 0xFBC02D, 0xF9A825, 0xF57F17, 0xFFFF82, 0xFFFF00, 0xFFEA00, 0xFFD600};
     private static final int[] limePalette = {0xF9FBE7, 0xF0F4C3, 0xE6EE9C, 0xDCE775, 0xD4E157, 0xCDDC39, 0xC0CA33, 0xA4B42B, 0x9E9D24, 0x827717, 0xF4FF81, 0xEEFF41, 0xC6FF00, 0xAEEA00};
     private static final int[] lightGreenPalette = {0xF1F8E9, 0xDCEDC8, 0xC5E1A5, 0xAED581, 0x9CCC65, 0x8BC34A, 0x7CB342, 0x689F38, 0x558B2F, 0x33691E, 0xCCFF90, 0xB2FF59, 0x76FF03, 0x64DD17};
+    private static final int[] blackPalette = {0x000000};
 
     public enum Color
     {
@@ -51,7 +52,8 @@ public class MaterialColors {
         AMBER,
         YELLOW,
         LIME,
-        LIGHT_GREEN;
+        LIGHT_GREEN,
+        BLACK;
 
         private static int getValueOffset(int weight) {
             if (weight < 50) {
@@ -103,6 +105,8 @@ public class MaterialColors {
                     return limePalette;
                 case LIGHT_GREEN:
                     return lightGreenPalette;
+                case BLACK:
+                    return blackPalette;
             }
             // should never happen
             return null;
@@ -148,6 +152,8 @@ public class MaterialColors {
                     return "Lime";
                 case LIGHT_GREEN:
                     return "Light Green";
+                case BLACK:
+                    return "Black";
             }
             // should never happen
             return "???";
@@ -162,7 +168,8 @@ public class MaterialColors {
             int offset = getValueOffset(weight);
             if (offset >= colors.length) {
                 // offset out of range
-                return 0xFF0808; // red/grey
+                //return 0xFF0808; // red/grey
+                offset = 0;
             }
             return colors[offset] | 0xFF000000; // set alpha
         }
