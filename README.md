@@ -1,6 +1,6 @@
 # Minimalin Watch Face
 
-A simple minimalistic watch face, set in a material design
+A simple minimalistic watch face for Wear OS, set in a material design
 
 <a href="https://play.google.com/store/apps/details?id=com.vorsk.minimalin">
     <img alt="Get it on Google Play"
