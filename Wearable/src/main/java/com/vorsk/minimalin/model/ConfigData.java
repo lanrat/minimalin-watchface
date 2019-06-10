@@ -29,7 +29,7 @@ public class ConfigData {
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
-    public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.ORANGE.name();
+    public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.PURPLE.name();
     // best to choose complications that do not require the RECEIVE_COMPLICATION_DATA permission so they render on first load
     // https://developer.android.com/reference/android/support/wearable/complications/SystemProviders
     public static final int[] DEFAULT_LEFT_COMPLICATION = {SystemProviders.WATCH_BATTERY,  ComplicationData.TYPE_RANGED_VALUE};
