@@ -25,7 +25,7 @@ public class ConfigData {
     // default setting for booleans
     public static final boolean DEFAULT_UNREAD_NOTIFICATION = true;
     public static final boolean DEFAULT_24_HOUR_TIME = false;
-    public static final boolean DEFAULT_SECONDS_TICK_EANBLE = true;
+    public static final boolean DEFAULT_SECONDS_TICK_ENABLE = true;
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
@@ -74,14 +74,14 @@ public class ConfigData {
                         ColorSelectionActivity.class);
         settingsConfigData.add(accentColorConfigItem);
 
-//        // Data for Background color UX in settings Activity.
-//        ConfigItemType backgroundColorConfigItem =
-//                new ColorConfigItem(
-//                        context.getString(R.string.config_background_color_label),
-//                        R.drawable.ic_color_lens,
-//                        context.getString(R.string.saved_background_color),
-//                        ColorSelectionActivity.class);
-//        settingsConfigData.add(backgroundColorConfigItem);
+        // Data for Background color UX in settings Activity.
+        ConfigItemType backgroundColorConfigItem =
+                new ColorConfigItem(
+                        context.getString(R.string.config_background_color_label),
+                        R.drawable.ic_color_lens,
+                        context.getString(R.string.saved_background_color),
+                        ColorSelectionActivity.class);
+        settingsConfigData.add(backgroundColorConfigItem);
 
         // Data notification complication
         ConfigItemType notificationComplicationToggle =
@@ -122,7 +122,7 @@ public class ConfigData {
                         R.drawable.clock_seconds,
                         R.drawable.clock,
                         R.string.saved_seconds_enable,
-                        DEFAULT_SECONDS_TICK_EANBLE);
+                        DEFAULT_SECONDS_TICK_ENABLE);
         settingsConfigData.add(SettingTickConfigItem);
 
         return settingsConfigData;

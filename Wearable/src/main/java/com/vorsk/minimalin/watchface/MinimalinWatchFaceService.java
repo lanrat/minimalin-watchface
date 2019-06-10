@@ -354,7 +354,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String secondsTickPreferenceResourceName =
                     getApplicationContext().getString(R.string.saved_seconds_enable);
             secondsTickPreference =
-                    mSharedPref.getBoolean(secondsTickPreferenceResourceName, ConfigData.DEFAULT_SECONDS_TICK_EANBLE);
+                    mSharedPref.getBoolean(secondsTickPreferenceResourceName, ConfigData.DEFAULT_SECONDS_TICK_ENABLE);
         }
 
         private void initializeComplications() {
