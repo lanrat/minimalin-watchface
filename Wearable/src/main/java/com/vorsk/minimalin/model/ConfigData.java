@@ -25,6 +25,7 @@ public class ConfigData {
     // default setting for booleans
     public static final boolean DEFAULT_UNREAD_NOTIFICATION = true;
     public static final boolean DEFAULT_24_HOUR_TIME = false;
+    public static final boolean DEFAULT_SECONDS_TICK_EANBLE = true;
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
@@ -113,6 +114,16 @@ public class ConfigData {
                         R.string.saved_24h_pref,
                         DEFAULT_24_HOUR_TIME);
         settingsConfigData.add(militaryTimeConfigItem);
+
+        // Show seconds tick UX (toggle) in settings Activity.
+        ConfigItemType SettingTickConfigItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_enable_seconds_label),
+                        R.drawable.clock_seconds,
+                        R.drawable.clock,
+                        R.string.saved_seconds_enable,
+                        DEFAULT_SECONDS_TICK_EANBLE);
+        settingsConfigData.add(SettingTickConfigItem);
 
         return settingsConfigData;
     }

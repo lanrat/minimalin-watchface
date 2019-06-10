@@ -10,6 +10,7 @@
     <string name="config_24_hour_label">Military\n24 Hour Time</string>
     <string name="config_complication_background_label">Show Complication\nBackgrounds</string>
     <string name="config_notification_complication_label">Show Notification Preview Over Top Complication</string>
+    <string name="config_enable_seconds_label">Show seconds tick</string>
 
     <string name="saved_primary_color">saved_primary_color</string>
     <string name="saved_secondary_color">saved_secondary_color</string>
@@ -17,6 +18,7 @@
     <string name="saved_unread_notifications_pref">saved_unread_notifications</string>
     <string name="saved_24h_pref">saved_24h</string>
     <string name="saved_notification_complication">saved_notification_complication</string>
+    <string name="saved_seconds_enable">saved_seconds_enable</string>
 
     <string name="preference_file_key">com.vorsk.minimalin.PREFERENCE_FILE_KEY</string>
 

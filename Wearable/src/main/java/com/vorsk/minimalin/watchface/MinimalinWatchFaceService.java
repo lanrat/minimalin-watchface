@@ -242,6 +242,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean mUnreadNotificationsPreference;
         private int mNumberOfUnreadNotifications = 0;
         private boolean mMilitaryTimePreference;
+        private boolean secondsTickPreference;
         private boolean mNotificationComplication;
 
 
@@ -349,6 +350,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_24h_pref);
             mMilitaryTimePreference =
                     mSharedPref.getBoolean(militaryTimePreferenceResourceName, ConfigData.DEFAULT_24_HOUR_TIME);
+
+            String secondsTickPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_seconds_enable);
+            secondsTickPreference =
+                    mSharedPref.getBoolean(secondsTickPreferenceResourceName, ConfigData.DEFAULT_SECONDS_TICK_EANBLE);
         }
 
         private void initializeComplications() {
@@ -955,10 +961,10 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     mMinutePaint);
 
             /*
-             * Ensure the "seconds" hand is drawn only when we are in interactive mode.
+             * Ensure the "seconds" hand is drawn only when we are in interactive mode and enabled
              * Otherwise, we only update the watch face once a minute.
              */
-            if (!mAmbient) {
+            if (!mAmbient && secondsTickPreference) {
                 canvas.rotate(secondsRotation - minutesRotation, mCenterX, mCenterY);
                 // this is a standard second hand
                 //canvas.drawLine(mCenterX, mCenterY, mCenterX,mCenterY - mSecondHandLength,mSecondPaint);
