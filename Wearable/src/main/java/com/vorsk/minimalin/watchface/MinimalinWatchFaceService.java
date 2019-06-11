@@ -243,6 +243,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private int mNumberOfUnreadNotifications = 0;
         private boolean mMilitaryTimePreference;
         private boolean secondsTickPreference;
+        private boolean hideAmbientComplicationPreference;
         private boolean mNotificationComplication;
 
 
@@ -355,6 +356,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_seconds_enable);
             secondsTickPreference =
                     mSharedPref.getBoolean(secondsTickPreferenceResourceName, ConfigData.DEFAULT_SECONDS_TICK_ENABLE);
+
+            String hideAmbientComplicationsPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_hide_ambient_complications);
+            hideAmbientComplicationPreference =
+                    mSharedPref.getBoolean(hideAmbientComplicationsPreferenceResourceName, ConfigData.DEFAULT_HIDE_COMPLICATIONS_AMBIENT);
         }
 
         private void initializeComplications() {
@@ -825,6 +831,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
+            if (mAmbient && hideAmbientComplicationPreference) {
+                return;
+            }
             ComplicationDrawable complicationDrawable;
 
             int skipComplication = NOTIFICATION_COMPLICATION_ID;

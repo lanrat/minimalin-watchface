@@ -11,6 +11,7 @@
     <string name="config_complication_background_label">Show Complication\nBackgrounds</string>
     <string name="config_notification_complication_label">Show Notification Preview Over Top Complication</string>
     <string name="config_enable_seconds_label">Show seconds tick</string>
+    <string name="config_hide_ambient_complications_label">Hide complications in ambient mode</string>
 
     <string name="saved_primary_color">saved_primary_color</string>
     <string name="saved_secondary_color">saved_secondary_color</string>
@@ -19,6 +20,7 @@
     <string name="saved_24h_pref">saved_24h</string>
     <string name="saved_notification_complication">saved_notification_complication</string>
     <string name="saved_seconds_enable">saved_seconds_enable</string>
+    <string name="saved_hide_ambient_complications">saved_hide_ambient_complications_enable</string>
 
     <string name="preference_file_key">com.vorsk.minimalin.PREFERENCE_FILE_KEY</string>
 

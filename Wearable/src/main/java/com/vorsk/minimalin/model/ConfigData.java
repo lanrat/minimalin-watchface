@@ -27,6 +27,7 @@ public class ConfigData {
     public static final boolean DEFAULT_24_HOUR_TIME = false;
     public static final boolean DEFAULT_SECONDS_TICK_ENABLE = true;
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
+    public static final boolean DEFAULT_HIDE_COMPLICATIONS_AMBIENT = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.PURPLE.name();
@@ -115,15 +116,27 @@ public class ConfigData {
                         DEFAULT_24_HOUR_TIME);
         settingsConfigData.add(militaryTimeConfigItem);
 
+
+        // Option to hide complications in ambient mode
+        ConfigItemType hideAmbientComplicationsConfigItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_hide_ambient_complications_label),
+                        R.drawable.added_complication,
+                        R.drawable.add_complication,
+                        R.string.saved_hide_ambient_complications,
+                        DEFAULT_HIDE_COMPLICATIONS_AMBIENT);
+        settingsConfigData.add(hideAmbientComplicationsConfigItem);
+
         // Show seconds tick UX (toggle) in settings Activity.
-        ConfigItemType SettingTickConfigItem =
+        ConfigItemType settingTickConfigItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_enable_seconds_label),
                         R.drawable.clock_seconds,
                         R.drawable.clock,
                         R.string.saved_seconds_enable,
                         DEFAULT_SECONDS_TICK_ENABLE);
-        settingsConfigData.add(SettingTickConfigItem);
+        settingsConfigData.add(settingTickConfigItem);
+
 
         return settingsConfigData;
     }
