@@ -28,6 +28,7 @@ public class ConfigData {
     public static final boolean DEFAULT_SECONDS_TICK_ENABLE = true;
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final boolean DEFAULT_HIDE_COMPLICATIONS_AMBIENT = false;
+    public static final boolean DEFAULT_SHOW_HANDS = true;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.PURPLE.name();
@@ -137,6 +138,15 @@ public class ConfigData {
                         DEFAULT_SECONDS_TICK_ENABLE);
         settingsConfigData.add(settingTickConfigItem);
 
+        // Show seconds tick UX (toggle) in settings Activity.
+        ConfigItemType settingShowHandsItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_show_hands_label),
+                        R.drawable.clock,
+                        R.drawable.clock_no_hands,
+                        R.string.saved_show_watch_hands,
+                        DEFAULT_SHOW_HANDS);
+        settingsConfigData.add(settingShowHandsItem);
 
         return settingsConfigData;
     }

@@ -244,6 +244,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean mMilitaryTimePreference;
         private boolean secondsTickPreference;
         private boolean hideAmbientComplicationPreference;
+        private boolean showHandsPreference;
         private boolean mNotificationComplication;
 
 
@@ -361,6 +362,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_hide_ambient_complications);
             hideAmbientComplicationPreference =
                     mSharedPref.getBoolean(hideAmbientComplicationsPreferenceResourceName, ConfigData.DEFAULT_HIDE_COMPLICATIONS_AMBIENT);
+
+            String showHandsPreferenceResourceName =
+                    getApplicationContext().getString(R.string.saved_show_watch_hands);
+            showHandsPreference =
+                    mSharedPref.getBoolean(showHandsPreferenceResourceName, ConfigData.DEFAULT_SHOW_HANDS);
         }
 
         private void initializeComplications() {
@@ -803,6 +809,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
          * @param canvas to draw to
          */
         private void drawNotificationCount(Canvas canvas) {
+            if (!showHandsPreference) {
+                return;
+            }
             if (mUnreadNotificationsPreference && (mNumberOfUnreadNotifications > 0)) {
                 int count = mNumberOfUnreadNotifications;
                 String countStr = "+";
@@ -867,7 +876,9 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         private void drawWatchFace(Canvas canvas) {
             drawMinimalinTime(canvas);
-            drawWatchHands(canvas);
+            if (showHandsPreference) {
+                drawWatchHands(canvas);
+            }
         }
 
         private void drawMinimalinTime(Canvas canvas) {
