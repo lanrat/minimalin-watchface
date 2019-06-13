@@ -496,10 +496,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
                 // Ambient colors
-                complicationDrawable.setTextColorAmbient(Color.GRAY);
-                complicationDrawable.setTitleColorAmbient(Color.GRAY);
-                complicationDrawable.setIconColorAmbient(Color.GRAY);
-                complicationDrawable.setRangedValuePrimaryColorAmbient(Color.GRAY);
+                int ambientColor = Color.LTGRAY;
+                complicationDrawable.setTextColorAmbient(ambientColor);
+                complicationDrawable.setTitleColorAmbient(ambientColor);
+                complicationDrawable.setIconColorAmbient(ambientColor);
+                complicationDrawable.setRangedValuePrimaryColorAmbient(ambientColor);
                 complicationDrawable.setBackgroundColorAmbient(Color.TRANSPARENT);
 
                 // Active colors
@@ -554,7 +555,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 int complicationId, ComplicationData complicationData) {
             Log.d(TAG, "onComplicationDataUpdate() id: " + complicationId);
 
-            // this is where the watchface can interact with the complications it is displaying
+            // this is where the watch face can interact with the complications it is displaying
             // TODO resize the large complications if a small one is selected
             //if (complicationId == TOP_COMPLICATION_ID && complicationData.getType() == ComplicationData.TYPE_ICON) {
                 // etc.. TODO
@@ -632,7 +633,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mHourPaint.setColor(Color.WHITE);
                 mMinutePaint.setColor(Color.WHITE);
                 mSecondPaint.setColor(Color.WHITE);
-                mNotificationCirclePaint.setColor(Color.GRAY);
+                mNotificationCirclePaint.setColor(Color.LTGRAY);
                 mMinimalinTimePaint.setColor(Color.WHITE);
                 mTicksPaint.setColor(Color.GRAY);
                 mHourPaint.setAntiAlias(!mLowBitAmbient);
@@ -645,7 +646,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
                 if (mBurnInProtection) {
                     mNotificationCirclePaint.setStyle(Paint.Style.STROKE);
-                    mNotificationCountPaint.setColor(Color.GRAY);
+                    mNotificationCountPaint.setColor(Color.LTGRAY);
                 } else {
                     mNotificationCirclePaint.setStyle(Paint.Style.FILL);
                     mNotificationCountPaint.setColor(Color.BLACK);
