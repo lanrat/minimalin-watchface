@@ -634,9 +634,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mSecondPaint.setColor(Color.WHITE);
                 mNotificationCirclePaint.setColor(Color.GRAY);
                 mMinimalinTimePaint.setColor(Color.WHITE);
-                mNotificationCountPaint.setColor(Color.GRAY);
                 mTicksPaint.setColor(Color.GRAY);
-
                 mHourPaint.setAntiAlias(!mLowBitAmbient);
                 mMinutePaint.setAntiAlias(!mLowBitAmbient);
                 mSecondPaint.setAntiAlias(!mLowBitAmbient);
@@ -645,7 +643,13 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mTicksPaint.setAntiAlias(!mLowBitAmbient);
                 mNotificationCountPaint.setAntiAlias(!mLowBitAmbient);
 
-                mNotificationCirclePaint.setStyle(Paint.Style.STROKE);
+                if (mBurnInProtection) {
+                    mNotificationCirclePaint.setStyle(Paint.Style.STROKE);
+                    mNotificationCountPaint.setColor(Color.GRAY);
+                } else {
+                    mNotificationCirclePaint.setStyle(Paint.Style.FILL);
+                    mNotificationCountPaint.setColor(Color.BLACK);
+                }
 
                 mHourPaint.clearShadowLayer();
                 mMinutePaint.clearShadowLayer();
