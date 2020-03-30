@@ -29,6 +29,7 @@ public class ConfigData {
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final boolean DEFAULT_HIDE_COMPLICATIONS_AMBIENT = false;
     public static final boolean DEFAULT_SHOW_HANDS = true;
+    public static final boolean DEFAULT_BIGGER_DIGITS = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.PURPLE.name();
@@ -117,7 +118,6 @@ public class ConfigData {
                         DEFAULT_24_HOUR_TIME);
         settingsConfigData.add(militaryTimeConfigItem);
 
-
         // Option to hide complications in ambient mode
         ConfigItemType hideAmbientComplicationsConfigItem =
                 new SwitchConfigItem(
@@ -147,6 +147,16 @@ public class ConfigData {
                         R.string.saved_show_watch_hands,
                         DEFAULT_SHOW_HANDS);
         settingsConfigData.add(settingShowHandsItem);
+
+        // Show bigger digits UX (toggle) in settings Activity.
+        ConfigItemType settingBiggerDigitsItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_bigger_digits),
+                        R.drawable.clock,
+                        R.drawable.clock_no_hands,
+                        R.string.saved_bigger_digits,
+                        DEFAULT_BIGGER_DIGITS);
+        settingsConfigData.add(settingBiggerDigitsItem);
 
         return settingsConfigData;
     }
