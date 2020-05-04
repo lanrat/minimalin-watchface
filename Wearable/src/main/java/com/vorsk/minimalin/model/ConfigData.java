@@ -152,8 +152,8 @@ public class ConfigData {
         ConfigItemType settingBiggerDigitsItem =
                 new SwitchConfigItem(
                         context.getString(R.string.config_bigger_digits),
-                        R.drawable.clock,
-                        R.drawable.clock_no_hands,
+                        R.drawable.digits_big,
+                        R.drawable.digits_small,
                         R.string.saved_bigger_digits,
                         DEFAULT_BIGGER_DIGITS);
         settingsConfigData.add(settingBiggerDigitsItem);
