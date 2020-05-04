@@ -6,9 +6,10 @@ android {
         applicationId "com.vorsk.minimalin"
         minSdkVersion 25
         targetSdkVersion 28
-        versionCode 6
-        versionName "1.6"
+        versionCode 7
+        versionName "1.7"
         multiDexEnabled true
+        setProperty("archivesBaseName", "$applicationId-$versionName")
     }
     buildTypes {
         release {
