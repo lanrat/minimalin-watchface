@@ -277,6 +277,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onCreate(SurfaceHolder holder) {
+            Log.i(TAG, "fontScale is: " + getResources().getConfiguration().fontScale);
+
             Log.d(TAG, "onCreate");
 
             super.onCreate(holder);
@@ -371,7 +373,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String biggerDigitsResourceName =
                     getApplicationContext().getString(R.string.saved_bigger_digits);
             biggerDigitsPreference =
-                    mSharedPref.getBoolean(biggerDigitsResourceName, ConfigData.DEFAULT_BIGGER_DIGITS);
+                    mSharedPref.getBoolean(biggerDigitsResourceName, getResources().getConfiguration().fontScale > 1.0);
         }
 
         private void initializeComplications() {

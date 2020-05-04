@@ -29,7 +29,6 @@ public class ConfigData {
     public static final boolean DEFAULT_NOTIFICATION_COMPLICATION = false;
     public static final boolean DEFAULT_HIDE_COMPLICATIONS_AMBIENT = false;
     public static final boolean DEFAULT_SHOW_HANDS = true;
-    public static final boolean DEFAULT_BIGGER_DIGITS = false;
     public static final String DEFAULT_BACKGROUND_COLOR = MaterialColors.Color.GREY.name();
     public static final String DEFAULT_PRIMARY_COLOR = MaterialColors.Color.BLUE.name();
     public static final String DEFAULT_SECONDARY_COLOR = MaterialColors.Color.PURPLE.name();
@@ -155,7 +154,7 @@ public class ConfigData {
                         R.drawable.digits_big,
                         R.drawable.digits_small,
                         R.string.saved_bigger_digits,
-                        DEFAULT_BIGGER_DIGITS);
+                        context.getResources().getConfiguration().fontScale > 1.0);
         settingsConfigData.add(settingBiggerDigitsItem);
 
         return settingsConfigData;
