@@ -246,7 +246,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private boolean hideAmbientComplicationPreference;
         private boolean showHandsPreference;
         private boolean mNotificationComplication;
-
+        private boolean biggerDigitsPreference;
 
         /* Maps active complication ids to the data for that complication. Note: Data will only be
          * present if the user has chosen a provider via the settings activity for the watch face.
@@ -367,6 +367,11 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                     getApplicationContext().getString(R.string.saved_show_watch_hands);
             showHandsPreference =
                     mSharedPref.getBoolean(showHandsPreferenceResourceName, ConfigData.DEFAULT_SHOW_HANDS);
+
+            String biggerDigitsResourceName =
+                    getApplicationContext().getString(R.string.saved_bigger_digits);
+            biggerDigitsPreference =
+                    mSharedPref.getBoolean(biggerDigitsResourceName, getResources().getConfiguration().fontScale > 1.0);
         }
 
         private void initializeComplications() {
@@ -445,7 +450,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mNotificationCirclePaint.setStrokeWidth(NOTIFICATION_OUTLINE_STROKE_WIDTH);
 
             // https://fonts.google.com/specimen/Comfortaa?selection.family=Comfortaa
-            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
+            // Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
 
             mNotificationCountPaint = new TextPaint();
             mNotificationCountPaint.setColor(mBackgroundColor);
@@ -463,12 +468,22 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             mTicksPaint.setStrokeCap(Paint.Cap.ROUND);
             mTicksPaint.setStyle(Paint.Style.STROKE);
 
+            initializeWatchFaceTextPaint();
+        }
+
+        private void initializeWatchFaceTextPaint() {
+            // https://fonts.google.com/specimen/Comfortaa?selection.family=Comfortaa
+            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa/Comfortaa-Bold.ttf");
+
             mMinimalinTimePaint = new TextPaint();
             mMinimalinTimePaint.setTypeface(custom_font);
             mMinimalinTimePaint.setAntiAlias(true);
-            mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.minimalin_font_size));
+            mMinimalinTimePaint.setTextSize(getResources().getDimensionPixelSize(biggerDigitsPreference ? R.dimen.minimalin_font_size_bigger : R.dimen.minimalin_font_size));
             mMinimalinTimePaint.setTextAlign(Paint.Align.LEFT);
             mMinimalinVerticalTimeGap = getResources().getDimensionPixelOffset(R.dimen.minimalin_vertical_font_gap);
+
+            mTickLength = (float) (mCenterX * 0.05);
+            mMinimalinTextRadiusLength = mTickLength/2 + mMinimalinTimePaint.getTextSize(); // (float) (mCenterX * 0.15); // testing this being a function of font size
 
             if (mIsBackgroundDark) {
                 mTicksPaint.setColor(Color.WHITE);
@@ -477,7 +492,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 mTicksPaint.setColor(Color.BLACK);
                 mMinimalinTimePaint.setColor(Color.BLACK);
             }
-
         }
 
         /* Sets active/ambient mode colors for all complications.
@@ -1018,6 +1032,8 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
                 // Preferences might have changed since last time watch face was visible.
                 loadSavedPreferences();
+                // need to update text size
+                initializeWatchFaceTextPaint();
 
                 // With the rest of the watch face, we update the paint colors based on
                 // ambient/active mode callbacks, but because the ComplicationDrawable handles

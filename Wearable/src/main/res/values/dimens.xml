@@ -7,6 +7,7 @@
     <dimen name="color_picker_size">40dp</dimen>
 
     <dimen name="minimalin_font_size">18dp</dimen>
+    <dimen name="minimalin_font_size_bigger">24dp</dimen>
     <dimen name="minimalin_vertical_font_gap">4dp</dimen>
 
     <dimen name="complication_preview_size">36dp</dimen>

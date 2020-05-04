@@ -117,7 +117,6 @@ public class ConfigData {
                         DEFAULT_24_HOUR_TIME);
         settingsConfigData.add(militaryTimeConfigItem);
 
-
         // Option to hide complications in ambient mode
         ConfigItemType hideAmbientComplicationsConfigItem =
                 new SwitchConfigItem(
@@ -147,6 +146,16 @@ public class ConfigData {
                         R.string.saved_show_watch_hands,
                         DEFAULT_SHOW_HANDS);
         settingsConfigData.add(settingShowHandsItem);
+
+        // Show bigger digits UX (toggle) in settings Activity.
+        ConfigItemType settingBiggerDigitsItem =
+                new SwitchConfigItem(
+                        context.getString(R.string.config_bigger_digits),
+                        R.drawable.digits_big,
+                        R.drawable.digits_small,
+                        R.string.saved_bigger_digits,
+                        context.getResources().getConfiguration().fontScale > 1.0);
+        settingsConfigData.add(settingBiggerDigitsItem);
 
         return settingsConfigData;
     }
