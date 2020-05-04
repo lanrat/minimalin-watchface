@@ -277,8 +277,6 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onCreate(SurfaceHolder holder) {
-            Log.i(TAG, "fontScale is: " + getResources().getConfiguration().fontScale);
-
             Log.d(TAG, "onCreate");
 
             super.onCreate(holder);
