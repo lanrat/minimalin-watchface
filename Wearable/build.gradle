@@ -6,8 +6,8 @@ android {
         applicationId "com.vorsk.minimalin"
         minSdkVersion 25
         targetSdkVersion 32
-        versionCode 8
-        versionName "1.8"
+        versionCode 9
+        versionName "1.9"
         multiDexEnabled true
         setProperty("archivesBaseName", "$applicationId-$versionName")
     }

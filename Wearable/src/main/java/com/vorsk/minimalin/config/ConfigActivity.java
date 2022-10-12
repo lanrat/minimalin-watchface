@@ -1,6 +1,7 @@
 package com.vorsk.minimalin.config;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.wear.widget.WearableLinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.wear.widget.WearableRecyclerView;
 import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderChooserIntent;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.vorsk.minimalin.R;
 import com.vorsk.minimalin.model.ConfigData;
