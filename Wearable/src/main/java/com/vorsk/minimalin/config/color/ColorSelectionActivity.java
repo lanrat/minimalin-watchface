@@ -17,15 +17,17 @@ package com.vorsk.minimalin.config.color;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.wear.widget.WearableLinearLayoutManager;
-import android.support.wear.widget.WearableRecyclerView;
+import androidx.wear.widget.WearableLinearLayoutManager;
+import androidx.wear.widget.WearableRecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.vorsk.minimalin.R;
 
 /**
  * Allows user to select color for something on the watch face (background, highlight,etc.) and
  * saves it to {@link android.content.SharedPreferences} in
- * {@link android.support.v7.widget.RecyclerView.Adapter}.
+ * {@link RecyclerView.Adapter}.
  */
 public class ColorSelectionActivity extends Activity {
 

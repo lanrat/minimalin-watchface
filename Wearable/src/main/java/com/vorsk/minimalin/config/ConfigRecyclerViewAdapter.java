@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.support.wearable.complications.ComplicationHelperActivity;
 import android.support.wearable.complications.ComplicationProviderInfo;
 import android.support.wearable.complications.ProviderInfoRetriever;
@@ -64,18 +64,18 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private static final String TAG = "CompConfigAdapter";
     // ComponentName associated with watch face service (service that renders watch face). Used
     // to retrieve complication information.
-    private ComponentName mWatchFaceComponentName;
-    private ArrayList<ConfigItemType> mSettingsDataSet;
-    private Context mContext;
-    private SharedPreferences mSharedPref;
+    private final ComponentName mWatchFaceComponentName;
+    private final ArrayList<ConfigItemType> mSettingsDataSet;
+    private final Context mContext;
+    private final SharedPreferences mSharedPref;
     // Selected complication id by user.
     private int mSelectedComplicationId;
-    private int mLeftComplicationId;
-    private int mRightComplicationId;
-    private int mTopComplicationId;
-    private int mBottomComplicationId;
+    private final int mLeftComplicationId;
+    private final int mRightComplicationId;
+    private final int mTopComplicationId;
+    private final int mBottomComplicationId;
     // Required to retrieve complication data from watch face for preview.
-    private ProviderInfoRetriever mProviderInfoRetriever;
+    private final ProviderInfoRetriever mProviderInfoRetriever;
     // Maintains reference view holder to dynamically update watch face preview. Used instead of
     // notifyItemChanged(int position) to avoid flicker and re-inflating the view.
     private ComplicationsViewHolder mComplicationsViewHolder;
@@ -304,10 +304,10 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public class ComplicationsViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private ImageButton mLeftComplication;
-        private ImageButton mRightComplication;
-        private ImageButton mTopComplication;
-        private ImageButton mBottomComplication;
+        private final ImageButton mLeftComplication;
+        private final ImageButton mRightComplication;
+        private final ImageButton mTopComplication;
+        private final ImageButton mBottomComplication;
         //private ImageButton mNotificationComplication;
 
         private Drawable mDefaultComplicationDrawable;
@@ -477,9 +477,9 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
      * Displays color options for the an item on the watch face. These could include marker color,
      * background color, etc.
      */
-    public class ColorPickerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ColorPickerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private Button mAppearanceButton;
+        private final Button mAppearanceButton;
 
         private String mSharedPrefResourceString;
 
@@ -596,7 +596,7 @@ public class ConfigRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public class SwitchViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private Switch mSwitch;
+        private final Switch mSwitch;
         boolean mDefault;
 
         private int mEnabledIconResourceId;

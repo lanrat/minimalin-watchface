@@ -1,5 +1,6 @@
 package com.vorsk.minimalin.watchface;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -101,7 +102,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
      * second hand.
      */
     private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
-    private Rect mTextRect = new Rect();
+    private final Rect mTextRect = new Rect();
 
     // Used by {@link ConfigRecyclerViewAdapter} to check if complication location
     // is supported in settings config_list activity.
@@ -166,7 +167,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
                 textY = y - mTextRect.top;
                 break;
             case Middle:
-                textY = y - mTextRect.top - mTextRect.height() / 2;
+                textY = y - mTextRect.top - mTextRect.height() / 2.0f;
                 break;
             case Baseline:
                 break;
@@ -232,9 +233,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         private TextPaint mMinimalinTimePaint;
         private TextPaint mNotificationCountPaint;
         private Paint mBackgroundPaint;
-        private MaterialColors.Color mPrimaryMaterialColor;
         private MaterialColors.Color mSecondaryMaterialColor;
-        private MaterialColors.Color mBackgroundMaterialColor;
 
         private boolean mLowBitAmbient;
         private boolean mBurnInProtection;
@@ -310,7 +309,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String primaryColorResourceName =
                     getApplicationContext().getString(R.string.saved_primary_color);
             String primaryColorName = mSharedPref.getString(primaryColorResourceName, ConfigData.DEFAULT_PRIMARY_COLOR);
-            mPrimaryMaterialColor = MaterialColors.Get(primaryColorName);
+            MaterialColors.Color mPrimaryMaterialColor = MaterialColors.Get(primaryColorName);
 
             String secondaryColorResourceName =
                     getApplicationContext().getString(R.string.saved_secondary_color);
@@ -325,7 +324,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             String backgroundColorResourceName =
                     getApplicationContext().getString(R.string.saved_background_color);
             String backgroundColorName = mSharedPref.getString(backgroundColorResourceName, ConfigData.DEFAULT_BACKGROUND_COLOR);
-            mBackgroundMaterialColor = MaterialColors.Get(backgroundColorName);
+            MaterialColors.Color mBackgroundMaterialColor = MaterialColors.Get(backgroundColorName);
 
             // TODO don't hardcode these weights
             mBackgroundColor = mBackgroundMaterialColor.Color(900); // (900) was 500 when background was not hard-coded
@@ -591,24 +590,20 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onTapCommand(int tapType, int x, int y, long eventTime) {
             Log.d(TAG, "OnTapCommand()");
-            switch (tapType) {
-                case TAP_TYPE_TAP:
+            if (tapType == TAP_TYPE_TAP) {// If your background complication is the first item in your array, you need
+                // to walk backward through the array to make sure the tap isn't for a
+                // complication above the background complication.
+                for (int i = COMPLICATION_IDS.length - 1; i >= 0; i--) {
+                    int complicationId = COMPLICATION_IDS[i];
+                    ComplicationDrawable complicationDrawable =
+                            mComplicationDrawableSparseArray.get(complicationId);
 
-                    // If your background complication is the first item in your array, you need
-                    // to walk backward through the array to make sure the tap isn't for a
-                    // complication above the background complication.
-                    for (int i = COMPLICATION_IDS.length - 1; i >= 0; i--) {
-                        int complicationId = COMPLICATION_IDS[i];
-                        ComplicationDrawable complicationDrawable =
-                                mComplicationDrawableSparseArray.get(complicationId);
+                    boolean successfulTap = complicationDrawable.onTap(x, y);
 
-                        boolean successfulTap = complicationDrawable.onTap(x, y);
-
-                        if (successfulTap) {
-                            return;
-                        }
+                    if (successfulTap) {
+                        return;
                     }
-                    break;
+                }
             }
         }
 
@@ -900,6 +895,7 @@ public class MinimalinWatchFaceService extends CanvasWatchFaceService {
             }
         }
 
+        @SuppressLint("DefaultLocale")
         private void drawMinimalinTime(Canvas canvas) {
             float innerTickRadius = mCenterX - mTickLength;
             float outerTickRadius = mCenterX;

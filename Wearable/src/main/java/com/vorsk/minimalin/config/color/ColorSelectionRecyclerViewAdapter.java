@@ -18,8 +18,8 @@ package com.vorsk.minimalin.config.color;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.support.wearable.view.CircledImageView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,8 +40,8 @@ public class ColorSelectionRecyclerViewAdapter extends
         RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ColorSelectionRecyclerViewAdapter.class.getSimpleName();
 
-    private MaterialColors.Color[] mColorOptionsDataSet;
-    private String mSharedPrefString;
+    private final MaterialColors.Color[] mColorOptionsDataSet;
+    private final String mSharedPrefString;
 
     ColorSelectionRecyclerViewAdapter(
             String sharedPrefString) {
@@ -81,7 +81,7 @@ public class ColorSelectionRecyclerViewAdapter extends
     public class ColorViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private CircledImageView mColorCircleImageView;
+        private final CircledImageView mColorCircleImageView;
 
         ColorViewHolder(final View view) {
             super(view);

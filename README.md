@@ -14,7 +14,7 @@ Minimalin is a customizable minimalistic watch face inspired by the [Minimalin w
 
 * Material Color Theme
 * Fully customizable Complications
-* Ambiant mode
+* Ambient mode
 * Smart notification Complication (only show notifications if there are any)
 * 24/48 hour mode
 * Open Source!

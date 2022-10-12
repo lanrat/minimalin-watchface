@@ -1,8 +1,8 @@
 package com.vorsk.minimalin.model;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.SystemProviders;
 
@@ -64,16 +64,16 @@ public class ConfigData {
                 new ColorConfigItem(
                         context.getString(R.string.config_primary_color_label),
                         R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_primary_color),
-                        ColorSelectionActivity.class);
+                        context.getString(R.string.saved_primary_color)
+                );
         settingsConfigData.add(primaryColorConfigItem);
 
         ConfigItemType accentColorConfigItem =
                 new ColorConfigItem(
                         context.getString(R.string.config_secondary_color_label),
                         R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_secondary_color),
-                        ColorSelectionActivity.class);
+                        context.getString(R.string.saved_secondary_color)
+                );
         settingsConfigData.add(accentColorConfigItem);
 
         // Data for Background color UX in settings Activity.
@@ -81,8 +81,8 @@ public class ConfigData {
                 new ColorConfigItem(
                         context.getString(R.string.config_background_color_label),
                         R.drawable.ic_color_lens,
-                        context.getString(R.string.saved_background_color),
-                        ColorSelectionActivity.class);
+                        context.getString(R.string.saved_background_color)
+                );
         settingsConfigData.add(backgroundColorConfigItem);
 
         // Data notification complication
@@ -92,9 +92,8 @@ public class ConfigData {
                         R.drawable.ic_notifications,
                         R.drawable.ic_notification_outline,
                         R.string.saved_notification_complication,
-                        ConfigRecyclerViewAdapter.ComplicationLocation.NOTIFICATION,
-                        R.string.notification_complication_instruction_toast,
-                        DEFAULT_NOTIFICATION_COMPLICATION);
+                        R.string.notification_complication_instruction_toast
+                );
         settingsConfigData.add(notificationComplicationToggle);
 
         // Data for 'Unread Notifications' UX (toggle) in settings Activity.
@@ -173,10 +172,10 @@ public class ConfigData {
      */
     public static class ComplicationsConfigItem implements ConfigItemType {
 
-        private int defaultComplicationResourceId;
-        private int defaultComplicationLongResourceId;
-        private int defaultAddedComplicationResourceId;
-        private int defaultAddedComplicationLongResourceId;
+        private final int defaultComplicationResourceId;
+        private final int defaultComplicationLongResourceId;
+        private final int defaultAddedComplicationResourceId;
+        private final int defaultAddedComplicationLongResourceId;
 
         ComplicationsConfigItem(int defaultComplicationResourceId, int defaultComplicationLongResourceId,
                                 int defaultAddedComplicationResourceId, int defaultAddedComplicationLongResourceId) {
@@ -213,20 +212,19 @@ public class ConfigData {
      */
     public static class ColorConfigItem implements ConfigItemType {
 
-        private String name;
-        private int iconResourceId;
-        private String sharedPrefString;
-        private Class<ColorSelectionActivity> activityToChoosePreference;
+        private final String name;
+        private final int iconResourceId;
+        private final String sharedPrefString;
+        private final Class<ColorSelectionActivity> activityToChoosePreference;
 
         ColorConfigItem(
                 String name,
                 int iconResourceId,
-                String sharedPrefString,
-                Class<ColorSelectionActivity> activity) {
+                String sharedPrefString) {
             this.name = name;
             this.iconResourceId = iconResourceId;
             this.sharedPrefString = sharedPrefString;
-            this.activityToChoosePreference = activity;
+            this.activityToChoosePreference = ColorSelectionActivity.class;
         }
 
         public String getName() {
@@ -256,11 +254,11 @@ public class ConfigData {
      */
     public static class SwitchConfigItem implements ConfigItemType {
 
-        private String name;
-        private int iconEnabledResourceId;
-        private int iconDisabledResourceId;
-        private int sharedPrefId;
-        private boolean switchDefault;
+        private final String name;
+        private final int iconEnabledResourceId;
+        private final int iconDisabledResourceId;
+        private final int sharedPrefId;
+        private final boolean switchDefault;
 
         SwitchConfigItem(
                 String name,
@@ -303,19 +301,17 @@ public class ConfigData {
 
     public static class ComplicationSwitchConfigItem extends SwitchConfigItem {
 
-        private ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation;
-        private int instructionToastTextID;
+        private final ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation;
+        private final int instructionToastTextID;
 
         ComplicationSwitchConfigItem(
                 String name,
                 int iconEnabledResourceId,
                 int iconDisabledResourceId,
                 int sharedPrefId,
-                ConfigRecyclerViewAdapter.ComplicationLocation complicationLocation,
-                int instructionToastTextID,
-                boolean switchDefault) {
-            super(name, iconEnabledResourceId, iconDisabledResourceId, sharedPrefId, switchDefault);
-            this.complicationLocation = complicationLocation;
+                int instructionToastTextID) {
+            super(name, iconEnabledResourceId, iconDisabledResourceId, sharedPrefId, ConfigData.DEFAULT_NOTIFICATION_COMPLICATION);
+            this.complicationLocation = ConfigRecyclerViewAdapter.ComplicationLocation.NOTIFICATION;
             this.instructionToastTextID = instructionToastTextID;
         }
 

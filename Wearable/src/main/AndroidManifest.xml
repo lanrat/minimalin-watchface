@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vorsk.minimalin">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -25,7 +24,8 @@
             android:name=".watchface.MinimalinWatchFaceService"
             android:enabled="true"
             android:label="@string/watchface_name"
-            android:permission="android.permission.BIND_WALLPAPER">
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:exported="false">
             <meta-data
                 android:name="android.service.wallpaper"
                 android:resource="@xml/watch_face" />
@@ -49,7 +49,8 @@
         <activity android:name="android.support.wearable.complications.ComplicationHelperActivity" />
         <activity
             android:name=".config.ConfigActivity"
-            android:label="@string/complication_config">
+            android:label="@string/complication_config"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.vorsk.minimalin.watchface.CONFIG_COMPLICATION" />
 
