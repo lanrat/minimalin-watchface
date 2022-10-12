@@ -3,8 +3,9 @@ name: Android CI
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  
+  # allow manually calling the action
+  workflow_dispatch:
 
 jobs:
   build:
